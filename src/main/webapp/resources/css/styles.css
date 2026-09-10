@@ -1,0 +1,340 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+ */
+
+/*
+    Created on : 4 sept 2026, 1:15:48
+    Author     : fernan
+*/
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family: Arial, sans-serif;
+
+    background-color: #f2f4f7;
+}
+
+
+
+body.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+
+    padding: 35px;
+
+    background-color: white;
+
+    border-radius: 12px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.login-container h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+
+    text-align: center;
+}
+
+.login-subtitle {
+    margin-bottom: 30px;
+
+    text-align: center;
+
+    color: #666;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 6px;
+
+    font-size: 16px;
+
+    outline: none;
+
+    background-color: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #333;
+}
+
+.form-group input.campo-invalido,
+.form-group select.campo-invalido {
+    border-color: #d32f2f;
+}
+
+
+/* =========================================================
+   BOTONES
+   ========================================================= */
+
+button {
+    width: 100%;
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background-color: #333;
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+
+/* =========================================================
+   MENSAJES
+   ========================================================= */
+
+.campo-error {
+    margin: 5px 0 0;
+
+    color: #d32f2f;
+
+    font-size: 14px;
+}
+
+.mensaje {
+    margin-top: 20px;
+
+    padding: 12px;
+
+    border-radius: 6px;
+
+    text-align: center;
+}
+
+.mensaje.error {
+    background-color: #fdeaea;
+
+    color: #b71c1c;
+}
+
+.mensaje.exito {
+    background-color: #e8f5e9;
+
+    color: #2e7d32;
+}
+
+
+/* =========================================================
+   PÁGINAS DEL SISTEMA
+   ========================================================= */
+
+.pagina {
+    width: 90%;
+    max-width: 1200px;
+
+    margin: 30px auto;
+}
+
+.formulario {
+    padding: 25px;
+
+    margin-bottom: 30px;
+
+    background-color: white;
+
+    border-radius: 8px;
+}
+
+.tabla {
+    overflow-x: auto;
+
+    background-color: white;
+
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px;
+
+    border: 1px solid #ccc;
+
+    text-align: left;
+}
+
+th {
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .login-container {
+        margin: 20px;
+
+        padding: 25px;
+    }
+
+    .pagina {
+        width: 95%;
+    }
+}
+
+.cards-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+    margin-top: 25px;
+    margin-bottom: 40px;
+}
+
+
+/* =========================
+   CARD
+   ========================= */
+
+.card-menu {
+    background-color: white;
+    border-radius: 12px;
+    padding: 25px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+
+.card-menu:hover {
+    transform: translateY(-5px);
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+/* =========================
+   ICONO
+   ========================= */
+
+.card-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+
+/* =========================
+   TÍTULO
+   ========================= */
+
+.card-menu h3 {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+
+/* =========================
+   DESCRIPCIÓN
+   ========================= */
+
+.card-menu p {
+    color: #666;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   ACCIONES
+   ========================= */
+
+.card-acciones {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+.card-acciones a {
+    display: block;
+
+    padding: 10px 15px;
+
+    text-decoration: none;
+
+    border-radius: 6px;
+
+    background-color: #f1f1f1;
+
+    color: #333;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.card-acciones a:hover {
+    background-color: #ddd;
+}
+
+
+/* =========================
+   CERRAR SESIÓN
+   ========================= */
+
+.cerrar-sesion {
+    margin-top: 30px;
+    text-align: center;
+}
+
