@@ -4,6 +4,7 @@
     Author     : fernan
 --%>
 
+<%@page import="java.util.List"%>
 <%@page import="transporte.modelo.Sucursal"%>
 <%@page import="transporte.dao.SucursalDAO"%>
 <%@page import="transporte.modelo.Usuario"%>
@@ -12,8 +13,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
@@ -25,18 +26,16 @@
         return;
     }
 
-    UsuarioDAO usuarioDAO =
-            new UsuarioDAO();
+    UsuarioDAO usuarioDAO
+            = new UsuarioDAO();
 
-    SucursalDAO sucursalDAO =
-            new SucursalDAO();
+    SucursalDAO sucursalDAO
+            = new SucursalDAO();
 
-    Usuario[] usuarios =
-            usuarioDAO.listar();
+    Usuario[] usuarios
+            = usuarioDAO.listar();
 
-    Sucursal[] sucursales =
-            sucursalDAO.listar();
-
+    List<Sucursal> sucursales = sucursalDAO.listar();
     String mensaje = "";
     String tipoMensaje = "";
 
@@ -44,48 +43,48 @@
 
     if ("POST".equalsIgnoreCase(request.getMethod())) {
 
-        String usuarioIngresado =
-                request.getParameter("usuario");
+        String usuarioIngresado
+                = request.getParameter("usuario");
 
-        String contrasena =
-                request.getParameter("contrasena");
+        String contrasena
+                = request.getParameter("contrasena");
 
-        String codigoSucursal =
-                request.getParameter("codigoSucursal");
+        String codigoSucursal
+                = request.getParameter("codigoSucursal");
 
-        if (usuarioIngresado != null &&
-            !usuarioIngresado.trim().isEmpty()) {
+        if (usuarioIngresado != null
+                && !usuarioIngresado.trim().isEmpty()) {
 
-            usuarioIngresado =
-                    usuarioIngresado.trim();
+            usuarioIngresado
+                    = usuarioIngresado.trim();
 
-            usuarioSeleccionado =
-                    usuarioDAO.buscarPorUsuario(
+            usuarioSeleccionado
+                    = usuarioDAO.buscarPorUsuario(
                             usuarioIngresado
                     );
         }
 
         if (usuarioSeleccionado == null) {
 
-            mensaje =
-                    "No se encontró el usuario seleccionado.";
+            mensaje
+                    = "No se encontró el usuario seleccionado.";
 
             tipoMensaje = "error";
 
         } else {
 
-            if (contrasena == null ||
-                contrasena.trim().isEmpty()) {
+            if (contrasena == null
+                    || contrasena.trim().isEmpty()) {
 
-                mensaje =
-                        "Debe ingresar una contraseña.";
+                mensaje
+                        = "Debe ingresar una contraseña.";
 
                 tipoMensaje = "error";
 
             } else if (contrasena.length() < 4) {
 
-                mensaje =
-                        "La contraseña debe tener al menos 4 caracteres.";
+                mensaje
+                        = "La contraseña debe tener al menos 4 caracteres.";
 
                 tipoMensaje = "error";
 
@@ -98,11 +97,11 @@
                 if ("ADMIN_SUCURSAL".equals(
                         usuarioSeleccionado.getRol())) {
 
-                    if (codigoSucursal == null ||
-                        codigoSucursal.trim().isEmpty()) {
+                    if (codigoSucursal == null
+                            || codigoSucursal.trim().isEmpty()) {
 
-                        mensaje =
-                                "Debe seleccionar una sucursal.";
+                        mensaje
+                                = "Debe seleccionar una sucursal.";
 
                         tipoMensaje = "error";
 
@@ -112,8 +111,8 @@
                                 codigoSucursal.trim()
                         );
 
-                        String resultado =
-                                usuarioDAO.actualizar(
+                        String resultado
+                                = usuarioDAO.actualizar(
                                         usuarioSeleccionado
                                 );
 
@@ -136,8 +135,8 @@
                             null
                     );
 
-                    String resultado =
-                            usuarioDAO.actualizar(
+                    String resultado
+                            = usuarioDAO.actualizar(
                                     usuarioSeleccionado
                             );
 
@@ -156,8 +155,8 @@
             }
         }
 
-        usuarios =
-                usuarioDAO.listar();
+        usuarios
+                = usuarioDAO.listar();
     }
 %>
 
@@ -165,147 +164,66 @@
 
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Modificar usuario</title>
+        <title>Modificar usuario</title>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
+        <main class="pagina">
 
-        <h1>Modificar usuario</h1>
+            <h1>Modificar usuario</h1>
 
-        <p>
-            Administración del sistema
-        </p>
+            <p>
+                Administración del sistema
+            </p>
 
 
-        <div class="formulario">
+            <div class="formulario">
 
-            <h2>Seleccionar usuario</h2>
-
-            <div class="form-group">
-
-                <label for="seleccionarUsuario">
-                    Usuario
-                </label>
-
-                <select
-                    id="seleccionarUsuario"
-                    onchange="mostrarUsuario()">
-
-                    <option value="">
-                        Seleccione un usuario
-                    </option>
-
-                    <%
-                        if (usuarios != null) {
-
-                            for (Usuario usuario : usuarios) {
-
-                                if (usuario != null) {
-                    %>
-
-                    <option
-                        value="<%= usuario.getUsuario() %>"
-                        data-contrasena=""
-                        data-rol="<%= usuario.getRol() %>"
-                        data-sucursal="<%= usuario.getCodigoSucursal() != null
-                                ? usuario.getCodigoSucursal()
-                                : "" %>">
-
-                        <%= usuario.getUsuario() %>
-
-                    </option>
-
-                    <%
-                                }
-                            }
-                        }
-                    %>
-
-                </select>
-
-            </div>
-
-        </div>
-
-        <div
-            class="formulario"
-            id="formularioModificar"
-            style="display: none;">
-
-            <h2>Datos del usuario</h2>
-
-            <form method="POST"
-                  id="modificarUsuarioForm">
+                <h2>Seleccionar usuario</h2>
 
                 <div class="form-group">
 
-                    <label for="usuario">
+                    <label for="seleccionarUsuario">
                         Usuario
                     </label>
 
-                    <input
-                        type="text"
-                        id="usuario"
-                        name="usuario"
-                        readonly>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="rol">
-                        Rol
-                    </label>
-
-                    <input
-                        type="text"
-                        id="rol"
-                        readonly>
-
-                </div>
-
-                <div
-                    class="form-group"
-                    id="grupoSucursal">
-
-                    <label for="codigoSucursal">
-                        Sucursal
-                    </label>
-
                     <select
-                        id="codigoSucursal"
-                        name="codigoSucursal">
+                        id="seleccionarUsuario"
+                        onchange="mostrarUsuario()">
 
                         <option value="">
-                            Seleccione una sucursal
+                            Seleccione un usuario
                         </option>
 
                         <%
-                            if (sucursales != null) {
+                            if (usuarios != null) {
 
-                                for (Sucursal sucursal : sucursales) {
+                                for (Usuario usuario : usuarios) {
 
-                                    if (sucursal != null &&
-                                        sucursal.isEstado()) {
+                                    if (usuario != null) {
                         %>
 
                         <option
-                            value="<%= sucursal.getCodigoSucursal() %>">
+                            value="<%= usuario.getUsuario()%>"
+                            data-contrasena=""
+                            data-rol="<%= usuario.getRol()%>"
+                            data-sucursal="<%= usuario.getCodigoSucursal() != null
+                                    ? usuario.getCodigoSucursal()
+                                    : ""%>">
 
-                            <%= sucursal.getNombre() %>
+                            <%= usuario.getUsuario()%>
 
                         </option>
 
@@ -317,70 +235,151 @@
 
                     </select>
 
-                    <p
-                        id="mensajeSucursal"
-                        class="campo-error">
-                    </p>
-
                 </div>
-
-                <div class="form-group">
-
-                    <label for="contrasena">
-                        Nueva contraseña
-                    </label>
-
-                    <input
-                        type="password"
-                        id="contrasena"
-                        name="contrasena"
-                        minlength="4"
-                        required>
-
-                    <p
-                        id="mensajeContrasena"
-                        class="campo-error">
-                    </p>
-
-                </div>
-
-                <button type="submit">
-                    Guardar cambios
-                </button>
-
-            </form>
-
-        </div>
-
-       <% if (!mensaje.isEmpty()) { %>
-
-            <div class="mensaje <%= tipoMensaje %>">
-
-                <%= mensaje %>
 
             </div>
 
-        <% } %>
+            <div
+                class="formulario"
+                id="formularioModificar"
+                style="display: none;">
+
+                <h2>Datos del usuario</h2>
+
+                <form method="POST"
+                      id="modificarUsuarioForm">
+
+                    <div class="form-group">
+
+                        <label for="usuario">
+                            Usuario
+                        </label>
+
+                        <input
+                            type="text"
+                            id="usuario"
+                            name="usuario"
+                            readonly>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="rol">
+                            Rol
+                        </label>
+
+                        <input
+                            type="text"
+                            id="rol"
+                            readonly>
+
+                    </div>
+
+                    <div
+                        class="form-group"
+                        id="grupoSucursal">
+
+                        <label for="codigoSucursal">
+                            Sucursal
+                        </label>
+
+                        <select
+                            id="codigoSucursal"
+                            name="codigoSucursal">
+
+                            <option value="">
+                                Seleccione una sucursal
+                            </option>
+
+                            <%
+                                if (sucursales != null) {
+
+                                    for (Sucursal sucursal : sucursales) {
+
+                                        if (sucursal != null
+                                                && sucursal.isEstado()) {
+                            %>
+
+                            <option
+                                value="<%= sucursal.getCodigoSucursal()%>">
+
+                                <%= sucursal.getNombre()%>
+
+                            </option>
+
+                            <%
+                                        }
+                                    }
+                                }
+                            %>
+
+                        </select>
+
+                        <p
+                            id="mensajeSucursal"
+                            class="campo-error">
+                        </p>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="contrasena">
+                            Nueva contraseña
+                        </label>
+
+                        <input
+                            type="password"
+                            id="contrasena"
+                            name="contrasena"
+                            minlength="4"
+                            required>
+
+                        <p
+                            id="mensajeContrasena"
+                            class="campo-error">
+                        </p>
+
+                    </div>
+
+                    <button type="submit">
+                        Guardar cambios
+                    </button>
+
+                </form>
+
+            </div>
+
+            <% if (!mensaje.isEmpty()) {%>
+
+            <div class="mensaje <%= tipoMensaje%>">
+
+                <%= mensaje%>
+
+            </div>
+
+            <% }%>
 
 
-        <br>
+            <br>
 
 
-        <a href="listarUsuarios.jsp">
-            Regresar a usuarios
-        </a>
+            <a href="listarUsuarios.jsp">
+                Regresar a usuarios
+            </a>
 
-        <br><br>
+            <br><br>
 
-        <a href="../inicio.jsp">
-            Regresar al inicio
-        </a>
+            <a href="../inicio.jsp">
+                Regresar al inicio
+            </a>
 
-    </main>
+        </main>
 
 
-    <script src="../resources/js/modificarUsuario.js"></script>
+        <script src="../resources/js/modificarUsuario.js"></script>
 
-</body>
+    </body>
 
 </html>

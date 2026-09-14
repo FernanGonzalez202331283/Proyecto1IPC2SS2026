@@ -11,10 +11,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const contrasena = document.getElementById("contrasena");
 
     const mensajeUsuario =
-        document.getElementById("mensajeUsuario");
+            document.getElementById("mensajeUsuario");
 
     const mensajeContrasena =
-        document.getElementById("mensajeContrasena");
+            document.getElementById("mensajeContrasena");
 
 
     formulario.addEventListener("submit", function (event) {
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (usuario.value.trim() === "") {
 
             mensajeUsuario.textContent =
-                "Ingrese su usuario.";
+                    "Ingrese su usuario.";
 
             usuario.classList.add("campo-invalido");
 
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (contrasena.value.trim() === "") {
 
             mensajeContrasena.textContent =
-                "Ingrese su contraseña.";
+                    "Ingrese su contraseña.";
 
             contrasena.classList.add("campo-invalido");
 
@@ -51,10 +51,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         if (contrasena.value.length > 0 &&
-            contrasena.value.length < 4) {
+                contrasena.value.length < 4) {
 
             mensajeContrasena.textContent =
-                "La contraseña debe tener al menos 4 caracteres.";
+                    "La contraseña debe tener al menos 4 caracteres.";
 
             contrasena.classList.add("campo-invalido");
 

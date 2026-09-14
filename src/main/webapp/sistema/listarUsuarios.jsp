@@ -12,8 +12,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
@@ -32,21 +32,21 @@
 
     if ("POST".equalsIgnoreCase(request.getMethod())) {
 
-        String accion =
-                request.getParameter("accion");
+        String accion
+                = request.getParameter("accion");
 
-        String usuarioAccion =
-                request.getParameter("usuario");
+        String usuarioAccion
+                = request.getParameter("usuario");
 
-        if (usuarioAccion != null &&
-            !usuarioAccion.trim().isEmpty()) {
+        if (usuarioAccion != null
+                && !usuarioAccion.trim().isEmpty()) {
 
             usuarioAccion = usuarioAccion.trim();
 
             if ("desactivar".equals(accion)) {
 
-                mensaje =
-                        usuarioDAO.desactivar(usuarioAccion);
+                mensaje
+                        = usuarioDAO.desactivar(usuarioAccion);
 
                 if ("Usuario desactivado correctamente."
                         .equals(mensaje)) {
@@ -57,194 +57,191 @@
 
                     tipoMensaje = "error";
                 }
+            } else if ("activar".equals(accion)) {
+
+                mensaje
+                        = usuarioDAO.activar(usuarioAccion);
+
+                if ("Usuario activado correctamente."
+                        .equals(mensaje)) {
+
+                    tipoMensaje = "exito";
+
+                } else {
+
+                    tipoMensaje = "error";
+                }
             }
-
-            else if ("activar".equals(accion)) {
-
-    mensaje =
-            usuarioDAO.activar(usuarioAccion);
-
-    if ("Usuario activado correctamente."
-            .equals(mensaje)) {
-
-        tipoMensaje = "exito";
-
-    } else {
-
-        tipoMensaje = "error";
-    }
-}
         }
     }
 
-    Usuario[] usuarios =
-            usuarioDAO.listar();
+    Usuario[] usuarios
+            = usuarioDAO.listar();
 
-    SucursalDAO sucursalDAO =
-            new SucursalDAO();
+    SucursalDAO sucursalDAO
+            = new SucursalDAO();
 %>
 
 <!DOCTYPE html>
 
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Usuarios del sistema</title>
+        <title>Usuarios del sistema</title>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
+        <main class="pagina">
 
-        <h1>Usuarios del sistema</h1>
+            <h1>Usuarios del sistema</h1>
 
-        <p>
-            Administración de usuarios
-        </p>
+            <p>
+                Administración de usuarios
+            </p>
 
 
-        <% if (!mensaje.isEmpty()) { %>
+            <% if (!mensaje.isEmpty()) {%>
 
-            <div class="mensaje <%= tipoMensaje %>">
+            <div class="mensaje <%= tipoMensaje%>">
 
-                <%= mensaje %>
+                <%= mensaje%>
 
             </div>
 
-        <% } %>
+            <% } %>
 
 
-        <div class="formulario">
+            <div class="formulario">
 
-            <h2>Lista de usuarios</h2>
+                <h2>Lista de usuarios</h2>
 
-            <div class="tabla">
+                <div class="tabla">
 
-                <table id="tablaUsuarios">
+                    <table id="tablaUsuarios">
 
-                    <thead>
+                        <thead>
 
-                        <tr>
+                            <tr>
 
-                            <th>
-                                Usuario
-                            </th>
+                                <th>
+                                    Usuario
+                                </th>
 
-                            <th>
-                                Rol
-                            </th>
+                                <th>
+                                    Rol
+                                </th>
 
-                            <th>
-                                Sucursal
-                            </th>
+                                <th>
+                                    Sucursal
+                                </th>
 
-                            <th>
-                                Estado
-                            </th>
+                                <th>
+                                    Estado
+                                </th>
 
-                            <th>
-                                Acción
-                            </th>
+                                <th>
+                                    Acción
+                                </th>
 
-                        </tr>
+                            </tr>
 
-                    </thead>
-
-
-                    <tbody>
-
-                        <%
-                            if (usuarios != null &&
-                                usuarios.length > 0) {
-
-                                for (Usuario usuario : usuarios) {
-
-                                    if (usuario == null) {
-                                        continue;
-                                    }
-                                    String nombreSucursal =
-                                            "No aplica";
+                        </thead>
 
 
-                                    if (usuario.getCodigoSucursal() != null &&
-                                        !usuario.getCodigoSucursal()
-                                                .trim()
-                                                .isEmpty()) {
+                        <tbody>
 
-                                        Sucursal sucursal =
-                                                sucursalDAO.buscar(
-                                                        usuario.getCodigoSucursal()
-                                                );
+                            <%
+                                if (usuarios != null
+                                        && usuarios.length > 0) {
 
-                                        if (sucursal != null) {
+                                    for (Usuario usuario : usuarios) {
 
-                                            nombreSucursal =
-                                                    sucursal.getNombre();
+                                        if (usuario == null) {
+                                            continue;
                                         }
-                                    }
-                        %>
+                                        String nombreSucursal
+                                                = "No aplica";
+
+                                        if (usuario.getCodigoSucursal() != null
+                                                && !usuario.getCodigoSucursal()
+                                                        .trim()
+                                                        .isEmpty()) {
+
+                                            Sucursal sucursal
+                                                    = sucursalDAO.buscar(
+                                                            usuario.getCodigoSucursal()
+                                                    );
+
+                                            if (sucursal != null) {
+
+                                                nombreSucursal
+                                                        = sucursal.getNombre();
+                                            }
+                                        }
+                            %>
 
 
-                        <tr>
+                            <tr>
 
-                            <td>
+                                <td>
 
-                                <%= usuario.getUsuario() %>
+                                    <%= usuario.getUsuario()%>
 
-                            </td>
-                            <td>
+                                </td>
+                                <td>
 
-                                <%= usuario.getRol() %>
+                                    <%= usuario.getRol()%>
 
-                            </td>
-                            <td>
+                                </td>
+                                <td>
 
-                                <%= nombreSucursal %>
+                                    <%= nombreSucursal%>
 
-                            </td>
+                                </td>
 
 
-                            <td>
+                                <td>
 
-                                <%
-                                    if (usuario.isEstado()) {
-                                %>
+                                    <%
+                                        if (usuario.isEstado()) {
+                                    %>
 
                                     Activo
 
-                                <%
+                                    <%
                                     } else {
-                                %>
+                                    %>
 
                                     Inactivo
 
-                                <%
-                                    }
-                                %>
+                                    <%
+                                        }
+                                    %>
 
-                            </td>
+                                </td>
 
 
-                            <td>
+                                <td>
 
-                                <%
-                                    if (usuario.isEstado()) {
-                                %>
+                                    <%
+                                        if (usuario.isEstado()) {
+                                    %>
 
 
                                     <form method="POST"
                                           style="display: inline;"
-                                          onsubmit="return confirmarDesactivacion('<%= usuario.getUsuario() %>');">
+                                          onsubmit="return confirmarDesactivacion('<%= usuario.getUsuario()%>');">
 
 
                                         <input type="hidden"
@@ -254,7 +251,7 @@
 
                                         <input type="hidden"
                                                name="usuario"
-                                               value="<%= usuario.getUsuario() %>">
+                                               value="<%= usuario.getUsuario()%>">
 
 
                                         <button type="submit">
@@ -267,14 +264,14 @@
                                     </form>
 
 
-                                <%
+                                    <%
                                     } else {
-                                %>
+                                    %>
 
 
                                     <form method="POST"
                                           style="display: inline;"
-                                          onsubmit="return confirmarActivacion('<%= usuario.getUsuario() %>');">
+                                          onsubmit="return confirmarActivacion('<%= usuario.getUsuario()%>');">
 
 
                                         <input type="hidden"
@@ -284,7 +281,7 @@
 
                                         <input type="hidden"
                                                name="usuario"
-                                               value="<%= usuario.getUsuario() %>">
+                                               value="<%= usuario.getUsuario()%>">
 
 
                                         <button type="submit">
@@ -297,56 +294,52 @@
                                     </form>
 
 
-                                <%
-                                    }
-                                %>
+                                    <%
+                                        }
+                                    %>
 
-                            </td>
+                                </td>
 
-                        </tr>
+                            </tr>
 
 
-                        <%
+                            <%
                                 }
 
                             } else {
-                        %>
+                            %>
 
-                        <tr>
+                            <tr>
 
-                            <td colspan="5">
+                                <td colspan="5">
 
-                                No hay usuarios registrados.
+                                    No hay usuarios registrados.
 
-                            </td>
+                                </td>
 
-                        </tr>
+                            </tr>
 
 
-                        <%
-                            }
-                        %>
+                            <%
+                                }
+                            %>
 
-                    </tbody>
+                        </tbody>
 
-                </table>
+                    </table>
 
+                </div>
             </div>
+            <br>
+            <a href="../inicio.jsp">
 
-        </div>
+                Regresar al inicio
 
-        <br>
-        <a href="../inicio.jsp">
-
-            Regresar al inicio
-
-        </a>
-
-
-    </main>
-    <script src="../resources/js/listarUsuarios.js"></script>
+            </a>
+        </main>
+        <script src="../resources/js/listarUsuarios.js"></script>
 
 
-</body>
+    </body>
 
 </html>

@@ -5,13 +5,13 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     const formulario =
-        document.getElementById("formFinalizarViaje");
+            document.getElementById("formFinalizarViaje");
 
     const kilometraje =
-        document.getElementById("kilometrajeFinal");
+            document.getElementById("kilometrajeFinal");
 
     const combustible =
-        document.getElementById("gastoCombustible");
+            document.getElementById("gastoCombustible");
 
 
     if (!formulario) {
@@ -22,10 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
     formulario.addEventListener("submit", function (evento) {
 
         const km =
-            parseFloat(kilometraje.value);
+                parseFloat(kilometraje.value);
 
         const gasto =
-            parseFloat(combustible.value);
+                parseFloat(combustible.value);
 
 
         if (isNaN(km) || km < 0) {
@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
             evento.preventDefault();
 
             alert(
-                "Ingrese un kilometraje final válido."
-            );
+                    "Ingrese un kilometraje final válido."
+                    );
 
             kilometraje.focus();
 
@@ -47,8 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
             evento.preventDefault();
 
             alert(
-                "Ingrese un gasto de combustible válido."
-            );
+                    "Ingrese un gasto de combustible válido."
+                    );
 
             combustible.focus();
 
@@ -57,11 +57,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         const confirmar =
-            confirm(
-                "¿Está seguro de finalizar este viaje?\n\n"
-                + "Los datos de llegada no podrán "
-                + "modificarse ni eliminarse después."
-            );
+                confirm(
+                        "¿Está seguro de finalizar este viaje?\n\n"
+                        + "Los datos de llegada no podrán "
+                        + "modificarse ni eliminarse después."
+                        );
 
 
         if (!confirmar) {

@@ -11,8 +11,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuarioSesion == null) {
 
@@ -27,13 +27,11 @@
         return;
     }
 
+    String codigoSucursal
+            = usuarioSesion.getCodigoSucursal();
 
-    String codigoSucursal =
-            usuarioSesion.getCodigoSucursal();
-
-    String codigoViaje =
-            request.getParameter("codigoViaje");
-
+    String codigoViaje
+            = request.getParameter("codigoViaje");
 
     if (codigoViaje == null
             || codigoViaje.trim().isEmpty()) {
@@ -42,25 +40,17 @@
         return;
     }
 
+    codigoViaje
+            = codigoViaje.trim();
 
-    codigoViaje =
-            codigoViaje.trim();
+    ViajeDAO viajeDAO
+            = new ViajeDAO();
 
-
-    ViajeDAO viajeDAO =
-            new ViajeDAO();
-
-
-    /*
-     * Obtener el viaje y verificar que pertenezca
-     * a la sucursal del administrador.
-     */
-    Viaje viaje =
-            viajeDAO.obtenerPorSucursal(
+    Viaje viaje
+            = viajeDAO.obtenerPorSucursal(
                     codigoViaje,
                     codigoSucursal
             );
-
 
     if (viaje == null
             || !"EN_CURSO".equals(
@@ -70,32 +60,26 @@
         return;
     }
 
-
     String mensaje = "";
     String tipoMensaje = "";
 
-
-    /*
-     * Procesar formulario.
-     */
     if ("POST".equalsIgnoreCase(
             request.getMethod())) {
 
-        String horaRealLlegada =
-                request.getParameter(
+        String horaRealLlegada
+                = request.getParameter(
                         "horaRealLlegada"
                 );
 
-        String kilometrajeFinalTexto =
-                request.getParameter(
+        String kilometrajeFinalTexto
+                = request.getParameter(
                         "kilometrajeFinal"
                 );
 
-        String gastoCombustibleTexto =
-                request.getParameter(
+        String gastoCombustibleTexto
+                = request.getParameter(
                         "gastoCombustible"
                 );
-
 
         if (horaRealLlegada == null
                 || horaRealLlegada.trim().isEmpty()
@@ -104,8 +88,8 @@
                 || gastoCombustibleTexto == null
                 || gastoCombustibleTexto.trim().isEmpty()) {
 
-            mensaje =
-                    "Debe completar todos los campos.";
+            mensaje
+                    = "Debe completar todos los campos.";
 
             tipoMensaje = "error";
 
@@ -113,46 +97,40 @@
 
             try {
 
-                double kilometrajeFinal =
-                        Double.parseDouble(
+                double kilometrajeFinal
+                        = Double.parseDouble(
                                 kilometrajeFinalTexto.trim()
                         );
 
-                double gastoCombustible =
-                        Double.parseDouble(
+                double gastoCombustible
+                        = Double.parseDouble(
                                 gastoCombustibleTexto.trim()
                         );
 
-
                 if (kilometrajeFinal < 0) {
 
-                    mensaje =
-                            "El kilometraje final no puede ser negativo.";
+                    mensaje
+                            = "El kilometraje final no puede ser negativo.";
 
                     tipoMensaje = "error";
 
                 } else if (gastoCombustible < 0) {
 
-                    mensaje =
-                            "El gasto de combustible no puede ser negativo.";
+                    mensaje
+                            = "El gasto de combustible no puede ser negativo.";
 
                     tipoMensaje = "error";
 
                 } else {
 
-                    /*
-                     * Convertir HH:mm a HH:mm:ss
-                     * para utilizar Time.valueOf().
-                     */
                     if (horaRealLlegada.length() == 5) {
 
-                        horaRealLlegada =
-                                horaRealLlegada + ":00";
+                        horaRealLlegada
+                                = horaRealLlegada + ":00";
                     }
 
-
-                    boolean finalizado =
-                            viajeDAO.finalizarViaje(
+                    boolean finalizado
+                            = viajeDAO.finalizarViaje(
                                     codigoViaje,
                                     codigoSucursal,
                                     horaRealLlegada,
@@ -160,7 +138,6 @@
                                     gastoCombustible,
                                     usuarioSesion.getUsuario()
                             );
-
 
                     if (finalizado) {
 
@@ -172,8 +149,8 @@
 
                     } else {
 
-                        mensaje =
-                                "No se pudo finalizar el viaje. "
+                        mensaje
+                                = "No se pudo finalizar el viaje. "
                                 + "Verifique los datos ingresados.";
 
                         tipoMensaje = "error";
@@ -182,8 +159,8 @@
 
             } catch (NumberFormatException e) {
 
-                mensaje =
-                        "El kilometraje y el gasto de combustible "
+                mensaje
+                        = "El kilometraje y el gasto de combustible "
                         + "deben ser números válidos.";
 
                 tipoMensaje = "error";
@@ -196,236 +173,236 @@
 
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Finalizar viaje</title>
+        <title>Finalizar viaje</title>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
-
-
-        <!-- ENCABEZADO -->
-
-        <header class="encabezado">
-
-            <h1>Finalizar viaje</h1>
-
-            <p>
-                Registre los datos reales de llegada
-                del viaje.
-            </p>
-
-        </header>
+        <main class="pagina">
 
 
-        <!-- INFORMACIÓN DEL VIAJE -->
+            <!-- ENCABEZADO -->
 
-        <section class="card-menu">
+            <header class="encabezado">
 
-            <h2>Información del viaje</h2>
+                <h1>Finalizar viaje</h1>
 
-            <p>
-                <strong>Código:</strong>
-                <%= viaje.getCodigoViaje() %>
-            </p>
+                <p>
+                    Registre los datos reales de llegada
+                    del viaje.
+                </p>
 
-            <p>
-                <strong>Bus:</strong>
-                <%= viaje.getPlacaBus() %>
-            </p>
-
-            <p>
-                <strong>Chofer:</strong>
-                <%= viaje.getNumeroLicencia() %>
-            </p>
-
-            <p>
-                <strong>Origen:</strong>
-                <%= viaje.getOrigen() %>
-            </p>
-
-            <p>
-                <strong>Destino:</strong>
-                <%= viaje.getDestino() %>
-            </p>
-
-        </section>
+            </header>
 
 
-        <!-- FORMULARIO -->
+            <!-- INFORMACIÓN DEL VIAJE -->
 
-        <section class="card-menu">
+            <section class="card-menu">
 
-            <h2>Datos reales de llegada</h2>
+                <h2>Información del viaje</h2>
 
-            <p>
-                Ingrese cuidadosamente la información
-                registrada al momento de finalizar el viaje.
-            </p>
+                <p>
+                    <strong>Código:</strong>
+                    <%= viaje.getCodigoViaje()%>
+                </p>
+
+                <p>
+                    <strong>Bus:</strong>
+                    <%= viaje.getPlacaBus()%>
+                </p>
+
+                <p>
+                    <strong>Chofer:</strong>
+                    <%= viaje.getNumeroLicencia()%>
+                </p>
+
+                <p>
+                    <strong>Origen:</strong>
+                    <%= viaje.getOrigen()%>
+                </p>
+
+                <p>
+                    <strong>Destino:</strong>
+                    <%= viaje.getDestino()%>
+                </p>
+
+            </section>
 
 
-            <% if (!mensaje.isEmpty()) { %>
+            <!-- FORMULARIO -->
 
-                <div class="<%= tipoMensaje %>">
+            <section class="card-menu">
 
-                    <%= mensaje %>
+                <h2>Datos reales de llegada</h2>
 
-                </div>
-
-            <% } %>
-
-
-            <form
-                method="post"
-                action="finalizarViaje.jsp?codigoViaje=<%= codigoViaje %>"
-                id="formFinalizarViaje">
+                <p>
+                    Ingrese cuidadosamente la información
+                    registrada al momento de finalizar el viaje.
+                </p>
 
 
-                <!-- HORA REAL -->
+                <% if (!mensaje.isEmpty()) {%>
 
-                <div class="formulario-grupo">
+                <div class="<%= tipoMensaje%>">
 
-                    <label for="horaRealLlegada">
-
-                        Hora real de llegada
-
-                    </label>
-
-                    <input
-                        type="time"
-                        id="horaRealLlegada"
-                        name="horaRealLlegada"
-                        required>
+                    <%= mensaje%>
 
                 </div>
 
-
-                <!-- KILOMETRAJE FINAL -->
-
-                <div class="formulario-grupo">
-
-                    <label for="kilometrajeFinal">
-
-                        Kilometraje final del bus
-
-                    </label>
-
-                    <input
-                        type="number"
-                        id="kilometrajeFinal"
-                        name="kilometrajeFinal"
-                        min="0"
-                        step="0.01"
-                        placeholder="Ejemplo: 125430.50"
-                        required>
-
-                </div>
+                <% }%>
 
 
-                <!-- COMBUSTIBLE -->
-
-                <div class="formulario-grupo">
-
-                    <label for="gastoCombustible">
-
-                        Gasto total de combustible
-
-                    </label>
-
-                    <input
-                        type="number"
-                        id="gastoCombustible"
-                        name="gastoCombustible"
-                        min="0"
-                        step="0.01"
-                        placeholder="Ejemplo: 350.00"
-                        required>
-
-                </div>
+                <form
+                    method="post"
+                    action="finalizarViaje.jsp?codigoViaje=<%= codigoViaje%>"
+                    id="formFinalizarViaje">
 
 
-                <!-- ADVERTENCIA -->
+                    <!-- HORA REAL -->
 
-                <div class="mensaje-advertencia">
+                    <div class="formulario-grupo">
 
-                    <strong>Importante:</strong>
+                        <label for="horaRealLlegada">
 
-                    <p>
-                        Una vez registrada la llegada,
-                        los datos no podrán modificarse
-                        ni eliminarse.
-                    </p>
+                            Hora real de llegada
 
-                    <p>
-                        Verifique que la hora,
-                        el kilometraje y el gasto
-                        de combustible sean correctos.
-                    </p>
+                        </label>
 
-                </div>
+                        <input
+                            type="time"
+                            id="horaRealLlegada"
+                            name="horaRealLlegada"
+                            required>
+
+                    </div>
 
 
-                <!-- BOTONES -->
+                    <!-- KILOMETRAJE FINAL -->
 
-                <div class="card-acciones">
+                    <div class="formulario-grupo">
+
+                        <label for="kilometrajeFinal">
+
+                            Kilometraje final del bus
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="kilometrajeFinal"
+                            name="kilometrajeFinal"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ejemplo: 125430.50"
+                            required>
+
+                    </div>
+
+
+                    <!-- COMBUSTIBLE -->
+
+                    <div class="formulario-grupo">
+
+                        <label for="gastoCombustible">
+
+                            Gasto total de combustible
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="gastoCombustible"
+                            name="gastoCombustible"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ejemplo: 350.00"
+                            required>
+
+                    </div>
+
+
+                    <!-- ADVERTENCIA -->
+
+                    <div class="mensaje-advertencia">
+
+                        <strong>Importante:</strong>
+
+                        <p>
+                            Una vez registrada la llegada,
+                            los datos no podrán modificarse
+                            ni eliminarse.
+                        </p>
+
+                        <p>
+                            Verifique que la hora,
+                            el kilometraje y el gasto
+                            de combustible sean correctos.
+                        </p>
+
+                    </div>
+
+
+                    <!-- BOTONES -->
+
+                    <div class="card-acciones">
+
+                        <button type="submit">
+
+                            Finalizar viaje
+
+                        </button>
+
+                        <a href="viajes.jsp">
+
+                            Cancelar
+
+                        </a>
+
+                    </div>
+
+
+                </form>
+
+            </section>
+
+
+            <!-- CERRAR SESIÓN -->
+
+            <div class="cerrar-sesion">
+
+                <form
+                    action="../logout.jsp"
+                    method="post">
 
                     <button type="submit">
 
-                        Finalizar viaje
+                        Cerrar sesión
 
                     </button>
 
-                    <a href="viajes.jsp">
+                </form>
 
-                        Cancelar
-
-                    </a>
-
-                </div>
+            </div>
 
 
-            </form>
-
-        </section>
+        </main>
 
 
-        <!-- CERRAR SESIÓN -->
+        <script
+            src="../resources/js/finalizarViaje.js">
+        </script>
 
-        <div class="cerrar-sesion">
-
-            <form
-                action="../logout.jsp"
-                method="post">
-
-                <button type="submit">
-
-                    Cerrar sesión
-
-                </button>
-
-            </form>
-
-        </div>
-
-
-    </main>
-
-
-    <script
-        src="../resources/js/finalizarViaje.js">
-    </script>
-
-</body>
+    </body>
 
 </html>

@@ -14,7 +14,7 @@ public class Configuracion {
     private String codigoConfiguracion;
     private double depreciacionPorKm;
     private Date fechaConfiguracion;
-    
+    private double precioKmAlquilerPrivado;
     public Configuracion(){
         
     }
@@ -48,7 +48,13 @@ public class Configuracion {
     public void setFechaConfiguracion(Date fechaConfiguracion) {
         this.fechaConfiguracion = fechaConfiguracion;
     }
-    
-    
+
+    public double getPrecioKmAlquilerPrivado() {
+        return precioKmAlquilerPrivado;
+    }
+
+    public void setPrecioKmAlquilerPrivado(double precioKmAlquilerPrivado) {
+        this.precioKmAlquilerPrivado = precioKmAlquilerPrivado;
+    }
     
 }

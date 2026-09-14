@@ -12,8 +12,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuarioSesion == null) {
 
@@ -28,14 +28,14 @@
         return;
     }
 
-    String codigoSucursal =
-            usuarioSesion.getCodigoSucursal();
+    String codigoSucursal
+            = usuarioSesion.getCodigoSucursal();
 
-    ViajeDAO viajeDAO =
-            new ViajeDAO();
+    ViajeDAO viajeDAO
+            = new ViajeDAO();
 
-    List<Viaje> viajes =
-            viajeDAO.listarPorSucursal(
+    List<Viaje> viajes
+            = viajeDAO.listarPorSucursal(
                     codigoSucursal
             );
 %>
@@ -44,62 +44,62 @@
 
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Gestionar Viajes</title>
+        <title>Gestionar Viajes</title>
 
-    <link rel="stylesheet"
-          href="<%= request.getContextPath() %>/resources/css/styles.css">
+        <link rel="stylesheet"
+              href="<%= request.getContextPath()%>/resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
+        <main class="pagina">
 
-        <!-- ENCABEZADO -->
+            <!-- ENCABEZADO -->
 
-        <header class="encabezado">
+            <header class="encabezado">
 
-            <h1>Gestionar Viajes</h1>
+                <h1>Gestionar Viajes</h1>
 
-            <p>
+                <p>
 
-                Sucursal:
+                    Sucursal:
 
-                <strong>
-                    <%= codigoSucursal %>
-                </strong>
+                    <strong>
+                        <%= codigoSucursal%>
+                    </strong>
 
-            </p>
+                </p>
 
-        </header>
-
-
-        <!-- ACCIONES -->
-
-        <div>
-
-            <a href="registrarViaje.jsp">
-
-                Registrar nuevo viaje
-
-            </a>
-
-        </div>
+            </header>
 
 
-        <br>
+            <!-- ACCIONES -->
+
+            <div>
+
+                <a href="registrarViaje.jsp">
+
+                    Registrar nuevo viaje
+
+                </a>
+
+            </div>
 
 
-        <!-- MENSAJE CUANDO NO EXISTEN VIAJES -->
+            <br>
 
-        <% if (viajes.isEmpty()) { %>
+
+            <!-- MENSAJE CUANDO NO EXISTEN VIAJES -->
+
+            <% if (viajes.isEmpty()) { %>
 
             <div class="mensaje">
 
@@ -108,7 +108,7 @@
 
             </div>
 
-        <% } else { %>
+            <% } else { %>
 
 
             <!-- TABLA DE VIAJES -->
@@ -178,192 +178,192 @@
 
                         <% for (Viaje viaje : viajes) { %>
 
-                            <%
-                                double kilometrajeInicial =
-                                        viajeDAO.obtenerKilometrajeInicial(
-                                                viaje.getCodigoViaje()
-                                        );
-                            %>
+                        <%
+                            double kilometrajeInicial
+                                    = viajeDAO.obtenerKilometrajeInicial(
+                                            viaje.getCodigoViaje()
+                                    );
+                        %>
 
-                            <tr>
+                        <tr>
 
-                                <!-- CÓDIGO -->
+                            <!-- CÓDIGO -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getCodigoViaje() %>
+                                <%= viaje.getCodigoViaje()%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- TIPO -->
+                            <!-- TIPO -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getTipoViaje() %>
+                                <%= viaje.getTipoViaje()%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- BUS -->
+                            <!-- BUS -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getPlacaBus() %>
+                                <%= viaje.getPlacaBus()%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- CHOFER -->
+                            <!-- CHOFER -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getNumeroLicencia() != null
-                                        ? viaje.getNumeroLicencia()
-                                        : "No asignado" %>
+                                <%= viaje.getNumeroLicencia() != null
+                                            ? viaje.getNumeroLicencia()
+                                            : "No asignado"%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- RUTA -->
+                            <!-- RUTA -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getCodigoRuta() != null
-                                        ? viaje.getCodigoRuta()
-                                        : "Privado" %>
+                                <%= viaje.getCodigoRuta() != null
+                                            ? viaje.getCodigoRuta()
+                                            : "Privado"%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- ORIGEN -->
+                            <!-- ORIGEN -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getOrigen() != null
-                                        ? viaje.getOrigen()
-                                        : "-" %>
+                                <%= viaje.getOrigen() != null
+                                            ? viaje.getOrigen()
+                                            : "-"%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- DESTINO -->
+                            <!-- DESTINO -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getDestino() != null
-                                        ? viaje.getDestino()
-                                        : "-" %>
+                                <%= viaje.getDestino() != null
+                                            ? viaje.getDestino()
+                                            : "-"%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- SALIDA -->
+                            <!-- SALIDA -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getFechaSalida() %>
+                                <%= viaje.getFechaSalida()%>
 
-                                    <br>
+                                <br>
 
-                                    <%= viaje.getHoraSalida() %>
+                                <%= viaje.getHoraSalida()%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- LLEGADA ESTIMADA -->
+                            <!-- LLEGADA ESTIMADA -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getFechaLlegadaEstimada() %>
+                                <%= viaje.getFechaLlegadaEstimada()%>
 
-                                    <br>
+                                <br>
 
-                                    <%= viaje.getHoraLlegadaEstimada() %>
+                                <%= viaje.getHoraLlegadaEstimada()%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- KILOMETRAJE INICIAL -->
+                            <!-- KILOMETRAJE INICIAL -->
 
-                                <td>
+                            <td>
 
-                                    <% if (kilometrajeInicial >= 0) { %>
+                                <% if (kilometrajeInicial >= 0) {%>
 
-                                        <%= String.format(
-                                                "%.2f km",
-                                                kilometrajeInicial
-                                            ) %>
+                                <%= String.format(
+                                        "%.2f km",
+                                        kilometrajeInicial
+                                        )%>
 
-                                    <% } else { %>
+                                <% } else { %>
 
-                                        -
+                                -
 
-                                    <% } %>
+                                <% }%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- ESTADO -->
+                            <!-- ESTADO -->
 
-                                <td>
+                            <td>
 
-                                    <%= viaje.getEstado() %>
+                                <%= viaje.getEstado()%>
 
-                                </td>
+                            </td>
 
 
-                                <!-- ACCIONES -->
+                            <!-- ACCIONES -->
 
-                                <td>
+                            <td>
 
-                                    <% if ("PROGRAMADO".equals(
-                                            viaje.getEstado())) { %>
+                                <% if ("PROGRAMADO".equals(
+                                                viaje.getEstado())) {%>
 
-                                        <a href="modificarViaje.jsp?codigoViaje=<%= viaje.getCodigoViaje() %>">
+                                <a href="modificarViaje.jsp?codigoViaje=<%= viaje.getCodigoViaje()%>">
 
-                                            Modificar
+                                    Modificar
 
-                                        </a>
+                                </a>
 
-                                        <br><br>
+                                <br><br>
 
-                                        <a href="iniciarViaje.jsp?codigoViaje=<%= viaje.getCodigoViaje() %>"
-                                           onclick="return confirm('¿Desea iniciar este viaje?');">
+                                <a href="iniciarViaje.jsp?codigoViaje=<%= viaje.getCodigoViaje()%>"
+                                   onclick="return confirm('¿Desea iniciar este viaje?');">
 
-                                            Iniciar viaje
+                                    Iniciar viaje
 
-                                        </a>
+                                </a>
 
-                                        <br><br>
+                                <br><br>
 
-                                        <a href="cancelarViaje.jsp?codigoViaje=<%= viaje.getCodigoViaje() %>"
-                                           onclick="return confirm('¿Está seguro de cancelar este viaje?');">
+                                <a href="cancelarViaje.jsp?codigoViaje=<%= viaje.getCodigoViaje()%>"
+                                   onclick="return confirm('¿Está seguro de cancelar este viaje?');">
 
-                                            Cancelar viaje
+                                    Cancelar viaje
 
-                                        </a>
+                                </a>
 
-                                    <% } %>
+                                <% } %>
 
 
-                                    <% if ("EN_CURSO".equals(
-                                            viaje.getEstado())) { %>
+                                <% if ("EN_CURSO".equals(
+                                                viaje.getEstado())) {%>
 
-                                        <br><br>
+                                <br><br>
 
-                                        <a href="finalizarViaje.jsp?codigoViaje=<%= viaje.getCodigoViaje() %>"
-                                           onclick="return confirm('¿Desea finalizar este viaje?');">
+                                <a href="finalizarViaje.jsp?codigoViaje=<%= viaje.getCodigoViaje()%>"
+                                   onclick="return confirm('¿Desea finalizar este viaje?');">
 
-                                            Finalizar viaje
+                                    Finalizar viaje
 
-                                        </a>
+                                </a>
 
-                                    <% } %>
+                                <% } %>
 
-                                </td>
+                            </td>
 
-                            </tr>
+                        </tr>
 
                         <% } %>
 
@@ -373,22 +373,22 @@
 
             </div>
 
-        <% } %>
+            <% }%>
 
 
-        <br>
+            <br>
 
 
-        <!-- REGRESAR -->
+            <!-- REGRESAR -->
 
-        <a href="../inicio.jsp">
+            <a href="../inicio.jsp">
 
-            Regresar al inicio
+                Regresar al inicio
 
-        </a>
+            </a>
 
-    </main>
+        </main>
 
-</body>
+    </body>
 
 </html>

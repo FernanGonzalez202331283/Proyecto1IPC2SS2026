@@ -10,11 +10,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
-    String rolSesion =
-            (String) session.getAttribute("rol");
+    String rolSesion
+            = (String) session.getAttribute("rol");
 
     if (usuarioSesion == null
             || rolSesion == null
@@ -24,11 +24,11 @@
         return;
     }
 
-    String codigoSucursal =
-            usuarioSesion.getCodigoSucursal();
+    String codigoSucursal
+            = usuarioSesion.getCodigoSucursal();
 
-    String codigoViaje =
-            request.getParameter("codigoViaje");
+    String codigoViaje
+            = request.getParameter("codigoViaje");
 
     if (codigoViaje == null
             || codigoViaje.trim().isEmpty()) {
@@ -37,11 +37,11 @@
         return;
     }
 
-    ViajeDAO viajeDAO =
-            new ViajeDAO();
+    ViajeDAO viajeDAO
+            = new ViajeDAO();
 
-    boolean cancelado =
-            viajeDAO.cancelarViaje(
+    boolean cancelado
+            = viajeDAO.cancelarViaje(
                     codigoViaje.trim(),
                     codigoSucursal
             );

@@ -2,8 +2,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuario =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuario
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuario == null) {
         response.sendRedirect("login.jsp");
@@ -15,58 +15,58 @@
 
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Inicio</title>
+        <title>Inicio</title>
 
-    <link rel="stylesheet"
-          href="resources/css/styles.css">
+        <link rel="stylesheet"
+              href="resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
-        <header class="encabezado">
-            <h1>Panel de administración</h1>
-            <p>
-                Bienvenido,
-                <strong><%= usuario.getUsuario() %></strong>
-            </p>
-            <p>
-                Rol:
-                <strong><%= usuario.getRol() %></strong>
-            </p>
-        </header>
-        <div class="cards-menu">
-
-            <div class="card-menu">
-
-                <h3>Mi perfil</h3>
-
+        <main class="pagina">
+            <header class="encabezado">
+                <h1>Panel de administración</h1>
                 <p>
-                    Consulta y modifica tus datos personales.
+                    Bienvenido,
+                    <strong><%= usuario.getUsuario()%></strong>
                 </p>
+                <p>
+                    Rol:
+                    <strong><%= usuario.getRol()%></strong>
+                </p>
+            </header>
+            <div class="cards-menu">
 
-                <div class="card-acciones">
+                <div class="card-menu">
 
-                    <a href="sistema/miPerfil.jsp">
-                        Ver mi perfil
-                    </a>
+                    <h3>Mi perfil</h3>
+
+                    <p>
+                        Consulta y modifica tus datos personales.
+                    </p>
+
+                    <div class="card-acciones">
+
+                        <a href="sistema/miPerfil.jsp">
+                            Ver mi perfil
+                        </a>
+
+                    </div>
 
                 </div>
 
             </div>
-
-        </div>
-        <%
-            if (usuario.getRol().equals("ADMIN_SISTEMA")) {
-        %>
+            <%
+                if (usuario.getRol().equals("ADMIN_SISTEMA")) {
+            %>
             <h2>Administración del sistema</h2>
             <div class="cards-menu">
                 <!-- SUCURSALES -->
@@ -87,9 +87,6 @@
                         </a>
                         <a href="sistema/listarSucursales.jsp">
                             Listar sucursales
-                        </a>
-                        <a href="sistema/desactivarSucursales.jsp">
-                            Activar o desactivar sucursales
                         </a>
                     </div>
                 </div>
@@ -146,13 +143,13 @@
                 </div>
             </div>
 
-        <%
-            }
-        %>
-                <!-- ADMINISTRADORES DE SUCURSAL -->
-        <%
-            if (usuario.getRol().equals("ADMIN_SUCURSAL")) {
-        %>
+            <%
+                }
+            %>
+            <!-- ADMINISTRADORES DE SUCURSAL -->
+            <%
+                if (usuario.getRol().equals("ADMIN_SUCURSAL")) {
+            %>
             <h2>Administración de sucursal</h2>
             <div class="cards-menu">
                 <!-- BUSES -->
@@ -219,43 +216,79 @@
                         </a>
                     </div>
                 </div>
+                
+           <div class="card-menu">
+    <div class="card-icon">
+    </div>
+
+    <h3>Alquileres privados</h3>
+
+    <p>
+        Gestiona las solicitudes y rutas privadas.
+    </p>
+
+    <div class="card-acciones">
+
+        <a href="sucursal/alquileres.jsp">
+            Gestionar alquileres
+        </a>
+
+        <a href="sucursal/registrarRutaPrivada.jsp">
+            Registrar ruta privada
+        </a>
+
+    </div>
+</div>
+
+              
 
 
-                <!-- SALIDAS -->
-                <div class="card-menu">
-                    <div class="card-icon">
-                    </div>
-                    <h3>Salidas y llegadas</h3>
-                    <p>
-                        Registra la salida y llegada
-                        de los viajes.
-                    </p>
-                    <div class="card-acciones">
-                        <a href="sucursal/salidas.jsp">
-                            Gestionar salidas
-                        </a>
+              <!-- MANTENIMIENTOS -->
 
-                    </div>
+            <div class="card-menu">
+            <div class="card-icon">
+            </div>
 
-                </div>
+            <h3>Mantenimientos</h3>
 
+            <p>
+                Registra los gastos de taller
+                y los mantenimientos realizados
+                a los buses.
+            </p>
 
-                <!-- MANTENIMIENTOS -->
-                <div class="card-menu">
+            <div class="card-acciones">
 
-                    <div class="card-icon">
-                    </div>
-                    <h3>Mantenimientos</h3>
-                    <p>
-                        Registra los gastos de taller
-                        y repuestos.
-                    </p>
-                    <div class="card-acciones">
-                        <a href="sucursal/mantenimientos.jsp">
-                            Gestionar mantenimientos
-                        </a>
-                    </div>
-                </div>
+                <a href="sucursal/mantenimientos.jsp">
+                    Gestionar mantenimientos
+                </a>
+
+            </div>
+
+            </div>
+
+            <!-- REPUESTOS -->
+
+            <div class="card-menu">
+            <div class="card-icon">
+            </div>
+
+            <h3>Repuestos</h3>
+
+            <p>
+                Administra los repuestos disponibles
+                para los mantenimientos de los buses.
+            </p>
+
+            <div class="card-acciones">
+
+                <a href="sucursal/repuestos.jsp">
+                    Gestionar repuestos
+                </a>
+
+            </div>
+            </div>
+
 
 
                 <!-- REPORTES -->
@@ -279,13 +312,13 @@
 
             </div>
 
-        <%
-            }
-        %>
-        <!-- cliente -->
-        <%
-            if (usuario.getRol().equals("CLIENTE")) {
-        %>
+            <%
+                }
+            %>
+            <!-- cliente -->
+            <%
+                if (usuario.getRol().equals("CLIENTE")) {
+            %>
 
             <h2>Área del cliente</h2>
 
@@ -317,23 +350,23 @@
                 </div>
 
 
-                <!-- BOLETOS -->
-
+                <!-- MIS BOLETOS -->
                 <div class="card-menu">
 
                     <div class="card-icon">
                     </div>
 
-                    <h3>Boletos</h3>
+                    <h3>Mis boletos</h3>
 
                     <p>
-                        Compra boletos para viajes regulares.
+                        Consulta los boletos que
+                        has comprado.
                     </p>
 
                     <div class="card-acciones">
 
                         <a href="cliente/boletos.jsp">
-                            Comprar boletos
+                            Ver mis boletos
                         </a>
 
                     </div>
@@ -359,11 +392,36 @@
                         <a href="cliente/alquiler.jsp">
                             Solicitar alquiler
                         </a>
+                         <a href="cliente/misAlquileres.jsp">
+                            Respuesta de solicitud de alquiler
+                        </a>
 
                     </div>
 
                 </div>
+                
+                <!-- MI CARTERA -->
+                <div class="card-menu">
 
+                    <div class="card-icon">
+                        </div>
+
+                            <h3>Mi cartera</h3>
+
+                            <p>
+                                Consulta tu saldo y realiza
+                                recargas para tus compras.
+                            </p>
+
+                            <div class="card-acciones">
+
+                                <a href="cliente/cartera.jsp">
+                                    Ver mi cartera
+                                </a>
+
+                        </div>
+
+                </div>
 
                 <!-- MI CUENTA -->
 
@@ -390,24 +448,24 @@
 
             </div>
 
-        <%
-            }
-        %>
-        <div class="cerrar-sesion">
+            <%
+                }
+            %>
+            <div class="cerrar-sesion">
 
-            <form action="logout.jsp"
-                  method="post">
+                <form action="logout.jsp"
+                      method="post">
 
-                <button type="submit">
-                    Cerrar sesión
-                </button>
+                    <button type="submit">
+                        Cerrar sesión
+                    </button>
 
-            </form>
+                </form>
 
-        </div>
+            </div>
 
-    </main>
+        </main>
 
-</body>
+    </body>
 
 </html>

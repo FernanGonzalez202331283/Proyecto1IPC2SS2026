@@ -9,8 +9,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuarioSesion == null) {
 
@@ -23,27 +23,27 @@
 
     } else {
 
-        String codigoSucursal =
-                usuarioSesion.getCodigoSucursal();
+        String codigoSucursal
+                = usuarioSesion.getCodigoSucursal();
 
-        String placa =
-                request.getParameter("placa");
+        String placa
+                = request.getParameter("placa");
 
-        String accion =
-                request.getParameter("accion");
+        String accion
+                = request.getParameter("accion");
 
-        if (placa != null &&
-            !placa.trim().isEmpty() &&
-            accion != null &&
-            !accion.trim().isEmpty()) {
+        if (placa != null
+                && !placa.trim().isEmpty()
+                && accion != null
+                && !accion.trim().isEmpty()) {
 
             placa = placa.trim();
             accion = accion.trim();
 
             BusDAO busDAO = new BusDAO();
 
-            Bus bus =
-                    busDAO.obtenerPorSucursal(
+            Bus bus
+                    = busDAO.obtenerPorSucursal(
                             placa,
                             codigoSucursal
                     );
@@ -52,74 +52,74 @@
 
                 if ("desactivar".equals(accion)) {
 
-    boolean resultado =
-            busDAO.desactivarPorSucursal(
-                    placa,
-                    codigoSucursal
-            );
+                    boolean resultado
+                            = busDAO.desactivarPorSucursal(
+                                    placa,
+                                    codigoSucursal
+                            );
 
-    if (resultado) {
+                    if (resultado) {
 
-        session.setAttribute(
-                "mensajeBus",
-                "El bus fue desactivado correctamente."
-        );
+                        session.setAttribute(
+                                "mensajeBus",
+                                "El bus fue desactivado correctamente."
+                        );
 
-        session.setAttribute(
-                "tipoMensajeBus",
-                "exito"
-        );
+                        session.setAttribute(
+                                "tipoMensajeBus",
+                                "exito"
+                        );
 
-    } else {
+                    } else {
 
-        session.setAttribute(
-                "mensajeBus",
-                "No se puede desactivar el bus porque tiene un viaje programado o en curso."
-        );
+                        session.setAttribute(
+                                "mensajeBus",
+                                "No se puede desactivar el bus porque tiene un viaje programado o en curso."
+                        );
 
-        session.setAttribute(
-                "tipoMensajeBus",
-                "error"
-        );
-    }
+                        session.setAttribute(
+                                "tipoMensajeBus",
+                                "error"
+                        );
+                    }
 
-} else if ("activar".equals(accion)) {
+                } else if ("activar".equals(accion)) {
 
-    if ("INACTIVO".equals(
-            bus.getEstadoOperativo())) {
+                    if ("INACTIVO".equals(
+                            bus.getEstadoOperativo())) {
 
-        boolean resultado =
-                busDAO.activarPorSucursal(
-                        placa,
-                        codigoSucursal
-                );
+                        boolean resultado
+                                = busDAO.activarPorSucursal(
+                                        placa,
+                                        codigoSucursal
+                                );
 
-        if (resultado) {
+                        if (resultado) {
 
-            session.setAttribute(
-                    "mensajeBus",
-                    "El bus fue activado correctamente."
-            );
+                            session.setAttribute(
+                                    "mensajeBus",
+                                    "El bus fue activado correctamente."
+                            );
 
-            session.setAttribute(
-                    "tipoMensajeBus",
-                    "exito"
-            );
+                            session.setAttribute(
+                                    "tipoMensajeBus",
+                                    "exito"
+                            );
 
-        } else {
+                        } else {
 
-            session.setAttribute(
-                    "mensajeBus",
-                    "No se pudo activar el bus."
-            );
+                            session.setAttribute(
+                                    "mensajeBus",
+                                    "No se pudo activar el bus."
+                            );
 
-            session.setAttribute(
-                    "tipoMensajeBus",
-                    "error"
-            );
-        }
-    }
-}
+                            session.setAttribute(
+                                    "tipoMensajeBus",
+                                    "error"
+                            );
+                        }
+                    }
+                }
             }
         }
 

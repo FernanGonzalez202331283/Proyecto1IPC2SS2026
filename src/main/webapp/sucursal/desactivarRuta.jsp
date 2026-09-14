@@ -6,11 +6,11 @@
 <%@page import="transporte.dao.RutaDAO"%>
 <%@page import="transporte.modelo.Usuario"%>
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
-    String rolSesion =
-            (String) session.getAttribute("rol");
+    String rolSesion
+            = (String) session.getAttribute("rol");
 
     if (usuarioSesion == null
             || rolSesion == null
@@ -20,8 +20,8 @@
         return;
     }
 
-    String codigoRuta =
-            request.getParameter("codigoRuta");
+    String codigoRuta
+            = request.getParameter("codigoRuta");
 
     if (codigoRuta == null
             || codigoRuta.trim().isEmpty()) {

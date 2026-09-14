@@ -5,10 +5,10 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     const formulario =
-        document.getElementById("formDepreciacion");
+            document.getElementById("formDepreciacion");
 
     const campo =
-        document.getElementById("depreciacionPorKm");
+            document.getElementById("depreciacionPorKm");
 
 
     if (!formulario || !campo) {
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formulario.addEventListener("submit", function (evento) {
 
         const valor =
-            parseFloat(campo.value);
+                parseFloat(campo.value);
 
 
         if (isNaN(valor)) {
@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
             evento.preventDefault();
 
             alert(
-                "Ingrese una depreciación válida."
-            );
+                    "Ingrese una depreciación válida."
+                    );
 
             campo.focus();
 
@@ -41,8 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
             evento.preventDefault();
 
             alert(
-                "La depreciación no puede ser negativa."
-            );
+                    "La depreciación no puede ser negativa."
+                    );
 
             campo.focus();
 
@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         const confirmar =
-            confirm(
-                "¿Está seguro de guardar esta configuración de depreciación?"
-            );
+                confirm(
+                        "¿Está seguro de guardar esta configuración de depreciación?"
+                        );
 
 
         if (!confirmar) {

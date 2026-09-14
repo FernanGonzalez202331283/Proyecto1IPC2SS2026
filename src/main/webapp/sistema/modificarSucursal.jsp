@@ -3,6 +3,7 @@
     Created on : 5 sept 2026, 17:56:06
     Author     : fernan
 --%>
+<%@page import="java.util.List"%>
 <%@page import="transporte.dao.SucursalDAO"%>
 <%@page import="transporte.modelo.Sucursal"%>
 <%@page import="transporte.modelo.Usuario"%>
@@ -79,225 +80,225 @@
             }
         }
     }
-    Sucursal[] sucursales =sucursalDAO.listar();
+    List<Sucursal> sucursales = sucursalDAO.listar();
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Modificar sucursal</title>
+        <title>Modificar sucursal</title>
 
-    <link rel="stylesheet" href="../resources/css/styles.css">
+        <link rel="stylesheet" href="../resources/css/styles.css">
 
-    <script src="../resources/js/sucursales.js"></script>
+        <script src="../resources/js/sucursales.js"></script>
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
+        <main class="pagina">
 
-        <h1>Modificar sucursal</h1>
+            <h1>Modificar sucursal</h1>
 
-        <p>
-            Seleccione una sucursal para modificar su información.
-        </p>
+            <p>
+                Seleccione una sucursal para modificar su información.
+            </p>
 
 
-        <% if (!mensaje.isEmpty()) { %>
+            <% if (!mensaje.isEmpty()) {%>
 
-            <div class="mensaje <%= tipoMensaje %>">
-                <%= mensaje %>
+            <div class="mensaje <%= tipoMensaje%>">
+                <%= mensaje%>
             </div>
-        <% } %>
+            <% } %>
 
-        <!-- SELECCIONAR SUCURSAL -->
+            <!-- SELECCIONAR SUCURSAL -->
 
-        <section class="formulario">
+            <section class="formulario">
 
-            <h2>Seleccionar sucursal</h2>
+                <h2>Seleccionar sucursal</h2>
 
-            <label for="seleccionarSucursal">
-                Sucursal:
-            </label>
+                <label for="seleccionarSucursal">
+                    Sucursal:
+                </label>
 
-            <select
-                id="seleccionarSucursal"
-                onchange="mostrarSucursal()"
-            >
-
-                <option value="">
-                    -- Seleccione una sucursal --
-                </option>
-
-                <%
-                    for (Sucursal sucursal : sucursales) {
-
-                        if (sucursal != null) {
-                %>
-
-                    <option
-                        value="<%= sucursal.getCodigoSucursal() %>"
-                        data-nombre="<%= sucursal.getNombre() %>"
-                        data-direccion="<%= sucursal.getDireccion() %>"
-                        data-telefono="<%= sucursal.getTelefono() %>"
-                        data-municipio="<%= sucursal.getMunicipio() %>"
-                        data-departamento="<%= sucursal.getDepartamento() %>"
-                        data-latitud="<%= sucursal.getLatitud() %>"
-                        data-longitud="<%= sucursal.getLongitud() %>"
+                <select
+                    id="seleccionarSucursal"
+                    onchange="mostrarSucursal()"
                     >
 
-                        <%= sucursal.getCodigoSucursal() %>
+                    <option value="">
+                        -- Seleccione una sucursal --
+                    </option>
+
+                    <%
+                        for (Sucursal sucursal : sucursales) {
+
+                            if (sucursal != null) {
+                    %>
+
+                    <option
+                        value="<%= sucursal.getCodigoSucursal()%>"
+                        data-nombre="<%= sucursal.getNombre()%>"
+                        data-direccion="<%= sucursal.getDireccion()%>"
+                        data-telefono="<%= sucursal.getTelefono()%>"
+                        data-municipio="<%= sucursal.getMunicipio()%>"
+                        data-departamento="<%= sucursal.getDepartamento()%>"
+                        data-latitud="<%= sucursal.getLatitud()%>"
+                        data-longitud="<%= sucursal.getLongitud()%>"
+                        >
+
+                        <%= sucursal.getCodigoSucursal()%>
                         - 
-                        <%= sucursal.getNombre() %>
+                        <%= sucursal.getNombre()%>
 
                     </option>
 
-                <%
+                    <%
+                            }
                         }
-                    }
-                %>
+                    %>
 
-            </select>
+                </select>
 
-        </section>
+            </section>
 
 
-        <!-- FORMULARIO DE MODIFICACIÓN -->
+            <!-- FORMULARIO DE MODIFICACIÓN -->
 
-        <section
-            class="formulario"
-            id="formularioModificar"
-            style="display: none;"
-        >
-
-            <h2>Información de la sucursal</h2>
-
-            <form
-                method="post"
-                onsubmit="return validarSucursal();"
-            >
-
-                <input
-                    type="hidden"
-                    name="accion"
-                    value="modificar"
+            <section
+                class="formulario"
+                id="formularioModificar"
+                style="display: none;"
                 >
 
+                <h2>Información de la sucursal</h2>
 
-                <label for="codigo">
-                    Código:
-                </label>
+                <form
+                    method="post"
+                    onsubmit="return validarSucursal();"
+                    >
 
-                <input
-                    type="text"
-                    id="codigo"
-                    name="codigo"
-                    readonly
-                >
-
-
-                <label for="nombre">
-                    Nombre:
-                </label>
-
-                <input
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                >
+                    <input
+                        type="hidden"
+                        name="accion"
+                        value="modificar"
+                        >
 
 
-                <label for="direccion">
-                    Dirección:
-                </label>
+                    <label for="codigo">
+                        Código:
+                    </label>
 
-                <input
-                    type="text"
-                    id="direccion"
-                    name="direccion"
-                >
-
-
-                <label for="telefono">
-                    Teléfono:
-                </label>
-
-                <input
-                    type="text"
-                    id="telefono"
-                    name="telefono"
-                >
+                    <input
+                        type="text"
+                        id="codigo"
+                        name="codigo"
+                        readonly
+                        >
 
 
-                <label for="municipio">
-                    Municipio:
-                </label>
+                    <label for="nombre">
+                        Nombre:
+                    </label>
 
-                <input
-                    type="text"
-                    id="municipio"
-                    name="municipio"
-                >
-
-
-                <label for="departamento">
-                    Departamento:
-                </label>
-
-                <input
-                    type="text"
-                    id="departamento"
-                    name="departamento"
-                >
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        >
 
 
-                <label for="latitud">
-                    Latitud:
-                </label>
+                    <label for="direccion">
+                        Dirección:
+                    </label>
 
-                <input
-                    type="number"
-                    step="any"
-                    id="latitud"
-                    name="latitud"
-                >
-
-
-                <label for="longitud">
-                    Longitud:
-                </label>
-
-                <input
-                    type="number"
-                    step="any"
-                    id="longitud"
-                    name="longitud"
-                >
+                    <input
+                        type="text"
+                        id="direccion"
+                        name="direccion"
+                        >
 
 
-                <button type="submit">
-                    Guardar cambios
-                </button>
+                    <label for="telefono">
+                        Teléfono:
+                    </label>
 
-            </form>
+                    <input
+                        type="text"
+                        id="telefono"
+                        name="telefono"
+                        >
 
-        </section>
+
+                    <label for="municipio">
+                        Municipio:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="municipio"
+                        name="municipio"
+                        >
 
 
-        <br>
+                    <label for="departamento">
+                        Departamento:
+                    </label>
 
-        <a href="../inicio.jsp">
-            Volver al menú principal
-        </a>
+                    <input
+                        type="text"
+                        id="departamento"
+                        name="departamento"
+                        >
 
-    </main>
 
-</body>
+                    <label for="latitud">
+                        Latitud:
+                    </label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        id="latitud"
+                        name="latitud"
+                        >
+
+
+                    <label for="longitud">
+                        Longitud:
+                    </label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        id="longitud"
+                        name="longitud"
+                        >
+
+
+                    <button type="submit">
+                        Guardar cambios
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <br>
+
+            <a href="../inicio.jsp">
+                Volver al menú principal
+            </a>
+
+        </main>
+
+    </body>
 
 </html>

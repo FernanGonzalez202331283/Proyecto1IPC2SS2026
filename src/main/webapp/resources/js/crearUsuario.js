@@ -8,44 +8,44 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     const formulario =
-        document.getElementById("crearUsuarioForm");
+            document.getElementById("crearUsuarioForm");
 
     const usuario =
-        document.getElementById("usuario");
+            document.getElementById("usuario");
 
     const contrasena =
-        document.getElementById("contrasena");
+            document.getElementById("contrasena");
 
     const sucursal =
-        document.getElementById("codigoSucursal");
+            document.getElementById("codigoSucursal");
 
     const nombreCompleto =
-        document.getElementById("nombreCompleto");
+            document.getElementById("nombreCompleto");
 
     const nit =
-        document.getElementById("nit");
+            document.getElementById("nit");
 
     const dpi =
-        document.getElementById("dpi");
+            document.getElementById("dpi");
 
     const telefono =
-        document.getElementById("telefono");
+            document.getElementById("telefono");
 
     const direccion =
-        document.getElementById("direccion");
+            document.getElementById("direccion");
 
 
     const mensajeUsuario =
-        document.getElementById("mensajeUsuario");
+            document.getElementById("mensajeUsuario");
 
     const mensajeContrasena =
-        document.getElementById("mensajeContrasena");
+            document.getElementById("mensajeContrasena");
 
     const mensajeSucursal =
-        document.getElementById("mensajeSucursal");
+            document.getElementById("mensajeSucursal");
 
     const mensajeNombre =
-        document.getElementById("mensajeNombre");
+            document.getElementById("mensajeNombre");
 
 
     formulario.addEventListener("submit", function (event) {
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (usuario.value.trim() === "") {
 
             mensajeUsuario.textContent =
-                "Ingrese un usuario.";
+                    "Ingrese un usuario.";
 
             usuario.classList.add("campo-invalido");
 
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (usuario.value.trim().length < 4) {
 
             mensajeUsuario.textContent =
-                "El usuario debe tener al menos 4 caracteres.";
+                    "El usuario debe tener al menos 4 caracteres.";
 
             usuario.classList.add("campo-invalido");
 
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (contrasena.value.trim() === "") {
 
             mensajeContrasena.textContent =
-                "Ingrese una contraseña.";
+                    "Ingrese una contraseña.";
 
             contrasena.classList.add("campo-invalido");
 
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (contrasena.value.length < 4) {
 
             mensajeContrasena.textContent =
-                "La contraseña debe tener al menos 4 caracteres.";
+                    "La contraseña debe tener al menos 4 caracteres.";
 
             contrasena.classList.add("campo-invalido");
 
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (sucursal.value === "") {
 
             mensajeSucursal.textContent =
-                "Seleccione una sucursal.";
+                    "Seleccione una sucursal.";
 
             sucursal.classList.add("campo-invalido");
 
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (nombreCompleto.value.trim() === "") {
 
             mensajeNombre.textContent =
-                "Ingrese el nombre completo.";
+                    "Ingrese el nombre completo.";
 
             nombreCompleto.classList.add("campo-invalido");
 
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (nombreCompleto.value.trim().length < 5) {
 
             mensajeNombre.textContent =
-                "Ingrese el nombre completo.";
+                    "Ingrese el nombre completo.";
 
             nombreCompleto.classList.add("campo-invalido");
 

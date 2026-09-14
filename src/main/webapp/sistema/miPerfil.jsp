@@ -11,19 +11,19 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
         return;
     }
 
-    PerfilDAO perfilDAO =
-            new PerfilDAO();
+    PerfilDAO perfilDAO
+            = new PerfilDAO();
 
-    Perfil perfil =
-            perfilDAO.buscarPorUsuario(
+    Perfil perfil
+            = perfilDAO.buscarPorUsuario(
                     usuarioSesion.getUsuario()
             );
 
@@ -35,32 +35,32 @@
 
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Mi perfil</title>
+        <title>Mi perfil</title>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
+        <main class="pagina">
 
-        <h1>Mi perfil</h1>
+            <h1>Mi perfil</h1>
 
-        <p>
-            Información personal del usuario
-        </p>
+            <p>
+                Información personal del usuario
+            </p>
 
 
-        <% if (perfil == null) { %>
+            <% if (perfil == null) { %>
 
             <div class="mensaje error">
 
@@ -68,7 +68,7 @@
 
             </div>
 
-        <% } else { %>
+            <% } else {%>
 
 
             <div class="formulario">
@@ -83,7 +83,7 @@
 
                     <input
                         type="text"
-                        value="<%= usuarioSesion.getUsuario() %>"
+                        value="<%= usuarioSesion.getUsuario()%>"
                         readonly>
 
                 </div>
@@ -97,7 +97,7 @@
 
                     <input
                         type="text"
-                        value="<%= usuarioSesion.getRol() %>"
+                        value="<%= usuarioSesion.getRol()%>"
                         readonly>
 
                 </div>
@@ -125,7 +125,7 @@
                             name="nit"
                             value="<%= perfil.getNit() != null
                                     ? perfil.getNit()
-                                    : "" %>"
+                                    : ""%>"
                             required>
 
                     </div>
@@ -143,7 +143,7 @@
                             name="dpi"
                             value="<%= perfil.getDpi() != null
                                     ? perfil.getDpi()
-                                    : "" %>"
+                                    : ""%>"
                             required>
 
                     </div>
@@ -161,7 +161,7 @@
                             name="nombreCompleto"
                             value="<%= perfil.getNombreCompleto() != null
                                     ? perfil.getNombreCompleto()
-                                    : "" %>"
+                                    : ""%>"
                             required>
 
                     </div>
@@ -179,7 +179,7 @@
                             name="telefono"
                             value="<%= perfil.getTelefono() != null
                                     ? perfil.getTelefono()
-                                    : "" %>"
+                                    : ""%>"
                             required>
 
                     </div>
@@ -197,7 +197,7 @@
                             name="direccion"
                             value="<%= perfil.getDireccion() != null
                                     ? perfil.getDireccion()
-                                    : "" %>"
+                                    : ""%>"
                             required>
 
                     </div>
@@ -212,17 +212,17 @@
             </div>
 
 
-        <% } %>
+            <% }%>
 
 
-        <br>
+            <br>
 
-        <a href="../inicio.jsp">
-            Regresar al inicio
-        </a>
+            <a href="../inicio.jsp">
+                Regresar al inicio
+            </a>
 
-    </main>
+        </main>
 
-</body>
+    </body>
 
 </html>

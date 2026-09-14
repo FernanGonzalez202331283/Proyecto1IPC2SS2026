@@ -3,61 +3,61 @@
     Created on : 5 sept 2026, 18:39:05
     Author     : fernan
 --%>
+<%@page import="java.util.List"%>
 <%@page import="transporte.dao.SucursalDAO"%>
 <%@page import="transporte.modelo.Sucursal"%>
 <%@page import="transporte.modelo.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-Usuario usuario = (Usuario) session.getAttribute("usuario");
-if (usuario == null) {
-    response.sendRedirect("../login.jsp");
-    return;
-}
-
-if (!"ADMIN_SISTEMA".equals(usuario.getRol())) {
-    response.sendRedirect("../inicio.jsp");
-    return;
-}
-
-
-SucursalDAO sucursalDAO = new SucursalDAO();
-
-String mensaje = "";
-String tipoMensaje = "";
-
-String accion = request.getParameter("accion");
-String codigo = request.getParameter("codigo");
-
-if ("activar".equals(accion) && codigo != null) {
-
-    if (sucursalDAO.activar(codigo)) {
-
-        mensaje = "Sucursal activada correctamente.";
-        tipoMensaje = "exito";
-
-    } else {
-
-        mensaje = "No se pudo activar la sucursal.";
-        tipoMensaje = "error";
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) {
+        response.sendRedirect("../login.jsp");
+        return;
     }
-}
 
-if ("desactivar".equals(accion) && codigo != null) {
-
-    if (sucursalDAO.desactivar(codigo)) {
-
-        mensaje = "Sucursal desactivada correctamente.";
-        tipoMensaje = "exito";
-
-    } else {
-
-        mensaje = "No se pudo desactivar la sucursal.";
-        tipoMensaje = "error";
+    if (!"ADMIN_SISTEMA".equals(usuario.getRol())) {
+        response.sendRedirect("../inicio.jsp");
+        return;
     }
-}
 
-Sucursal[] sucursales = sucursalDAO.listar();
+    SucursalDAO sucursalDAO = new SucursalDAO();
+
+    String mensaje = "";
+    String tipoMensaje = "";
+
+    String accion = request.getParameter("accion");
+    String codigo = request.getParameter("codigo");
+
+    if ("activar".equals(accion) && codigo != null) {
+
+        if (sucursalDAO.activar(codigo)) {
+
+            mensaje = "Sucursal activada correctamente.";
+            tipoMensaje = "exito";
+
+        } else {
+
+            mensaje = "No se pudo activar la sucursal.";
+            tipoMensaje = "error";
+        }
+    }
+
+    if ("desactivar".equals(accion) && codigo != null) {
+
+        if (sucursalDAO.desactivar(codigo)) {
+
+            mensaje = "Sucursal desactivada correctamente.";
+            tipoMensaje = "exito";
+
+        } else {
+
+            mensaje = "No se pudo desactivar la sucursal.";
+            tipoMensaje = "error";
+        }
+    }
+
+    List<Sucursal> sucursales = sucursalDAO.listar();
 
 %>
 
@@ -65,290 +65,282 @@ Sucursal[] sucursales = sucursalDAO.listar();
 
 <html lang="es">
 
-<head>
-<meta charset="UTF-8">
+    <head>
+        <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Listado de sucursales</title>
+        <title>Listado de sucursales</title>
 
-<link rel="stylesheet" href="../resources/css/styles.css">
+        <link rel="stylesheet" href="../resources/css/styles.css">
 
-<script src="../resources/js/sucursales.js"></script>
+        <script src="../resources/js/sucursales.js"></script>
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-<main class="pagina">
+        <main class="pagina">
+            <h1>Listado de sucursales</h1>
 
-```
-<h1>Listado de sucursales</h1>
-
-<p>
-    Consulte la información de las sucursales registradas en el sistema.
-</p>
+            <p>
+                Consulte la información de las sucursales registradas en el sistema.
+            </p>
 
 
-<!-- MENSAJE -->
+            <!-- MENSAJE -->
 
-<% if (!mensaje.isEmpty()) { %>
+            <% if (!mensaje.isEmpty()) {%>
 
-    <div class="mensaje <%= tipoMensaje %>">
+            <div class="mensaje <%= tipoMensaje%>">
 
-        <%= mensaje %>
+                <%= mensaje%>
 
-    </div>
+            </div>
 
-<% } %>
-
-
-<!-- BUSCADOR -->
-
-<section class="formulario">
-
-    <label for="buscarSucursal">
-
-        Buscar sucursal:
-
-    </label>
+            <% } %>
 
 
-    <input
-        type="text"
-        id="buscarSucursal"
-        placeholder="Código, nombre, municipio..."
-        onkeyup="filtrarSucursales()"
-    >
+            <!-- BUSCADOR -->
 
-</section>
+            <section class="formulario">
 
+                <label for="buscarSucursal">
 
-<!-- TABLA DE SUCURSALES -->
+                    Buscar sucursal:
 
-<section class="tabla-contenedor">
-
-    <table id="tablaSucursales">
+                </label>
 
 
-        <thead>
+                <input
+                    type="text"
+                    id="buscarSucursal"
+                    placeholder="Código, nombre, municipio..."
+                    onkeyup="filtrarSucursales()"
+                    >
 
-            <tr>
-
-                <th>Código</th>
-
-                <th>Nombre</th>
-
-                <th>Dirección</th>
-
-                <th>Teléfono</th>
-
-                <th>Municipio</th>
-
-                <th>Departamento</th>
-
-                <th>Latitud</th>
-
-                <th>Longitud</th>
-
-                <th>Estado</th>
-
-                <th>Acción</th>
-
-            </tr>
-
-        </thead>
+            </section>
 
 
-        <tbody>
+            <!-- TABLA DE SUCURSALES -->
 
-            <%
+            <section class="tabla-contenedor">
 
-                if (sucursales != null && sucursales.length > 0) {
+                <table id="tablaSucursales">
 
-                    for (Sucursal sucursal : sucursales) {
 
-                        if (sucursal != null) {
+                    <thead>
 
-            %>
-            <tr>
-                <!-- CÓDIGO -->
-                <td>
-                    <%= sucursal.getCodigoSucursal() %>
-                </td>
-                <!-- NOMBRE -->
-                <td>
-                    <%= sucursal.getNombre() %>
-                </td>
-                <!-- DIRECCIÓN -->
-                <td>
-                    <%= sucursal.getDireccion() %>
-                </td>
-                <!-- TELÉFONO -->
-                <td>
-                    <%= sucursal.getTelefono() %>
-                </td>
-                <!-- MUNICIPIO -->
-                <td>
-                    <%= sucursal.getMunicipio() %>
-                </td>
-                <!-- DEPARTAMENTO -->
-                <td>
-                    <%= sucursal.getDepartamento() %>
-                </td>
-                <!-- LATITUD -->
-                <td>
-                    <%= sucursal.getLatitud() %>
-                </td>
-                <!-- LONGITUD -->
-                <td>
-                    <%= sucursal.getLongitud() %>
-                </td>
-                <!-- ESTADO -->
-                <td>
-                    <%
-                        if (sucursal.isEstado()) {
-                    %>
-                        <span class="estado activo">
-                            Activa
-                        </span>
-                    <%
+                        <tr>
+
+                            <th>Código</th>
+
+                            <th>Nombre</th>
+
+                            <th>Dirección</th>
+
+                            <th>Teléfono</th>
+
+                            <th>Municipio</th>
+
+                            <th>Departamento</th>
+
+                            <th>Latitud</th>
+
+                            <th>Longitud</th>
+
+                            <th>Estado</th>
+
+                            <th>Acción</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <%
+
+                            if (sucursales != null && !sucursales.isEmpty()) {
+                                for (Sucursal sucursal : sucursales) {
+
+                                    if (sucursal != null) {
+
+                        %>
+                        <tr>
+                            <!-- CÓDIGO -->
+                            <td>
+                                <%= sucursal.getCodigoSucursal()%>
+                            </td>
+                            <!-- NOMBRE -->
+                            <td>
+                                <%= sucursal.getNombre()%>
+                            </td>
+                            <!-- DIRECCIÓN -->
+                            <td>
+                                <%= sucursal.getDireccion()%>
+                            </td>
+                            <!-- TELÉFONO -->
+                            <td>
+                                <%= sucursal.getTelefono()%>
+                            </td>
+                            <!-- MUNICIPIO -->
+                            <td>
+                                <%= sucursal.getMunicipio()%>
+                            </td>
+                            <!-- DEPARTAMENTO -->
+                            <td>
+                                <%= sucursal.getDepartamento()%>
+                            </td>
+                            <!-- LATITUD -->
+                            <td>
+                                <%= sucursal.getLatitud()%>
+                            </td>
+                            <!-- LONGITUD -->
+                            <td>
+                                <%= sucursal.getLongitud()%>
+                            </td>
+                            <!-- ESTADO -->
+                            <td>
+                                <%
+                                    if (sucursal.isEstado()) {
+                                %>
+                                <span class="estado activo">
+                                    Activa
+                                </span>
+                                <%
+                                } else {
+                                %>
+                                <span class="estado inactivo">
+                                    Inactiva
+                                </span>
+                                <%
+                                    }
+                                %>
+                            </td>
+
+                            <!-- ACCIÓN -->
+                            <td>
+                                <%
+                                    if (sucursal.isEstado()) {
+
+                                %>
+
+                                <!-- DESACTIVAR -->
+
+                                <form method="post">
+
+                                    <input
+                                        type="hidden"
+                                        name="accion"
+                                        value="desactivar"
+                                        >
+
+                                    <input
+                                        type="hidden"
+                                        name="codigo"
+                                        value="<%= sucursal.getCodigoSucursal()%>"
+                                        >
+
+                                    <button
+                                        type="submit"
+                                        onclick="return confirmarDesactivacion();"
+                                        >
+
+                                        Desactivar
+
+                                    </button>
+
+                                </form>
+                                <%
+
+                                } else {
+
+                                %>
+
+
+                                <!-- ACTIVAR -->
+
+                                <form method="post">
+
+                                    <input
+                                        type="hidden"
+                                        name="accion"
+                                        value="activar"
+                                        >
+
+                                    <input
+                                        type="hidden"
+                                        name="codigo"
+                                        value="<%= sucursal.getCodigoSucursal()%>"
+                                        >
+
+                                    <button type="submit">
+
+                                        Activar
+
+                                    </button>
+
+                                </form>
+
+
+                                <%
+
+                                    }
+
+                                %>
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                        <%                    }
+
+                            }
+
                         } else {
-                    %>
-                        <span class="estado inactivo">
-                            Inactiva
-                        </span>
-                    <%
-                        }
-                    %>
-                </td>
 
-                <!-- ACCIÓN -->
-                <td>
-                    <%
-
-                        if (sucursal.isEstado()) {
-
-                    %>
-
-                        <!-- DESACTIVAR -->
-
-                        <form method="post">
-
-                            <input
-                                type="hidden"
-                                name="accion"
-                                value="desactivar"
-                            >
-
-                            <input
-                                type="hidden"
-                                name="codigo"
-                                value="<%= sucursal.getCodigoSucursal() %>"
-                            >
-
-                            <button
-                                type="submit"
-                                onclick="return confirmarDesactivacion();"
-                            >
-
-                                Desactivar
-
-                            </button>
-
-                        </form>
-                    <%
-
-                        } else {
-
-                    %>
+                        %>
 
 
-                        <!-- ACTIVAR -->
+                        <tr>
 
-                        <form method="post">
+                            <td colspan="10">
 
-                            <input
-                                type="hidden"
-                                name="accion"
-                                value="activar"
-                            >
+                                No hay sucursales registradas.
 
-                            <input
-                                type="hidden"
-                                name="codigo"
-                                value="<%= sucursal.getCodigoSucursal() %>"
-                            >
+                            </td>
 
-                            <button type="submit">
-
-                                Activar
-
-                            </button>
-
-                        </form>
+                        </tr>
 
 
-                    <%
+                        <%                }
 
-                        }
-
-                    %>
+                        %>
 
 
-                </td>
+                    </tbody>
+
+                </table>
+
+            </section>
 
 
-            </tr>
+            <br>
 
 
-            <%
+            <a href="../inicio.jsp">
 
-                        }
+                Volver al menú principal
 
-                    }
+            </a>
+        </main>
 
-                } else {
-
-            %>
-
-
-            <tr>
-
-                <td colspan="10">
-
-                    No hay sucursales registradas.
-
-                </td>
-
-            </tr>
-
-
-            <%
-
-                }
-
-            %>
-
-
-        </tbody>
-
-    </table>
-
-</section>
-
-
-<br>
-
-
-<a href="../inicio.jsp">
-
-    Volver al menú principal
-
-</a>
-</main>
-
-</body>
+    </body>
 
 </html>
 

@@ -11,15 +11,12 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    // ==========================================
-    // VERIFICAR SESIÓN
-    // ==========================================
+   
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
-
-    String rolSesion =
-            (String) session.getAttribute("rol");
+    String rolSesion
+            = (String) session.getAttribute("rol");
 
     if (usuarioSesion == null
             || rolSesion == null
@@ -29,301 +26,294 @@
         return;
     }
 
-    // ==========================================
-    // OBTENER SUCURSAL DEL ADMINISTRADOR
-    // ==========================================
-
-    String codigoSucursal =
-            usuarioSesion.getCodigoSucursal();
-
-    // ==========================================
-    // LISTAR CHOFERES DE LA SUCURSAL
-    // ==========================================
+   
+    String codigoSucursal
+            = usuarioSesion.getCodigoSucursal();
 
     ChoferDAO choferDAO = new ChoferDAO();
 
-    List<Chofer> choferes =
-            choferDAO.listarPorSucursal(codigoSucursal);
+    List<Chofer> choferes
+            = choferDAO.listarPorSucursal(codigoSucursal);
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Gestionar Choferes</title>
-
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
-
-    <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 30px;
-        }
-
-        .contenedor {
-            max-width: 1200px;
-            margin: auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-        }
-
-        .encabezado {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        h1 {
-            margin: 0;
-        }
-
-        .subtitulo {
-            color: #666;
-            margin-top: 8px;
-        }
-
-        .boton {
-            display: inline-block;
-            padding: 10px 16px;
-            border-radius: 5px;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-        }
-
-        .boton:hover {
-            background-color: #0056b3;
-        }
-
-        .boton-volver {
-            background-color: #6c757d;
-        }
-
-        .boton-volver:hover {
-            background-color: #545b62;
-        }
-
-        .tabla-contenedor {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Gestionar Choferes</title>
+
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
+
+        <style>
+
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f6f8;
+                margin: 0;
+                padding: 30px;
+            }
+
+            .contenedor {
+                max-width: 1200px;
+                margin: auto;
+                background-color: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            }
+
+            .encabezado {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+            h1 {
+                margin: 0;
+            }
+
+            .subtitulo {
+                color: #666;
+                margin-top: 8px;
+            }
+
+            .boton {
+                display: inline-block;
+                padding: 10px 16px;
+                border-radius: 5px;
+                text-decoration: none;
+                color: white;
+                background-color: #007bff;
+            }
+
+            .boton:hover {
+                background-color: #0056b3;
+            }
+
+            .boton-volver {
+                background-color: #6c757d;
+            }
+
+            .boton-volver:hover {
+                background-color: #545b62;
+            }
+
+            .tabla-contenedor {
+                overflow-x: auto;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
 
-        th,
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-            white-space: nowrap;
-        }
+            th,
+            td {
+                padding: 12px;
+                border-bottom: 1px solid #ddd;
+                text-align: left;
+                white-space: nowrap;
+            }
 
-        th {
-            background-color: #f1f3f5;
-        }
+            th {
+                background-color: #f1f3f5;
+            }
 
-        tr:hover {
-            background-color: #f8f9fa;
-        }
+            tr:hover {
+                background-color: #f8f9fa;
+            }
 
-        .estado-activo {
-            color: green;
-            font-weight: bold;
-        }
+            .estado-activo {
+                color: green;
+                font-weight: bold;
+            }
 
-        .estado-inactivo {
-            color: red;
-            font-weight: bold;
-        }
+            .estado-inactivo {
+                color: red;
+                font-weight: bold;
+            }
 
-        .acciones {
-            display: flex;
-            gap: 8px;
-        }
+            .acciones {
+                display: flex;
+                gap: 8px;
+            }
 
-        .boton-modificar {
-            background-color: #ffc107;
-            color: #212529;
-        }
+            .boton-modificar {
+                background-color: #ffc107;
+                color: #212529;
+            }
 
-        .boton-modificar:hover {
-            background-color: #e0a800;
-        }
+            .boton-modificar:hover {
+                background-color: #e0a800;
+            }
 
-        .boton-desactivar {
-            background-color: #dc3545;
-        }
+            .boton-desactivar {
+                background-color: #dc3545;
+            }
 
-        .boton-desactivar:hover {
-            background-color: #c82333;
-        }
+            .boton-desactivar:hover {
+                background-color: #c82333;
+            }
 
-        .boton-activar {
-            background-color: #28a745;
-        }
+            .boton-activar {
+                background-color: #28a745;
+            }
 
-        .boton-activar:hover {
-            background-color: #218838;
-        }
+            .boton-activar:hover {
+                background-color: #218838;
+            }
 
-        .mensaje-vacio {
-            text-align: center;
-            padding: 30px;
-            color: #666;
-            font-size: 16px;
-        }
+            .mensaje-vacio {
+                text-align: center;
+                padding: 30px;
+                color: #666;
+                font-size: 16px;
+            }
 
-        .botones-inferiores {
-            margin-top: 25px;
-        }
+            .botones-inferiores {
+                margin-top: 25px;
+            }
 
-    </style>
+        </style>
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-<div class="contenedor">
+        <div class="contenedor">
 
-    <div class="encabezado">
+            <div class="encabezado">
 
-        <div>
+                <div>
 
-            <h1>Gestionar Choferes</h1>
+                    <h1>Gestionar Choferes</h1>
 
-            <p class="subtitulo">
-                Choferes registrados en la sucursal
-                <strong><%= codigoSucursal %></strong>
-            </p>
+                    <p class="subtitulo">
+                        Choferes registrados en la sucursal
+                        <strong><%= codigoSucursal%></strong>
+                    </p>
 
-        </div>
+                </div>
 
-        <div>
+                <div>
 
-            <a href="registrarChofer.jsp"
-               class="boton">
+                    <a href="registrarChofer.jsp"
+                       class="boton">
 
-                Registrar nuevo chofer
+                        Registrar nuevo chofer
 
-            </a>
+                    </a>
 
-        </div>
+                </div>
 
-    </div>
+            </div>
 
 
-    <% if (choferes.isEmpty()) { %>
+            <% if (choferes.isEmpty()) { %>
 
-        <div class="mensaje-vacio">
+            <div class="mensaje-vacio">
 
-            No hay choferes registrados para esta sucursal.
+                No hay choferes registrados para esta sucursal.
 
-        </div>
+            </div>
 
-    <% } else { %>
+            <% } else { %>
 
 
-        <div class="tabla-contenedor">
+            <div class="tabla-contenedor">
 
-            <table>
+                <table>
 
-                <thead>
+                    <thead>
 
-                    <tr>
+                        <tr>
 
-                        <th>Licencia</th>
-                        <th>Nombre</th>
-                        <th>Tipo de licencia</th>
-                        <th>Vencimiento</th>
-                        <th>Teléfono</th>
-                        <th>Salario por viaje</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                            <th>Licencia</th>
+                            <th>Nombre</th>
+                            <th>Tipo de licencia</th>
+                            <th>Vencimiento</th>
+                            <th>Teléfono</th>
+                            <th>Salario por viaje</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
 
-                    </tr>
+                        </tr>
 
-                </thead>
+                    </thead>
 
-                <tbody>
+                    <tbody>
 
-                <% for (Chofer chofer : choferes) { %>
+                        <% for (Chofer chofer : choferes) {%>
 
-                    <tr>
+                        <tr>
 
-                        <td>
-                            <%= chofer.getNumeroLicencia() %>
-                        </td>
+                            <td>
+                                <%= chofer.getNumeroLicencia()%>
+                            </td>
 
-                        <td>
-                            <%= chofer.getNombreCompleto() %>
-                        </td>
+                            <td>
+                                <%= chofer.getNombreCompleto()%>
+                            </td>
 
-                        <td>
-                            <%= chofer.getTipoLicencia() %>
-                        </td>
+                            <td>
+                                <%= chofer.getTipoLicencia()%>
+                            </td>
 
-                        <td>
-                            <%= chofer.getFechaVencimientoLicencia() %>
-                        </td>
+                            <td>
+                                <%= chofer.getFechaVencimientoLicencia()%>
+                            </td>
 
-                        <td>
-                            <%= chofer.getTelefono() %>
-                        </td>
+                            <td>
+                                <%= chofer.getTelefono()%>
+                            </td>
 
-                        <td>
-                            Q <%= String.format("%.2f",
-                                    chofer.getSalarioBaseViaje()) %>
-                        </td>
+                            <td>
+                                Q <%= String.format("%.2f",
+                                    chofer.getSalarioBaseViaje())%>
+                            </td>
 
-                        <td>
+                            <td>
 
-                            <% if (chofer.isEstado()) { %>
+                                <% if (chofer.isEstado()) { %>
 
                                 <span class="estado-activo">
                                     Activo
                                 </span>
 
-                            <% } else { %>
+                                <% } else { %>
 
                                 <span class="estado-inactivo">
                                     Inactivo
                                 </span>
 
-                            <% } %>
+                                <% }%>
 
-                        </td>
+                            </td>
 
-                        <td>
+                            <td>
 
-                            <div class="acciones">
+                                <div class="acciones">
 
-                                <a href="modificarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia() %>"
-                                   class="boton boton-modificar">
+                                    <a href="modificarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
+                                       class="boton boton-modificar">
 
-                                    Modificar
+                                        Modificar
 
-                                </a>
+                                    </a>
 
 
-                                <% if (chofer.isEstado()) { %>
+                                    <% if (chofer.isEstado()) {%>
 
-                                    <a href="desactivarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia() %>"
+                                    <a href="desactivarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
                                        class="boton boton-desactivar"
                                        onclick="return confirmarDesactivacion();">
 
@@ -331,61 +321,61 @@
 
                                     </a>
 
-                                <% } else { %>
+                                    <% } else {%>
 
-                                    <a href="activarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia() %>"
+                                    <a href="activarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
                                        class="boton boton-activar">
 
                                         Activar
 
                                     </a>
 
-                                <% } %>
+                                    <% } %>
 
-                            </div>
+                                </div>
 
-                        </td>
+                            </td>
 
-                    </tr>
+                        </tr>
 
-                <% } %>
+                        <% } %>
 
-                </tbody>
+                    </tbody>
 
-            </table>
+                </table>
+
+            </div>
+
+
+            <% }%>
+
+
+            <div class="botones-inferiores">
+
+                <a href="../inicio.jsp"
+                   class="boton boton-volver">
+
+                    Volver al inicio
+
+                </a>
+
+            </div>
 
         </div>
 
 
-    <% } %>
+        <script>
 
+            function confirmarDesactivacion() {
 
-    <div class="botones-inferiores">
+                return confirm(
+                        "¿Está seguro de que desea desactivar este chofer?"
+                        );
 
-        <a href="../inicio.jsp"
-           class="boton boton-volver">
+            }
 
-            Volver al inicio
+        </script>
 
-        </a>
-
-    </div>
-
-</div>
-
-
-<script>
-
-    function confirmarDesactivacion() {
-
-        return confirm(
-            "¿Está seguro de que desea desactivar este chofer?"
-        );
-
-    }
-
-</script>
-
-</body>
+    </body>
 
 </html>

@@ -84,185 +84,185 @@
 
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Registrar sucursal</title>
+        <title>Registrar sucursal</title>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-    <script src="../resources/js/sucursales.js"></script>
+        <script src="../resources/js/sucursales.js"></script>
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <div class="pagina">
+        <div class="pagina">
 
-        <h1>Registrar sucursal</h1>
+            <h1>Registrar sucursal</h1>
 
-        <p>
-            Registra una nueva sucursal de la empresa.
-        </p>
+            <p>
+                Registra una nueva sucursal de la empresa.
+            </p>
 
 
-        <% if (!mensaje.isEmpty()) { %>
+            <% if (!mensaje.isEmpty()) {%>
 
-            <div class="mensaje <%= tipoMensaje %>">
-                <%= mensaje %>
+            <div class="mensaje <%= tipoMensaje%>">
+                <%= mensaje%>
             </div>
 
-        <% } %>
+            <% }%>
 
 
-        <section class="formulario">
+            <section class="formulario">
 
-            <h2>Información de la sucursal</h2>
+                <h2>Información de la sucursal</h2>
 
-            <form method="post"
-                  onsubmit="return validarSucursal();">
+                <form method="post"
+                      onsubmit="return validarSucursal();">
 
-                <input type="hidden"
-                       name="accion"
-                       value="registrar">
-
-
-                <div class="form-group">
-
-                    <label for="codigo">
-                        Código de sucursal:
-                    </label>
-
-                    <input type="text"
-                           id="codigo"
-                           name="codigo"
-                           required>
-
-                </div>
+                    <input type="hidden"
+                           name="accion"
+                           value="registrar">
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="nombre">
-                        Nombre:
-                    </label>
+                        <label for="codigo">
+                            Código de sucursal:
+                        </label>
 
-                    <input type="text"
-                           id="nombre"
-                           name="nombre"
-                           required>
+                        <input type="text"
+                               id="codigo"
+                               name="codigo"
+                               required>
 
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="direccion">
-                        Dirección:
-                    </label>
-
-                    <input type="text"
-                           id="direccion"
-                           name="direccion"
-                           required>
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="telefono">
-                        Teléfono:
-                    </label>
+                        <label for="nombre">
+                            Nombre:
+                        </label>
 
-                    <input type="text"
-                           id="telefono"
-                           name="telefono"
-                           required>
+                        <input type="text"
+                               id="nombre"
+                               name="nombre"
+                               required>
 
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="municipio">
-                        Municipio:
-                    </label>
-
-                    <input type="text"
-                           id="municipio"
-                           name="municipio"
-                           required>
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="departamento">
-                        Departamento:
-                    </label>
+                        <label for="direccion">
+                            Dirección:
+                        </label>
 
-                    <input type="text"
-                           id="departamento"
-                           name="departamento"
-                           required>
+                        <input type="text"
+                               id="direccion"
+                               name="direccion"
+                               required>
 
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="latitud">
-                        Latitud:
-                    </label>
-
-                    <input type="number"
-                           id="latitud"
-                           name="latitud"
-                           step="any"
-                           required>
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="longitud">
-                        Longitud:
-                    </label>
+                        <label for="telefono">
+                            Teléfono:
+                        </label>
 
-                    <input type="number"
-                           id="longitud"
-                           name="longitud"
-                           step="any"
-                           required>
+                        <input type="text"
+                               id="telefono"
+                               name="telefono"
+                               required>
 
-                </div>
+                    </div>
 
 
-                <button type="submit">
-                    Registrar sucursal
-                </button>
+                    <div class="form-group">
 
-            </form>
+                        <label for="municipio">
+                            Municipio:
+                        </label>
 
-        </section>
+                        <input type="text"
+                               id="municipio"
+                               name="municipio"
+                               required>
 
-        <br>
+                    </div>
 
-        <a href="../inicio.jsp">
-            Volver al menú principal
-        </a>
 
-    </div>
+                    <div class="form-group">
 
-</body>
+                        <label for="departamento">
+                            Departamento:
+                        </label>
+
+                        <input type="text"
+                               id="departamento"
+                               name="departamento"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="latitud">
+                            Latitud:
+                        </label>
+
+                        <input type="number"
+                               id="latitud"
+                               name="latitud"
+                               step="any"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="longitud">
+                            Longitud:
+                        </label>
+
+                        <input type="number"
+                               id="longitud"
+                               name="longitud"
+                               step="any"
+                               required>
+
+                    </div>
+
+
+                    <button type="submit">
+                        Registrar sucursal
+                    </button>
+
+                </form>
+
+            </section>
+
+            <br>
+
+            <a href="../inicio.jsp">
+                Volver al menú principal
+            </a>
+
+        </div>
+
+    </body>
 
 </html>
 

@@ -11,8 +11,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
@@ -24,87 +24,87 @@
         return;
     }
 
-    String codigoSucursal =
-            usuarioSesion.getCodigoSucursal();
+    String codigoSucursal
+            = usuarioSesion.getCodigoSucursal();
 
     BusDAO busDAO = new BusDAO();
 
-    List<Bus> buses =
-            busDAO.listarPorSucursal(codigoSucursal);
-    String mensajeBus =
-        (String) session.getAttribute("mensajeBus");
+    List<Bus> buses
+            = busDAO.listarPorSucursal(codigoSucursal);
+    String mensajeBus
+            = (String) session.getAttribute("mensajeBus");
 
-String tipoMensajeBus =
-        (String) session.getAttribute("tipoMensajeBus");
+    String tipoMensajeBus
+            = (String) session.getAttribute("tipoMensajeBus");
 
-session.removeAttribute("mensajeBus");
-session.removeAttribute("tipoMensajeBus");
+    session.removeAttribute("mensajeBus");
+    session.removeAttribute("tipoMensajeBus");
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Gestión de Buses</title>
+        <title>Gestión de Buses</title>
 
-    <link rel="stylesheet"
-          href="<%= request.getContextPath() %>/resources/css/styles.css">
+        <link rel="stylesheet"
+              href="<%= request.getContextPath()%>/resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
+        <main class="pagina">
 
-        <header class="encabezado">
+            <header class="encabezado">
 
-            <h1>Gestión de Buses</h1>
+                <h1>Gestión de Buses</h1>
 
-            <p>
-                Sucursal:
-                <strong><%= codigoSucursal %></strong>
-            </p>
+                <p>
+                    Sucursal:
+                    <strong><%= codigoSucursal%></strong>
+                </p>
 
-        </header>
-            
-            <% if (mensajeBus != null && !mensajeBus.isEmpty()) { %>
+            </header>
 
-                <div class="mensaje <%= tipoMensajeBus %>">
-                    <%= mensajeBus %>
-                </div>
+            <% if (mensajeBus != null && !mensajeBus.isEmpty()) {%>
 
-                <br>
+            <div class="mensaje <%= tipoMensajeBus%>">
+                <%= mensajeBus%>
+            </div>
+
+            <br>
 
             <% } %>
 
-        <div class="card-menu">
+            <div class="card-menu">
 
-            <h2>Buses de la sucursal</h2>
+                <h2>Buses de la sucursal</h2>
 
-            <p>
-                Administra los buses pertenecientes
-                a esta sucursal.
-            </p>
+                <p>
+                    Administra los buses pertenecientes
+                    a esta sucursal.
+                </p>
 
-            <div class="card-acciones">
+                <div class="card-acciones">
 
-                <a href="registrarBus.jsp">
-                    Registrar bus
-                </a>
+                    <a href="registrarBus.jsp">
+                        Registrar bus
+                    </a>
+
+                </div>
 
             </div>
 
-        </div>
+            <br>
 
-        <br>
-
-        <% if (buses.isEmpty()) { %>
+            <% if (buses.isEmpty()) { %>
 
             <div class="mensaje">
 
@@ -113,7 +113,7 @@ session.removeAttribute("tipoMensajeBus");
 
             </div>
 
-        <% } else { %>
+            <% } else { %>
 
             <div class="tabla-contenedor">
 
@@ -136,89 +136,89 @@ session.removeAttribute("tipoMensajeBus");
 
                     <tbody>
 
-                        <% for (Bus bus : buses) { %>
+                        <% for (Bus bus : buses) {%>
 
-                            <tr>
+                        <tr>
 
-                                <td>
-                                    <%= bus.getPlaca() %>
-                                </td>
+                            <td>
+                                <%= bus.getPlaca()%>
+                            </td>
 
-                                <td>
-                                    <%= bus.getMarca() %>
-                                </td>
+                            <td>
+                                <%= bus.getMarca()%>
+                            </td>
 
-                                <td>
-                                    <%= bus.getModelo() %>
-                                </td>
+                            <td>
+                                <%= bus.getModelo()%>
+                            </td>
 
-                                <td>
-                                    <%= bus.getAñoFabricacion() %>
-                                </td>
+                            <td>
+                                <%= bus.getAñoFabricacion()%>
+                            </td>
 
-                                <td>
-                                    <%= bus.getCapacidad() %>
-                                </td>
+                            <td>
+                                <%= bus.getCapacidad()%>
+                            </td>
 
-                                <td>
-                                    <%= bus.getEstadoOperativo() %>
-                                </td>
+                            <td>
+                                <%= bus.getEstadoOperativo()%>
+                            </td>
 
-                                <td>
-                                    <%= bus.getKilometrajeActual() %>
-                                </td>
+                            <td>
+                                <%= bus.getKilometrajeActual()%>
+                            </td>
 
-                                <td>
+                            <td>
 
-                                    <a href="modificarBus.jsp?placa=<%= bus.getPlaca() %>">
-                                        Modificar
-                                    </a>
+                                <a href="modificarBus.jsp?placa=<%= bus.getPlaca()%>">
+                                    Modificar
+                                </a>
 
-                                    <% if ("INACTIVO".equals(bus.getEstadoOperativo())) { %>
+                                <% if ("INACTIVO".equals(bus.getEstadoOperativo())) {%>
 
-                                        <form method="POST"
-                                              action="cambiarEstadoBus.jsp"
-                                              style="display:inline;">
+                                <form method="POST"
+                                      action="cambiarEstadoBus.jsp"
+                                      style="display:inline;">
 
-                                            <input type="hidden"
-                                                   name="placa"
-                                                   value="<%= bus.getPlaca() %>">
+                                    <input type="hidden"
+                                           name="placa"
+                                           value="<%= bus.getPlaca()%>">
 
-                                            <input type="hidden"
-                                                   name="accion"
-                                                   value="activar">
+                                    <input type="hidden"
+                                           name="accion"
+                                           value="activar">
 
-                                            <button type="submit">
-                                                Activar
-                                            </button>
+                                    <button type="submit">
+                                        Activar
+                                    </button>
 
-                                        </form>
+                                </form>
 
-                                    <% } else { %>
+                                <% } else {%>
 
-                                        <form method="POST"
-                                              action="cambiarEstadoBus.jsp"
-                                              style="display:inline;">
+                                <form method="POST"
+                                      action="cambiarEstadoBus.jsp"
+                                      style="display:inline;">
 
-                                            <input type="hidden"
-                                                   name="placa"
-                                                   value="<%= bus.getPlaca() %>">
+                                    <input type="hidden"
+                                           name="placa"
+                                           value="<%= bus.getPlaca()%>">
 
-                                            <input type="hidden"
-                                                   name="accion"
-                                                   value="desactivar">
+                                    <input type="hidden"
+                                           name="accion"
+                                           value="desactivar">
 
-                                            <button type="submit">
-                                                Desactivar
-                                            </button>
+                                    <button type="submit">
+                                        Desactivar
+                                    </button>
 
-                                        </form>
+                                </form>
 
-                                    <% } %>
+                                <% } %>
 
-                                </td>
+                            </td>
 
-                            </tr>
+                        </tr>
 
                         <% } %>
 
@@ -228,16 +228,16 @@ session.removeAttribute("tipoMensajeBus");
 
             </div>
 
-        <% } %>
+            <% }%>
 
-        <br>
+            <br>
 
-        <a href="../inicio.jsp">
-            Regresar al inicio
-        </a>
+            <a href="../inicio.jsp">
+                Regresar al inicio
+            </a>
 
-    </main>
+        </main>
 
-</body>
+    </body>
 
 </html>

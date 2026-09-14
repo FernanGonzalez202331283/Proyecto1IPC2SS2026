@@ -97,11 +97,6 @@ body.login-page {
     border-color: #d32f2f;
 }
 
-
-/* =========================================================
-   BOTONES
-   ========================================================= */
-
 button {
     width: 100%;
 
@@ -123,11 +118,6 @@ button {
 button:hover {
     background-color: #555;
 }
-
-
-/* =========================================================
-   MENSAJES
-   ========================================================= */
 
 .campo-error {
     margin: 5px 0 0;
@@ -152,17 +142,11 @@ button:hover {
 
     color: #b71c1c;
 }
-
 .mensaje.exito {
     background-color: #e8f5e9;
 
     color: #2e7d32;
 }
-
-
-/* =========================================================
-   PÁGINAS DEL SISTEMA
-   ========================================================= */
 
 .pagina {
     width: 90%;
@@ -189,11 +173,6 @@ button:hover {
     border-radius: 8px;
 }
 
-
-/* =========================================================
-   TABLAS
-   ========================================================= */
-
 table {
     width: 100%;
 
@@ -213,11 +192,6 @@ th {
     font-weight: bold;
 }
 
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-
 @media (max-width: 480px) {
 
     .login-container {
@@ -230,7 +204,6 @@ th {
         width: 95%;
     }
 }
-
 .cards-menu {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -238,11 +211,6 @@ th {
     margin-top: 25px;
     margin-bottom: 40px;
 }
-
-
-/* =========================
-   CARD
-   ========================= */
 
 .card-menu {
     background-color: white;
@@ -252,9 +220,8 @@ th {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
 
     transition: transform 0.2s ease,
-                box-shadow 0.2s ease;
+        box-shadow 0.2s ease;
 }
-
 
 .card-menu:hover {
     transform: translateY(-5px);
@@ -263,39 +230,19 @@ th {
 }
 
 
-/* =========================
-   ICONO
-   ========================= */
-
 .card-icon {
     font-size: 40px;
     margin-bottom: 10px;
 }
-
-
-/* =========================
-   TÍTULO
-   ========================= */
-
 .card-menu h3 {
     margin-top: 5px;
     margin-bottom: 10px;
 }
 
-
-/* =========================
-   DESCRIPCIÓN
-   ========================= */
-
 .card-menu p {
     color: #666;
     line-height: 1.5;
 }
-
-
-/* =========================
-   ACCIONES
-   ========================= */
 
 .card-acciones {
     display: flex;
@@ -305,8 +252,6 @@ th {
 
     margin-top: 20px;
 }
-
-
 .card-acciones a {
     display: block;
 
@@ -322,16 +267,9 @@ th {
 
     transition: background-color 0.2s ease;
 }
-
-
 .card-acciones a:hover {
     background-color: #ddd;
 }
-
-
-/* =========================
-   CERRAR SESIÓN
-   ========================= */
 
 .cerrar-sesion {
     margin-top: 30px;

@@ -20,7 +20,6 @@
         return;
     }
 
-    // Solo ADMIN_SISTEMA puede acceder
     if (!"ADMIN_SISTEMA".equals(usuarioSesion.getRol())) {
         response.sendRedirect("../index.jsp");
         return;
@@ -31,10 +30,6 @@
 
     String mensaje = "";
     String tipoMensaje = "";
-
-    /*
-     * Procesar formulario
-     */
     if ("POST".equalsIgnoreCase(request.getMethod())) {
 
         String depreciacionTexto =
@@ -65,16 +60,6 @@
                     tipoMensaje = "error";
 
                 } else {
-
-                    /*
-                     * Generar automáticamente el código
-                     * de configuración.
-                     *
-                     * Ejemplo:
-                     * CFG001
-                     * CFG002
-                     * CFG003
-                     */
                     int numeroConfiguracion = 1;
 
                     String codigoConfiguracion;
@@ -97,20 +82,10 @@
                         numeroConfiguracion++;
 
                     } while (true);
-
-
-                    /*
-                     * Fecha de configuración
-                     */
                     Date fechaConfiguracion =
                             new Date(
                                     System.currentTimeMillis()
                             );
-
-
-                    /*
-                     * Crear objeto configuración
-                     */
                     Configuracion configuracion =
                             new Configuracion();
 
@@ -127,15 +102,10 @@
                     );
 
 
-                    /*
-                     * Guardar en la base de datos
-                     */
                     boolean insertado =
                             configuracionDAO.insertar(
                                     configuracion
                             );
-
-
                     if (insertado) {
 
                         mensaje =
@@ -163,15 +133,6 @@
             }
         }
     }
-
-
-    /*
-     * Obtener configuración vigente
-     *
-     * Se realiza después del POST para que,
-     * si acabamos de guardar una configuración,
-     * aparezca inmediatamente como vigente.
-     */
     Configuracion configuracionVigente =
             configuracionDAO.obtenerConfiguracionVigente();
 
@@ -181,57 +142,57 @@
 
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Configuración de depreciación</title>
+        <title>Configuración de depreciación</title>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
-
-
-        <!-- ENCABEZADO -->
-
-        <header class="encabezado">
-
-            <h1>Configuración de depreciación</h1>
-
-            <p>
-                Administrador:
-                <strong>
-                    <%= usuarioSesion.getUsuario() %>
-                </strong>
-            </p>
-
-        </header>
+        <main class="pagina">
 
 
-        <!-- FORMULARIO -->
+            <!-- ENCABEZADO -->
 
-        <section class="card-menu">
+            <header class="encabezado">
 
-            <h2>Depreciación por kilómetro</h2>
+                <h1>Configuración de depreciación</h1>
 
-            <p>
-                Configure el valor que utilizará el sistema
-                para calcular automáticamente la depreciación
-                de los buses.
-            </p>
+                <p>
+                    Administrador:
+                    <strong>
+                        <%= usuarioSesion.getUsuario() %>
+                    </strong>
+                </p>
+
+            </header>
 
 
-            <!-- MENSAJE -->
+            <!-- FORMULARIO -->
 
-            <% if (!mensaje.isEmpty()) { %>
+            <section class="card-menu">
+
+                <h2>Depreciación por kilómetro</h2>
+
+                <p>
+                    Configure el valor que utilizará el sistema
+                    para calcular automáticamente la depreciación
+                    de los buses.
+                </p>
+
+
+                <!-- MENSAJE -->
+
+                <% if (!mensaje.isEmpty()) { %>
 
                 <div class="<%= tipoMensaje %>">
 
@@ -239,68 +200,68 @@
 
                 </div>
 
-            <% } %>
+                <% } %>
 
 
-            <form
-                method="post"
-                action="depreciacion.jsp"
-                id="formDepreciacion">
+                <form
+                    method="post"
+                    action="depreciacion.jsp"
+                    id="formDepreciacion">
 
 
-                <div class="formulario-grupo">
+                    <div class="formulario-grupo">
 
-                    <label for="depreciacionPorKm">
+                        <label for="depreciacionPorKm">
 
-                        Depreciación por kilómetro
+                            Depreciación por kilómetro
 
-                    </label>
-
-
-                    <input
-                        type="number"
-                        id="depreciacionPorKm"
-                        name="depreciacionPorKm"
-                        min="0"
-                        step="0.01"
-                        placeholder="Ejemplo: 2.50"
-                        required>
+                        </label>
 
 
-                </div>
+                        <input
+                            type="number"
+                            id="depreciacionPorKm"
+                            name="depreciacionPorKm"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ejemplo: 2.50"
+                            required>
 
 
-                <div class="card-acciones">
-
-                    <button type="submit">
-
-                        Guardar configuración
-
-                    </button>
+                    </div>
 
 
-                    <a href="../index.jsp">
+                    <div class="card-acciones">
 
-                        Regresar
+                        <button type="submit">
 
-                    </a>
+                            Guardar configuración
 
-                </div>
-
-
-            </form>
-
-        </section>
+                        </button>
 
 
-        <!-- CONFIGURACIÓN VIGENTE -->
+                        <a href="../index.jsp">
 
-        <section class="card-menu">
+                            Regresar
 
-            <h2>Configuración vigente</h2>
+                        </a>
+
+                    </div>
 
 
-            <% if (configuracionVigente != null) { %>
+                </form>
+
+            </section>
+
+
+            <!-- CONFIGURACIÓN VIGENTE -->
+
+            <section class="card-menu">
+
+                <h2>Configuración vigente</h2>
+
+
+                <% if (configuracionVigente != null) { %>
 
 
                 <p>
@@ -339,35 +300,35 @@
                             .getFechaConfiguracion() %>
 
                 </p>
-            <% } else { %>
+                <% } else { %>
                 <p>
                     No existe una configuración de
                     depreciación registrada.
 
                 </p>
-            <% } %>
-        </section>
-        <!-- CERRAR SESIÓN -->
-        <div class="cerrar-sesion">
+                <% } %>
+            </section>
+            <!-- CERRAR SESIÓN -->
+            <div class="cerrar-sesion">
 
-            <form
-                action="../logout.jsp"
-                method="post">
+                <form
+                    action="../logout.jsp"
+                    method="post">
 
-                <button type="submit">
+                    <button type="submit">
 
-                    Cerrar sesión
+                        Cerrar sesión
 
-                </button>
+                    </button>
 
-            </form>
+                </form>
 
-        </div>
-    </main>
-    <!-- JAVASCRIPT -->
-    <script
-        src="../resources/js/depreciacion.js">
-    </script>
-</body>
+            </div>
+        </main>
+        <!-- JAVASCRIPT -->
+        <script
+            src="../resources/js/depreciacion.js">
+        </script>
+    </body>
 </html>
 

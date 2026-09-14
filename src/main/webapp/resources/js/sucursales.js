@@ -18,28 +18,28 @@ function mostrarSucursal() {
 
 
     document.getElementById("codigo").value =
-        opcion.value;
+            opcion.value;
 
     document.getElementById("nombre").value =
-        opcion.dataset.nombre;
+            opcion.dataset.nombre;
 
     document.getElementById("direccion").value =
-        opcion.dataset.direccion;
+            opcion.dataset.direccion;
 
     document.getElementById("telefono").value =
-        opcion.dataset.telefono;
+            opcion.dataset.telefono;
 
     document.getElementById("municipio").value =
-        opcion.dataset.municipio;
+            opcion.dataset.municipio;
 
     document.getElementById("departamento").value =
-        opcion.dataset.departamento;
+            opcion.dataset.departamento;
 
     document.getElementById("latitud").value =
-        opcion.dataset.latitud;
+            opcion.dataset.latitud;
 
     document.getElementById("longitud").value =
-        opcion.dataset.longitud;
+            opcion.dataset.longitud;
 }
 
 
@@ -94,32 +94,32 @@ function validarSucursal() {
     return true;
 }
 function filtrarSucursales() {
-const texto = document
-    .getElementById("buscarSucursal")
-    .value
-    .toLowerCase();
+    const texto = document
+            .getElementById("buscarSucursal")
+            .value
+            .toLowerCase();
 
-const tabla = document.getElementById("tablaSucursales");
+    const tabla = document.getElementById("tablaSucursales");
 
-const filas = tabla
-    .getElementsByTagName("tbody")[0]
-    .getElementsByTagName("tr");
+    const filas = tabla
+            .getElementsByTagName("tbody")[0]
+            .getElementsByTagName("tr");
 
 
-for (let i = 0; i < filas.length; i++) {
+    for (let i = 0; i < filas.length; i++) {
 
-    const contenido = filas[i]
-        .textContent
-        .toLowerCase();
+        const contenido = filas[i]
+                .textContent
+                .toLowerCase();
 
-    if (contenido.includes(texto)) {
+        if (contenido.includes(texto)) {
 
-        filas[i].style.display = "";
+            filas[i].style.display = "";
 
-    } else {
+        } else {
 
-        filas[i].style.display = "none";
+            filas[i].style.display = "none";
+        }
     }
-}
 
 }

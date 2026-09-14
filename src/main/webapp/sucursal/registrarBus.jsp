@@ -10,8 +10,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
@@ -23,8 +23,8 @@
         return;
     }
 
-    String codigoSucursal =
-            usuarioSesion.getCodigoSucursal();
+    String codigoSucursal
+            = usuarioSesion.getCodigoSucursal();
 
     String mensaje = "";
     String tipoMensaje = "";
@@ -37,8 +37,8 @@
         String modelo = request.getParameter("modelo");
         String anioTexto = request.getParameter("anioFabricacion");
         String capacidadTexto = request.getParameter("capacidad");
-        String kilometrajeTexto =
-                request.getParameter("kilometrajeActual");
+        String kilometrajeTexto
+                = request.getParameter("kilometrajeActual");
 
         if (placa == null || placa.trim().isEmpty()) {
 
@@ -65,8 +65,8 @@
             mensaje = "Debe ingresar la capacidad.";
             tipoMensaje = "error";
 
-        } else if (kilometrajeTexto == null ||
-                   kilometrajeTexto.trim().isEmpty()) {
+        } else if (kilometrajeTexto == null
+                || kilometrajeTexto.trim().isEmpty()) {
 
             mensaje = "Debe ingresar el kilometraje actual.";
             tipoMensaje = "error";
@@ -75,25 +75,25 @@
 
             try {
 
-                int anioFabricacion =
-                        Integer.parseInt(anioTexto.trim());
+                int anioFabricacion
+                        = Integer.parseInt(anioTexto.trim());
 
-                int capacidad =
-                        Integer.parseInt(capacidadTexto.trim());
+                int capacidad
+                        = Integer.parseInt(capacidadTexto.trim());
 
-                double kilometrajeActual =
-                        Double.parseDouble(kilometrajeTexto.trim());
+                double kilometrajeActual
+                        = Double.parseDouble(kilometrajeTexto.trim());
 
                 if (capacidad <= 0) {
 
-                    mensaje =
-                            "La capacidad debe ser mayor que cero.";
+                    mensaje
+                            = "La capacidad debe ser mayor que cero.";
                     tipoMensaje = "error";
 
                 } else if (kilometrajeActual < 0) {
 
-                    mensaje =
-                            "El kilometraje no puede ser negativo.";
+                    mensaje
+                            = "El kilometraje no puede ser negativo.";
                     tipoMensaje = "error";
 
                 } else {
@@ -104,8 +104,8 @@
 
                     if (busDAO.existe(placa)) {
 
-                        mensaje =
-                                "Ya existe un bus registrado con esa placa.";
+                        mensaje
+                                = "Ya existe un bus registrado con esa placa.";
                         tipoMensaje = "error";
 
                     } else {
@@ -114,10 +114,7 @@
 
                         bus.setPlaca(placa);
 
-                        /*
-                         * La sucursal se obtiene directamente
-                         * del usuario que inició sesión.
-                         */
+                        
                         bus.setCodigoSucursal(codigoSucursal);
 
                         bus.setFoto(
@@ -143,8 +140,8 @@
                                 kilometrajeActual
                         );
 
-                        boolean registrado =
-                                busDAO.insertar(bus);
+                        boolean registrado
+                                = busDAO.insertar(bus);
 
                         if (registrado) {
 
@@ -153,8 +150,8 @@
 
                         } else {
 
-                            mensaje =
-                                    "No se pudo registrar el bus.";
+                            mensaje
+                                    = "No se pudo registrar el bus.";
                             tipoMensaje = "error";
                         }
                     }
@@ -162,8 +159,8 @@
 
             } catch (NumberFormatException e) {
 
-                mensaje =
-                        "Los valores numéricos ingresados no son válidos.";
+                mensaje
+                        = "Los valores numéricos ingresados no son válidos.";
                 tipoMensaje = "error";
             }
         }
@@ -173,214 +170,214 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Registrar Bus</title>
+        <title>Registrar Bus</title>
 
-    <link rel="stylesheet"
-          href="<%= request.getContextPath() %>/resources/css/styles.css">
+        <link rel="stylesheet"
+              href="<%= request.getContextPath()%>/resources/css/styles.css">
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <main class="pagina">
+        <main class="pagina">
 
-        <header class="encabezado">
+            <header class="encabezado">
 
-            <h1>Registrar Bus</h1>
+                <h1>Registrar Bus</h1>
 
-            <p>
-                Sucursal:
-                <strong><%= codigoSucursal %></strong>
-            </p>
+                <p>
+                    Sucursal:
+                    <strong><%= codigoSucursal%></strong>
+                </p>
 
-        </header>
+            </header>
 
-        <% if (!mensaje.isEmpty()) { %>
+            <% if (!mensaje.isEmpty()) {%>
 
-            <div class="mensaje <%= tipoMensaje %>">
-                <%= mensaje %>
+            <div class="mensaje <%= tipoMensaje%>">
+                <%= mensaje%>
             </div>
 
-        <% } %>
+            <% }%>
 
-        <div class="formulario">
+            <div class="formulario">
 
-            <h2>Datos del bus</h2>
+                <h2>Datos del bus</h2>
 
-            <form method="POST">
+                <form method="POST">
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="placa">
-                        Placa
-                    </label>
+                        <label for="placa">
+                            Placa
+                        </label>
 
-                    <input
-                        type="text"
-                        id="placa"
-                        name="placa"
-                        maxlength="20"
-                        value="<%= request.getParameter("placa") != null
-                                ? request.getParameter("placa")
-                                : "" %>"
-                        required>
+                        <input
+                            type="text"
+                            id="placa"
+                            name="placa"
+                            maxlength="20"
+                            value="<%= request.getParameter("placa") != null
+                                    ? request.getParameter("placa")
+                                    : ""%>"
+                            required>
 
-                </div>
+                    </div>
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="foto">
-                        Foto
-                    </label>
+                        <label for="foto">
+                            Foto
+                        </label>
 
-                    <input
-                        type="text"
-                        id="foto"
-                        name="foto"
-                        maxlength="500"
-                        value="<%= request.getParameter("foto") != null
-                                ? request.getParameter("foto")
-                                : "" %>">
+                        <input
+                            type="text"
+                            id="foto"
+                            name="foto"
+                            maxlength="500"
+                            value="<%= request.getParameter("foto") != null
+                                    ? request.getParameter("foto")
+                                    : ""%>">
 
-                    <small>
-                        Por ahora puede ingresar la ruta o referencia
-                        de la fotografía.
-                    </small>
+                        <small>
+                            Por ahora puede ingresar la ruta o referencia
+                            de la fotografía.
+                        </small>
 
-                </div>
+                    </div>
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="marca">
-                        Marca
-                    </label>
+                        <label for="marca">
+                            Marca
+                        </label>
 
-                    <input
-                        type="text"
-                        id="marca"
-                        name="marca"
-                        maxlength="100"
-                        value="<%= request.getParameter("marca") != null
-                                ? request.getParameter("marca")
-                                : "" %>"
-                        required>
+                        <input
+                            type="text"
+                            id="marca"
+                            name="marca"
+                            maxlength="100"
+                            value="<%= request.getParameter("marca") != null
+                                    ? request.getParameter("marca")
+                                    : ""%>"
+                            required>
 
-                </div>
+                    </div>
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="modelo">
-                        Modelo
-                    </label>
+                        <label for="modelo">
+                            Modelo
+                        </label>
 
-                    <input
-                        type="text"
-                        id="modelo"
-                        name="modelo"
-                        maxlength="100"
-                        value="<%= request.getParameter("modelo") != null
-                                ? request.getParameter("modelo")
-                                : "" %>"
-                        required>
+                        <input
+                            type="text"
+                            id="modelo"
+                            name="modelo"
+                            maxlength="100"
+                            value="<%= request.getParameter("modelo") != null
+                                    ? request.getParameter("modelo")
+                                    : ""%>"
+                            required>
 
-                </div>
+                    </div>
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="anioFabricacion">
-                        Año de fabricación
-                    </label>
+                        <label for="anioFabricacion">
+                            Año de fabricación
+                        </label>
 
-                    <input
-                        type="number"
-                        id="anioFabricacion"
-                        name="anioFabricacion"
-                        min="1900"
-                        max="2100"
-                        value="<%= request.getParameter("anioFabricacion") != null
-                                ? request.getParameter("anioFabricacion")
-                                : "" %>"
-                        required>
+                        <input
+                            type="number"
+                            id="anioFabricacion"
+                            name="anioFabricacion"
+                            min="1900"
+                            max="2100"
+                            value="<%= request.getParameter("anioFabricacion") != null
+                                    ? request.getParameter("anioFabricacion")
+                                    : ""%>"
+                            required>
 
-                </div>
+                    </div>
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="capacidad">
-                        Capacidad de pasajeros
-                    </label>
+                        <label for="capacidad">
+                            Capacidad de pasajeros
+                        </label>
 
-                    <input
-                        type="number"
-                        id="capacidad"
-                        name="capacidad"
-                        min="1"
-                        value="<%= request.getParameter("capacidad") != null
-                                ? request.getParameter("capacidad")
-                                : "" %>"
-                        required>
+                        <input
+                            type="number"
+                            id="capacidad"
+                            name="capacidad"
+                            min="1"
+                            value="<%= request.getParameter("capacidad") != null
+                                    ? request.getParameter("capacidad")
+                                    : ""%>"
+                            required>
 
-                </div>
+                    </div>
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label>
-                        Estado operativo
-                    </label>
+                        <label>
+                            Estado operativo
+                        </label>
 
-                    <input
-                        type="text"
-                        value="Disponible"
-                        readonly>
+                        <input
+                            type="text"
+                            value="Disponible"
+                            readonly>
 
-                    <small>
-                        Todo bus nuevo se registra como disponible.
-                    </small>
+                        <small>
+                            Todo bus nuevo se registra como disponible.
+                        </small>
 
-                </div>
+                    </div>
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="kilometrajeActual">
-                        Kilometraje actual
-                    </label>
+                        <label for="kilometrajeActual">
+                            Kilometraje actual
+                        </label>
 
-                    <input
-                        type="number"
-                        id="kilometrajeActual"
-                        name="kilometrajeActual"
-                        min="0"
-                        step="0.01"
-                        value="<%= request.getParameter("kilometrajeActual") != null
-                                ? request.getParameter("kilometrajeActual")
-                                : "0" %>"
-                        required>
+                        <input
+                            type="number"
+                            id="kilometrajeActual"
+                            name="kilometrajeActual"
+                            min="0"
+                            step="0.01"
+                            value="<%= request.getParameter("kilometrajeActual") != null
+                                    ? request.getParameter("kilometrajeActual")
+                                    : "0"%>"
+                            required>
 
-                </div>
+                    </div>
 
-                <button type="submit">
-                    Registrar bus
-                </button>
+                    <button type="submit">
+                        Registrar bus
+                    </button>
 
-            </form>
+                </form>
 
-        </div>
+            </div>
 
-        <br>
+            <br>
 
-        <a href="buses.jsp">
-            Regresar a buses
-        </a>
+            <a href="buses.jsp">
+                Regresar a buses
+            </a>
 
-    </main>
+        </main>
 
-</body>
+    </body>
 
 </html>

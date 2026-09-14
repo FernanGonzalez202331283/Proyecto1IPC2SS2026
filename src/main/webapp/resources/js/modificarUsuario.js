@@ -5,16 +5,16 @@
 function mostrarUsuario() {
 
     const seleccion =
-        document.getElementById("seleccionarUsuario");
+            document.getElementById("seleccionarUsuario");
 
     const formulario =
-        document.getElementById("formularioModificar");
+            document.getElementById("formularioModificar");
 
     const grupoSucursal =
-        document.getElementById("grupoSucursal");
+            document.getElementById("grupoSucursal");
 
     const opcion =
-        seleccion.options[seleccion.selectedIndex];
+            seleccion.options[seleccion.selectedIndex];
 
 
     if (seleccion.value === "") {
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         if (rol === "ADMIN_SUCURSAL" &&
-            sucursal.value === "") {
+                sucursal.value === "") {
 
             mensajeSucursal.textContent =
                     "Seleccione una sucursal.";

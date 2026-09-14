@@ -28,6 +28,7 @@ public class Viaje {
     private double depreciacionTotal;
     private double precioBoletos;
     private int asientosDisponibles;
+    private int capacidadBus;
     
     public Viaje(){
     }
@@ -176,6 +177,12 @@ public class Viaje {
     public void setAsientosDisponibles(int asientosDisponibles) {
         this.asientosDisponibles = asientosDisponibles;
     }
-    
-    
+
+    public int getCapacidadBus() {
+        return capacidadBus;
+    }
+
+    public void setCapacidadBus(int capacidadBus) {
+        this.capacidadBus = capacidadBus;
+    }
 }

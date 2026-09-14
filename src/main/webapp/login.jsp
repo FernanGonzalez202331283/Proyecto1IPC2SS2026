@@ -60,92 +60,92 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Inicio de Sesión</title>
+        <title>Inicio de Sesión</title>
 
-    <link rel="stylesheet"
-          href="resources/css/styles.css">
+        <link rel="stylesheet"
+              href="resources/css/styles.css">
 
-</head>
+    </head>
 
-<body class= "login-page">
+    <body class= "login-page">
 
-    <main class="login-container">
+        <main class="login-container">
 
-        <h1>Iniciar Sesión</h1>
+            <h1>Iniciar Sesión</h1>
 
-        <p class="login-subtitle">
-            Sistema de Transporte Extraurbano
-        </p>
-
-        <form method="post"
-              id="loginForm">
-
-            <div class="form-group">
-
-                <label for="usuario">
-                    Usuario
-                </label>
-
-                <input
-                    type="text"
-                    id="usuario"
-                    name="usuario"
-                    autocomplete="username"
-                    maxlength="50"
-                    required>
-
-                <p id="mensajeUsuario"
-                   class="campo-error"></p>
-
-            </div>
-
-            <div class="form-group">
-
-                <label for="contrasena">
-                    Contraseña
-                </label>
-
-                <input
-                    type="password"
-                    id="contrasena"
-                    name="contrasena"
-                    autocomplete="current-password"
-                    required>
-
-                <p id="mensajeContrasena"
-                   class="campo-error"></p>
-
-            </div>
-
-            <button type="submit">
-                Iniciar Sesión
-            </button>
-            <p class ="registro-link">
-                ¿no tienes una cuenta?
-                <a href='cliente/registrarse.jsp'>Crear un cuenta</a>
+            <p class="login-subtitle">
+                Sistema de Transporte Extraurbano
             </p>
 
-        </form>
+            <form method="post"
+                  id="loginForm">
 
-        <% if (!mensaje.isEmpty()) { %>
+                <div class="form-group">
+
+                    <label for="usuario">
+                        Usuario
+                    </label>
+
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        autocomplete="username"
+                        maxlength="50"
+                        required>
+
+                    <p id="mensajeUsuario"
+                       class="campo-error"></p>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="contrasena">
+                        Contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        id="contrasena"
+                        name="contrasena"
+                        autocomplete="current-password"
+                        required>
+
+                    <p id="mensajeContrasena"
+                       class="campo-error"></p>
+
+                </div>
+
+                <button type="submit">
+                    Iniciar Sesión
+                </button>
+                <p class ="registro-link">
+                    ¿no tienes una cuenta?
+                    <a href='cliente/registrarse.jsp'>Crear un cuenta</a>
+                </p>
+
+            </form>
+
+            <% if (!mensaje.isEmpty()) { %>
 
             <div class="mensaje <%= tipoMensaje %>">
                 <%= mensaje %>
             </div>
 
-        <% } %>
+            <% } %>
 
-    </main>
+        </main>
 
-    <script src="resources/js/login.js"></script>
+        <script src="resources/js/login.js"></script>
 
-</body>
+    </body>
 
 </html>
