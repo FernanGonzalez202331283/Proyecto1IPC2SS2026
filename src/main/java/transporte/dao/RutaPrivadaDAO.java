@@ -143,39 +143,14 @@ public class RutaPrivadaDAO {
         while (rs.next()) {
 
             Alquiler alquiler = new Alquiler();
-
-            alquiler.setCodigoAlquiler(
-                rs.getString("codigo_alquiler")
-            );
-
-            alquiler.setCodigoViaje(
-                rs.getString("codigo_viaje")
-            );
-
-            alquiler.setUsuarioCliente(
-                rs.getString("usuario_cliente")
-            );
-
-            alquiler.setNumeroPasajeros(
-                rs.getInt("numero_pasajeros")
-            );
-
-            alquiler.setFechaRetorno(
-                rs.getDate("fecha_retorno")
-            );
-
-            alquiler.setPrecioEstimado(
-                rs.getDouble("precio_estimado")
-            );
-
-            alquiler.setPrecioConfirmado(
-                rs.getDouble("precio_confirmado")
-            );
-
-            alquiler.setEstado(
-                rs.getString("estado")
-            );
-
+            alquiler.setCodigoAlquiler(rs.getString("codigo_alquiler"));
+            alquiler.setCodigoViaje(rs.getString("codigo_viaje"));
+            alquiler.setUsuarioCliente(rs.getString("usuario_cliente"));
+            alquiler.setNumeroPasajeros(rs.getInt("numero_pasajeros"));
+            alquiler.setFechaRetorno(rs.getDate("fecha_retorno"));
+            alquiler.setPrecioEstimado(rs.getDouble("precio_estimado"));
+            alquiler.setPrecioConfirmado(rs.getDouble("precio_confirmado"));
+            alquiler.setEstado(rs.getString("estado"));
             alquileres.add(alquiler);
         }
 

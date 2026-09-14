@@ -1,24 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package transporte.dao;
 
-import jakarta.resource.cci.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import transporte.conexion.Conexion;
 import transporte.modelo.Sucursal;
 
-/**
- *
- * @author fernan
- */
 public class SucursalDAO {
-public boolean insertar(Sucursal sucursal) {
+
+    public boolean insertar(Sucursal sucursal) {
         String sql = """
                      INSERT INTO sucursal
                      (codigo_sucursal, nombre, direccion, telefono, municipio, departamento, latitud, longitud, estado)
@@ -59,7 +52,7 @@ public boolean insertar(Sucursal sucursal) {
 
             ps.setString(1, codigoSucursal);
 
-            try (ResultSet rs = (ResultSet) ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Sucursal sucursal = new Sucursal();
                     sucursal.setCodigoSucursal(rs.getString("codigo_sucursal"));
@@ -168,7 +161,7 @@ public boolean insertar(Sucursal sucursal) {
 
         try (Connection conexion = Conexion.getConnection();
              PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = (ResultSet) ps.executeQuery()) {
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Sucursal sucursal = new Sucursal();

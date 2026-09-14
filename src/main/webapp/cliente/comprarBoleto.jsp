@@ -25,8 +25,7 @@
         return;
     }
 
-    String codigoViaje =
-            request.getParameter("codigoViaje");
+    String codigoViaje =request.getParameter("codigoViaje");
 
     if (codigoViaje == null ||
         codigoViaje.trim().isEmpty()) {
@@ -86,12 +85,10 @@
 
 
     <!-- INFORMACIÓN DEL VIAJE -->
-
     <div class="card-menu">
-
         <h2>
             <%= viaje.getOrigen() %>
-            →
+            ->
             <%= viaje.getDestino() %>
         </h2>
 

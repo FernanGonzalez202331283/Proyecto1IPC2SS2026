@@ -12,9 +12,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuario
-            = (Usuario) session.getAttribute("usuario");
-
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
     if (usuario == null) {
         response.sendRedirect("../login.jsp");
         return;
@@ -25,11 +23,9 @@
         return;
     }
 
-    String codigoViaje
-            = request.getParameter("codigoViaje");
+    String codigoViaje = request.getParameter("codigoViaje");
 
-    String numeroAsientoParametro
-            = request.getParameter("numeroAsiento");
+    String numeroAsientoParametro = request.getParameter("numeroAsiento");
 
     if (codigoViaje == null
             || codigoViaje.trim().isEmpty()
@@ -40,29 +36,19 @@
         return;
     }
 
-    codigoViaje
-            = codigoViaje.trim();
-
+    codigoViaje = codigoViaje.trim();
     int numeroAsiento;
-
     try {
 
-        numeroAsiento
-                = Integer.parseInt(
-                        numeroAsientoParametro.trim()
-                );
-
+        numeroAsiento = Integer.parseInt(numeroAsientoParametro.trim());
     } catch (NumberFormatException e) {
-
         response.sendRedirect("viajes.jsp");
         return;
     }
 
-    ViajeDAO viajeDAO
-            = new ViajeDAO();
+    ViajeDAO viajeDAO = new ViajeDAO();
 
-    Viaje viaje
-            = viajeDAO.obtener(codigoViaje);
+    Viaje viaje = viajeDAO.obtener(codigoViaje);
 
     if (viaje == null
             || !"REGULAR".equals(viaje.getTipoViaje())
@@ -72,24 +58,14 @@
         return;
     }
 
-    if (numeroAsiento < 1
-            || numeroAsiento > viaje.getCapacidadBus()) {
-
-        response.sendRedirect(
-                "comprarBoleto.jsp?codigoViaje="
-                + codigoViaje
-        );
-
+    if (numeroAsiento < 1 || numeroAsiento > viaje.getCapacidadBus()) {
+        response.sendRedirect("comprarBoleto.jsp?codigoViaje=" + codigoViaje);
         return;
     }
 
-    CarteraDAO carteraDAO
-            = new CarteraDAO();
+    CarteraDAO carteraDAO = new CarteraDAO();
 
-    Cartera cartera
-            = carteraDAO.obtener(
-                    usuario.getUsuario()
-            );
+    Cartera cartera = carteraDAO.obtener(usuario.getUsuario());
     if (cartera == null) {
 %>
 

@@ -33,23 +33,23 @@
     String origen = request.getParameter("origen");
     String destino = request.getParameter("destino");
 
-    String numeroPasajerosParametro =
-            request.getParameter("numeroPasajeros");
+    String numeroPasajerosParametro
+            = request.getParameter("numeroPasajeros");
 
-    String fechaSalidaParametro =
-            request.getParameter("fechaSalida");
+    String fechaSalidaParametro
+            = request.getParameter("fechaSalida");
 
-    String horaSalidaParametro =
-            request.getParameter("horaSalida");
+    String horaSalidaParametro
+            = request.getParameter("horaSalida");
 
-    String fechaLlegadaParametro =
-            request.getParameter("fechaLlegada");
+    String fechaLlegadaParametro
+            = request.getParameter("fechaLlegada");
 
-    String horaLlegadaParametro =
-            request.getParameter("horaLlegada");
+    String horaLlegadaParametro
+            = request.getParameter("horaLlegada");
 
-    String fechaRetornoParametro =
-            request.getParameter("fechaRetorno");
+    String fechaRetornoParametro
+            = request.getParameter("fechaRetorno");
 
     boolean correcto = false;
     String mensaje = "";
@@ -83,125 +83,113 @@
 
         try {
 
-            int numeroPasajeros =
-                    Integer.parseInt(numeroPasajerosParametro.trim());
+            int numeroPasajeros
+                    = Integer.parseInt(numeroPasajerosParametro.trim());
 
             if (numeroPasajeros <= 0) {
 
-                mensaje =
-                        "El número de pasajeros debe ser mayor que cero.";
+                mensaje
+                        = "El número de pasajeros debe ser mayor que cero.";
 
             } else if (origen.equalsIgnoreCase(destino)) {
 
-                mensaje =
-                        "El origen y destino no pueden ser iguales.";
+                mensaje
+                        = "El origen y destino no pueden ser iguales.";
 
             } else {
 
-                Date fechaSalida =
-                        Date.valueOf(fechaSalidaParametro);
+                Date fechaSalida
+                        = Date.valueOf(fechaSalidaParametro);
 
-                Time horaSalida =
-                        Time.valueOf(horaSalidaParametro + ":00");
+                Time horaSalida
+                        = Time.valueOf(horaSalidaParametro + ":00");
 
-                Date fechaLlegada =
-                        Date.valueOf(fechaLlegadaParametro);
+                Date fechaLlegada
+                        = Date.valueOf(fechaLlegadaParametro);
 
-                Time horaLlegada =
-                        Time.valueOf(horaLlegadaParametro + ":00");
+                Time horaLlegada
+                        = Time.valueOf(horaLlegadaParametro + ":00");
 
                 Date fechaRetorno = null;
 
                 if (fechaRetornoParametro != null
                         && !fechaRetornoParametro.trim().isEmpty()) {
 
-                    fechaRetorno =
-                            Date.valueOf(fechaRetornoParametro);
+                    fechaRetorno
+                            = Date.valueOf(fechaRetornoParametro);
                 }
 
                 if (fechaLlegada.before(fechaSalida)
                         || (fechaLlegada.equals(fechaSalida)
                         && horaLlegada.before(horaSalida))) {
 
-                    mensaje =
-                            "La fecha y hora de llegada estimada "
+                    mensaje
+                            = "La fecha y hora de llegada estimada "
                             + "no pueden ser anteriores a la salida.";
 
                 } else if (fechaRetorno != null
                         && fechaRetorno.before(fechaSalida)) {
 
-                    mensaje =
-                            "La fecha de retorno no puede ser "
+                    mensaje
+                            = "La fecha de retorno no puede ser "
                             + "anterior a la fecha de salida.";
 
                 } else {
 
-                    RutaPrivadaDAO rutaDAO =
-                            new RutaPrivadaDAO();
+                    RutaPrivadaDAO rutaDAO
+                            = new RutaPrivadaDAO();
 
-                    rutaPrivada =
-                            rutaDAO.buscarPorOrigenDestino(
+                    rutaPrivada
+                            = rutaDAO.buscarPorOrigenDestino(
                                     origen,
                                     destino
                             );
 
                     if (rutaPrivada == null) {
 
-                        mensaje =
-                                "No existe una ruta privada registrada "
+                        mensaje
+                                = "No existe una ruta privada registrada "
                                 + "para el origen y destino seleccionados.";
 
                     } else if (!rutaPrivada.isEstado()) {
 
-                        mensaje =
-                                "La ruta privada seleccionada "
+                        mensaje
+                                = "La ruta privada seleccionada "
                                 + "se encuentra inactiva.";
 
                     } else {
 
-                        /*
-                         * Obtener la configuración vigente.
-                         */
-                        ConfiguracionDAO configuracionDAO =
-                                new ConfiguracionDAO();
+                        ConfiguracionDAO configuracionDAO
+                                = new ConfiguracionDAO();
 
-                        Configuracion configuracion =
-                                configuracionDAO.obtenerConfiguracionVigente();
+                        Configuracion configuracion
+                                = configuracionDAO.obtenerConfiguracionVigente();
 
                         if (configuracion == null) {
 
-                            mensaje =
-                                    "No existe una configuración vigente "
+                            mensaje
+                                    = "No existe una configuración vigente "
                                     + "para calcular el precio del alquiler.";
 
                         } else if (configuracion.getPrecioKmAlquilerPrivado() <= 0) {
 
-                            mensaje =
-                                    "El precio por kilómetro para alquiler privado "
+                            mensaje
+                                    = "El precio por kilómetro para alquiler privado "
                                     + "no está configurado correctamente.";
 
                         } else {
 
-                            /*
-                             * Calcular el precio estimado.
-                             *
-                             * Precio = distancia de la ruta
-                             *          × precio configurado por kilómetro
-                             */
-                            double distanciaKm =
-                                    rutaPrivada.getDistanciaKm();
+                            double distanciaKm
+                                    = rutaPrivada.getDistanciaKm();
 
-                            double precioKm =
-                                    configuracion.getPrecioKmAlquilerPrivado();
+                            double precioKm
+                                    = configuracion.getPrecioKmAlquilerPrivado();
 
-                            double precioEstimado =
-                                    distanciaKm * precioKm;
+                            double precioEstimado
+                                    = distanciaKm * precioKm;
 
-                            /*
-                             * Crear viaje privado.
-                             */
-                            codigoViajeGenerado =
-                                    "VPR-" + System.currentTimeMillis();
+                            codigoViajeGenerado
+                                    = "VPR-" + System.currentTimeMillis();
 
                             Viaje viaje = new Viaje();
 
@@ -211,10 +199,6 @@
 
                             viaje.setTipoViaje("PRIVADO");
 
-                            /*
-                             * El bus y chofer se asignarán
-                             * posteriormente por ADMIN_SUCURSAL.
-                             */
                             viaje.setPlacaBus(null);
                             viaje.setNumeroLicencia(null);
                             viaje.setCodigoRuta(null);
@@ -234,36 +218,28 @@
                             );
 
                             viaje.setEstado("PROGRAMADO");
-
-                            /*
-                             * La depreciación es un costo interno
-                             * y se calculará al finalizar el viaje.
-                             */
                             viaje.setDepreciacionPorKm(0);
                             viaje.setDepreciacionTotal(0);
 
-                            ViajeDAO viajeDAO =
-                                    new ViajeDAO();
+                            ViajeDAO viajeDAO
+                                    = new ViajeDAO();
 
-                            boolean viajeInsertado =
-                                    viajeDAO.insertar(viaje);
+                            boolean viajeInsertado
+                                    = viajeDAO.insertar(viaje);
 
                             if (!viajeInsertado) {
 
-                                mensaje =
-                                        "No se pudo registrar el viaje "
+                                mensaje
+                                        = "No se pudo registrar el viaje "
                                         + "privado.";
 
                             } else {
 
-                                /*
-                                 * Crear solicitud de alquiler.
-                                 */
-                                codigoAlquilerGenerado =
-                                        "ALQ-" + System.currentTimeMillis();
+                                codigoAlquilerGenerado
+                                        = "ALQ-" + System.currentTimeMillis();
 
-                                Alquiler alquiler =
-                                        new Alquiler();
+                                Alquiler alquiler
+                                        = new Alquiler();
 
                                 alquiler.setCodigoAlquiler(
                                         codigoAlquilerGenerado
@@ -285,50 +261,37 @@
                                         fechaRetorno
                                 );
 
-                                /*
-                                 * Precio calculado:
-                                 * distancia × precio por km.
-                                 */
                                 alquiler.setPrecioEstimado(
                                         precioEstimado
                                 );
 
-                                /*
-                                 * Todavía no se ha confirmado
-                                 * ni pagado el alquiler.
-                                 */
                                 alquiler.setPrecioConfirmado(0);
 
                                 alquiler.setEstado(
                                         "SOLICITADO"
                                 );
 
-                                AlquilerDAO alquilerDAO =
-                                        new AlquilerDAO();
+                                AlquilerDAO alquilerDAO
+                                        = new AlquilerDAO();
 
-                                boolean alquilerInsertado =
-                                        alquilerDAO.insertar(alquiler);
+                                boolean alquilerInsertado
+                                        = alquilerDAO.insertar(alquiler);
 
                                 if (alquilerInsertado) {
 
                                     correcto = true;
 
-                                    mensaje =
-                                            "La solicitud de alquiler "
+                                    mensaje
+                                            = "La solicitud de alquiler "
                                             + "fue registrada correctamente.";
 
                                 } else {
-
-                                    /*
-                                     * Si no se pudo crear el alquiler,
-                                     * eliminamos el viaje creado.
-                                     */
                                     viajeDAO.eliminar(
                                             codigoViajeGenerado
                                     );
 
-                                    mensaje =
-                                            "No se pudo registrar la solicitud "
+                                    mensaje
+                                            = "No se pudo registrar la solicitud "
                                             + "de alquiler.";
                                 }
                             }
@@ -339,13 +302,13 @@
 
         } catch (NumberFormatException e) {
 
-            mensaje =
-                    "El número de pasajeros no es válido.";
+            mensaje
+                    = "El número de pasajeros no es válido.";
 
         } catch (IllegalArgumentException e) {
 
-            mensaje =
-                    "Una de las fechas u horas ingresadas "
+            mensaje
+                    = "Una de las fechas u horas ingresadas "
                     + "no tiene un formato válido.";
         }
     }
@@ -381,39 +344,39 @@
 
             <div class="card-menu">
 
-                <% if (correcto) { %>
+                <% if (correcto) {%>
 
                 <h2>Solicitud registrada correctamente</h2>
 
                 <p>
-                    <%= mensaje %>
+                    <%= mensaje%>
                 </p>
 
                 <p>
                     <strong>Código de solicitud:</strong>
-                    <%= codigoAlquilerGenerado %>
+                    <%= codigoAlquilerGenerado%>
                 </p>
 
                 <p>
                     <strong>Código de viaje:</strong>
-                    <%= codigoViajeGenerado %>
+                    <%= codigoViajeGenerado%>
                 </p>
 
                 <p>
                     <strong>Origen:</strong>
-                    <%= origen %>
+                    <%= origen%>
                 </p>
 
                 <p>
                     <strong>Destino:</strong>
-                    <%= destino %>
+                    <%= destino%>
                 </p>
 
-                <% if (rutaPrivada != null) { %>
+                <% if (rutaPrivada != null) {%>
 
                 <p>
                     <strong>Distancia:</strong>
-                    <%= rutaPrivada.getDistanciaKm() %> km
+                    <%= rutaPrivada.getDistanciaKm()%> km
                 </p>
 
                 <% } %>
@@ -440,12 +403,12 @@
 
                 </div>
 
-                <% } else { %>
+                <% } else {%>
 
                 <h2>No se pudo registrar la solicitud</h2>
 
                 <p>
-                    <%= mensaje %>
+                    <%= mensaje%>
                 </p>
 
                 <div class="card-acciones">
@@ -460,7 +423,7 @@
 
                 </div>
 
-                <% } %>
+                <% }%>
 
             </div>
 

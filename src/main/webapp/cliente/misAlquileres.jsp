@@ -3,7 +3,6 @@
     Created on : 14 sept 2026
     Author     : fernan
 --%>
-
 <%@page import="java.util.List"%>
 <%@page import="transporte.dao.AlquilerDAO"%>
 <%@page import="transporte.modelo.Alquiler"%>
@@ -11,8 +10,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuario =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuario
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuario == null) {
         response.sendRedirect("../login.jsp");
@@ -24,13 +23,9 @@
         return;
     }
 
-    AlquilerDAO alquilerDAO =
-            new AlquilerDAO();
+    AlquilerDAO alquilerDAO = new AlquilerDAO();
 
-    List<Alquiler> alquileres =
-            alquilerDAO.listarPorCliente(
-                    usuario.getUsuario()
-            );
+    List<Alquiler> alquileres = alquilerDAO.listarPorCliente(usuario.getUsuario());
 %>
 
 <!DOCTYPE html>
@@ -70,156 +65,154 @@
 
                 <% if (alquileres.isEmpty()) { %>
 
-                    <h2>No tienes alquileres registrados</h2>
+                <h2>No tienes alquileres registrados</h2>
 
-                    <p>
-                        Todavía no has realizado ninguna
-                        solicitud de alquiler privado.
-                    </p>
+                <p>
+                    Todavía no has realizado ninguna
+                    solicitud de alquiler privado.
+                </p>
 
                 <% } else { %>
 
-                    <div class="tabla-contenedor">
+                <div class="tabla-contenedor">
 
-                        <table>
-<thead>
+                    <table>
+                        <thead>
 
-    <tr>
+                            <tr>
 
-        <th>Código</th>
+                                <th>Código</th>
 
-        <th>Viaje</th>
+                                <th>Viaje</th>
 
-        <th>Pasajeros</th>
+                                <th>Pasajeros</th>
 
-        <th>Fecha retorno</th>
+                                <th>Fecha retorno</th>
 
-        <th>Precio estimado</th>
+                                <th>Precio estimado</th>
 
-        <th>Precio confirmado</th>
+                                <th>Precio confirmado</th>
 
-        <th>Estado</th>
+                                <th>Estado</th>
 
-        <th>Acción</th>
+                                <th>Acción</th>
 
-    </tr>
+                            </tr>
 
-</thead>
+                        </thead>
 
-<tbody>
+                        <tbody>
 
-    <% for (Alquiler alquiler : alquileres) { %>
+                            <% for (Alquiler alquiler : alquileres) {%>
 
-    <tr>
+                            <tr>
 
-        <td>
-            <%= alquiler.getCodigoAlquiler() %>
-        </td>
+                                <td>
+                                    <%= alquiler.getCodigoAlquiler()%>
+                                </td>
 
-        <td>
-            <%= alquiler.getCodigoViaje() %>
-        </td>
+                                <td>
+                                    <%= alquiler.getCodigoViaje()%>
+                                </td>
 
-        <td>
-            <%= alquiler.getNumeroPasajeros() %>
-        </td>
+                                <td>
+                                    <%= alquiler.getNumeroPasajeros()%>
+                                </td>
 
-        <td>
+                                <td>
 
-            <% if (alquiler.getFechaRetorno() != null) { %>
+                                    <% if (alquiler.getFechaRetorno() != null) {%>
 
-                <%= alquiler.getFechaRetorno() %>
+                                    <%= alquiler.getFechaRetorno()%>
 
-            <% } else { %>
+                                    <% } else { %>
 
-                No aplica
+                                    No aplica
 
-            <% } %>
+                                    <% }%>
 
-        </td>
+                                </td>
 
-        <td>
-            Q
-            <%= String.format(
-                    "%.2f",
-                    alquiler.getPrecioEstimado()
-                )
-            %>
-        </td>
+                                <td>
+                                    Q
+                                    <%= String.format(
+                                            "%.2f",
+                                            alquiler.getPrecioEstimado()
+                                    )%>
+                                </td>
 
-        <td>
+                                <td>
 
-            <% if (alquiler.getPrecioConfirmado() > 0) { %>
+                                    <% if (alquiler.getPrecioConfirmado() > 0) {%>
 
-                Q
-                <%= String.format(
-                        "%.2f",
-                        alquiler.getPrecioConfirmado()
-                    )
-                %>
+                                    Q
+                                    <%= String.format(
+                                            "%.2f",
+                                            alquiler.getPrecioConfirmado()
+                                         )%>
 
-            <% } else { %>
+                                    <% } else { %>
 
-                Pendiente
+                                    Pendiente
 
-            <% } %>
+                                    <% }%>
 
-        </td>
+                                </td>
 
-        <td>
+                                <td>
 
-            <strong>
-                <%= alquiler.getEstado() %>
-            </strong>
+                                    <strong>
+                                        <%= alquiler.getEstado()%>
+                                    </strong>
 
-        </td>
+                                </td>
 
-        <td>
+                                <td>
 
-            <% if ("CONFIRMADO".equals(alquiler.getEstado())) { %>
+                                    <% if ("CONFIRMADO".equals(alquiler.getEstado())) {%>
 
-                <form action="procesarPagoAlquiler.jsp"
-                      method="post">
+                                    <form action="procesarPagoAlquiler.jsp"
+                                          method="post">
 
-                    <input
-                        type="hidden"
-                        name="codigoAlquiler"
-                        value="<%= alquiler.getCodigoAlquiler() %>"
-                    >
+                                        <input
+                                            type="hidden"
+                                            name="codigoAlquiler"
+                                            value="<%= alquiler.getCodigoAlquiler()%>"
+                                            >
 
-                    <button type="submit">
-                        Pagar
-                    </button>
+                                        <button type="submit">
+                                            Pagar
+                                        </button>
 
-                </form>
+                                    </form>
 
-            <% } else if ("PAGADO".equals(alquiler.getEstado())) { %>
+                                    <% } else if ("PAGADO".equals(alquiler.getEstado())) { %>
 
-                <strong>
-                    Pagado
-                </strong>
+                                    <strong>
+                                        Pagado
+                                    </strong>
 
-            <% } else { %>
+                                    <% } else { %>
 
-                <span>
-                    No disponible
-                </span>
+                                    <span>
+                                        No disponible
+                                    </span>
 
-            <% } %>
+                                    <% } %>
 
-        </td>
+                                </td>
 
-    </tr>
+                            </tr>
 
-    <% } %>
+                            <% } %>
 
-</tbody>
+                        </tbody>
 
-                        </table>
+                    </table>
 
-                    </div>
+                </div>
 
-                <% } %>
+                <% }%>
 
                 <div class="card-acciones">
 

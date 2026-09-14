@@ -97,9 +97,5 @@ public class Alquiler {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
-    
-    
-    
-    
+      
 }

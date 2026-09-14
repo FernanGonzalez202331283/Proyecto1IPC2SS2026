@@ -54,7 +54,7 @@
 
                 <p>
                     Bienvenido,
-                    <strong><%= usuario.getUsuario() %></strong>
+                    <strong><%= usuario.getUsuario()%></strong>
                 </p>
 
                 <p>
@@ -67,39 +67,39 @@
 
             <% if (cartera == null) { %>
 
-                <div class="mensaje Error">
+            <div class="mensaje Error">
 
-                    No se encontró una cartera asociada
-                    a tu usuario.
+                No se encontró una cartera asociada
+                a tu usuario.
 
-                </div>
+            </div>
 
-            <% } else { %>
+            <% } else {%>
 
-                <div class="card-menu">
+            <div class="card-menu">
 
-                    <h2>Saldo disponible</h2>
+                <h2>Saldo disponible</h2>
 
-                    <p>
-                        <strong>
-                            Q<%= String.format(
+                <p>
+                    <strong>
+                        Q<%= String.format(
                                 "%.2f",
                                 cartera.getSaldo()
-                            ) %>
-                        </strong>
-                    </p>
+                        )%>
+                    </strong>
+                </p>
 
-                    <div class="card-acciones">
+                <div class="card-acciones">
 
-                        <a href="recargarCartera.jsp">
-                            Recargar saldo
-                        </a>
-
-                    </div>
+                    <a href="recargarCartera.jsp">
+                        Recargar saldo
+                    </a>
 
                 </div>
 
-            <% } %>
+            </div>
+
+            <% }%>
 
 
             <br>

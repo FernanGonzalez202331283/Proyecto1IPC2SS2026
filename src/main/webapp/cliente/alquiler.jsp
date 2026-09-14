@@ -8,8 +8,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuario =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuario
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuario == null) {
         response.sendRedirect("../login.jsp");
@@ -25,218 +25,175 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Solicitar alquiler</title>
+        <title>Solicitar alquiler</title>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-</head>
+    </head>
+    <body>
+        <main class="pagina">
+            <header class="encabezado">
+                <h1>Solicitar alquiler privado</h1>
+                <p>
+                    Solicita un bus para realizar un viaje privado.
+                </p>
+                <p>
+                    Usuario:
+                    <strong>
+                        <%= usuario.getUsuario()%>
+                    </strong>
+                </p>
+            </header>
 
-<body>
+            <div class="card-menu">
+                <h2>Datos del viaje</h2>
+                <form method="post"
+                      action="procesarAlquiler.jsp"
+                      id="formAlquiler">
+                    <!-- ORIGEN -->
+                    <div class="form-group">
+                        <label for="origen">
+                            Origen
+                        </label>
+                        <input
+                            type="text"
+                            id="origen"
+                            name="origen"
+                            maxlength="250"
+                            required
+                    </div>
 
-<main class="pagina">
+                    <!-- DESTINO -->
+                    <div class="form-group">
+                        <label for="destino">
+                            Destino
+                        </label>
+                        <input
+                            type="text"
+                            id="destino"
+                            name="destino"
+                            maxlength="250"
+                            required>
 
-    <header class="encabezado">
-
-        <h1>Solicitar alquiler privado</h1>
-
-        <p>
-            Solicita un bus para realizar un viaje privado.
-        </p>
-
-        <p>
-            Usuario:
-            <strong>
-                <%= usuario.getUsuario() %>
-            </strong>
-        </p>
-
-    </header>
-
-
-    <div class="card-menu">
-
-        <h2>Datos del viaje</h2>
-
-        <form method="post"
-              action="procesarAlquiler.jsp"
-              id="formAlquiler">
-
-
-            <!-- ORIGEN -->
-
-            <div class="form-group">
-
-                <label for="origen">
-                    Origen
-                </label>
-
-                <input
-                    type="text"
-                    id="origen"
-                    name="origen"
-                    maxlength="250"
-                    required>
-
-            </div>
+                    </div>
 
 
-            <!-- DESTINO -->
+                    <!-- NUMERO DE PASAJEROS -->
+                    <div class="form-group">
+                        <label for="numeroPasajeros">
+                            Número de pasajeros
+                        </label>
+                        <input
+                            type="number"
+                            id="numeroPasajeros"
+                            name="numeroPasajeros"
+                            min="1"
+                            required>
+                    </div>
 
-            <div class="form-group">
+                    <!-- FECHA DE SALIDA -->
+                    <div class="form-group">
+                        <label for="fechaSalida">
+                            Fecha de salida
+                        </label>
+                        <input
+                            type="date"
+                            id="fechaSalida"
+                            name="fechaSalida"
+                            required>
+                    </div>
 
-                <label for="destino">
-                    Destino
-                </label>
+                    <!-- HORA DE SALIDA -->
+                    <div class="form-group">
+                        <label for="horaSalida">
+                            Hora de salida
+                        </label>
+                        <input
+                            type="time"
+                            id="horaSalida"
+                            name="horaSalida"
+                            required>
 
-                <input
-                    type="text"
-                    id="destino"
-                    name="destino"
-                    maxlength="250"
-                    required>
+                    </div>
 
-            </div>
+                    <!-- FECHA DE LLEGADA ESTIMADA -->
+                    <div class="form-group">
+                        <label for="fechaLlegada">
+                            Fecha de llegada estimada
+                        </label>
+                        <input
+                            type="date"
+                            id="fechaLlegada"
+                            name="fechaLlegada"
+                            required>
 
+                    </div>
 
-            <!-- NUMERO DE PASAJEROS -->
+                    <!-- HORA DE LLEGADA ESTIMADA -->
+                    <div class="form-group">
+                        <label for="horaLlegada">
+                            Hora de llegada estimada
+                        </label>
 
-            <div class="form-group">
+                        <input
+                            type="time"
+                            id="horaLlegada"
+                            name="horaLlegada"
+                            required>
 
-                <label for="numeroPasajeros">
-                    Número de pasajeros
-                </label>
+                    </div>
+                    <!-- FECHA DE RETORNO -->
+                    <div class="form-group">
 
-                <input
-                    type="number"
-                    id="numeroPasajeros"
-                    name="numeroPasajeros"
-                    min="1"
-                    required>
+                        <label for="fechaRetorno">
+                            Fecha de retorno
+                        </label>
 
-            </div>
+                        <input
+                            type="date"
+                            id="fechaRetorno"
+                            name="fechaRetorno">
 
+                        <small>
+                            Déjala vacía si el viaje es solamente de ida.
+                        </small>
 
-            <!-- FECHA DE SALIDA -->
-
-            <div class="form-group">
-
-                <label for="fechaSalida">
-                    Fecha de salida
-                </label>
-
-                <input
-                    type="date"
-                    id="fechaSalida"
-                    name="fechaSalida"
-                    required>
-
-            </div>
-
-
-            <!-- HORA DE SALIDA -->
-
-            <div class="form-group">
-
-                <label for="horaSalida">
-                    Hora de salida
-                </label>
-
-                <input
-                    type="time"
-                    id="horaSalida"
-                    name="horaSalida"
-                    required>
-
-            </div>
-
-
-            <!-- FECHA DE LLEGADA ESTIMADA -->
-
-            <div class="form-group">
-
-                <label for="fechaLlegada">
-                    Fecha de llegada estimada
-                </label>
-
-                <input
-                    type="date"
-                    id="fechaLlegada"
-                    name="fechaLlegada"
-                    required>
-
-            </div>
+                    </div>
 
 
-            <!-- HORA DE LLEGADA ESTIMADA -->
+                    <div class="form-actions">
 
-            <div class="form-group">
+                        <button type="submit">
+                            Solicitar alquiler
+                        </button>
 
-                <label for="horaLlegada">
-                    Hora de llegada estimada
-                </label>
+                        <a href="../inicio.jsp">
+                            Cancelar
+                        </a>
 
-                <input
-                    type="time"
-                    id="horaLlegada"
-                    name="horaLlegada"
-                    required>
+                    </div>
+
+                </form>
 
             </div>
 
 
-            <!-- FECHA DE RETORNO -->
+            <br>
 
-            <div class="form-group">
+            <a href="../inicio.jsp">
+                Regresar al inicio
+            </a>
 
-                <label for="fechaRetorno">
-                    Fecha de retorno
-                </label>
+        </main>
 
-                <input
-                    type="date"
-                    id="fechaRetorno"
-                    name="fechaRetorno">
-
-                <small>
-                    Déjala vacía si el viaje es solamente de ida.
-                </small>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <button type="submit">
-                    Solicitar alquiler
-                </button>
-
-                <a href="../inicio.jsp">
-                    Cancelar
-                </a>
-
-            </div>
-
-        </form>
-
-    </div>
-
-
-    <br>
-
-    <a href="../inicio.jsp">
-        Regresar al inicio
-    </a>
-
-</main>
-
-</body>
+    </body>
 
 </html>

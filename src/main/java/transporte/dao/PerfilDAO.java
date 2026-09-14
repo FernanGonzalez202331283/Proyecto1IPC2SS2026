@@ -16,6 +16,7 @@ import transporte.modelo.Perfil;
  * @author fernan
  */
 public class PerfilDAO {
+    
     public boolean insertar(Perfil perfil) {
         String sql = """
                      INSERT INTO perfil
