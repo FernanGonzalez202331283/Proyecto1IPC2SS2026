@@ -16,35 +16,32 @@ import transporte.modelo.Perfil;
  * @author fernan
  */
 public class PerfilDAO {
-    
-    public boolean insertar(Perfil perfil){
+
+    public boolean insertar(Perfil perfil) {
         String sql = """
                      INSERT INTO perfil
                      (usuario, nit, dpi, nombre_completo, telefono, direccion)
                      VALUES (?,?,?,?,?,?)
                      """;
-        
-        try (Connection conexion = Conexion.getConnection();
-                PreparedStatement ps = conexion.prepareStatement(sql)
-                ) {
+
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, perfil.getUsuario());
             ps.setString(2, perfil.getNit());
             ps.setString(3, perfil.getDpi());
             ps.setString(4, perfil.getNombreCompleto());
             ps.setString(5, perfil.getTelefono());
             ps.setString(6, perfil.getDireccion());
-            
+
             ps.executeUpdate();
             return true;
-            
-            
+
         } catch (SQLException e) {
-            System.out.println("Error al insertar Perfil"+e.getMessage());
+            System.out.println("Error al insertar Perfil" + e.getMessage());
             return false;
         }
     }
-    
-     public Perfil buscarPorUsuario(String usuario) {
+
+    public Perfil buscarPorUsuario(String usuario) {
 
         String sql = """
                      SELECT usuario,
@@ -58,9 +55,7 @@ public class PerfilDAO {
                      """;
 
         try (
-            Connection conexion = Conexion.getConnection();
-            PreparedStatement ps = conexion.prepareStatement(sql)
-        ) {
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, usuario);
 
@@ -89,7 +84,6 @@ public class PerfilDAO {
         return null;
     }
 
-
     public boolean actualizar(Perfil perfil) {
 
         String sql = """
@@ -103,9 +97,7 @@ public class PerfilDAO {
                      """;
 
         try (
-            Connection conexion = Conexion.getConnection();
-            PreparedStatement ps = conexion.prepareStatement(sql)
-        ) {
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, perfil.getNit());
             ps.setString(2, perfil.getDpi());
@@ -128,9 +120,10 @@ public class PerfilDAO {
             return false;
         }
     }
+
     public boolean estaCompleto(String usuario) {
 
-    String sql = """
+        String sql = """
                  SELECT COUNT(*) AS cantidad
                  FROM perfil
                  WHERE usuario = ?
@@ -146,28 +139,26 @@ public class PerfilDAO {
                    AND TRIM(direccion) <> ''
                  """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-        ps.setString(1, usuario);
+            ps.setString(1, usuario);
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
-            return rs.getInt("cantidad") > 0;
+            if (rs.next()) {
+                return rs.getInt("cantidad") > 0;
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al verificar si el perfil está completo: "
+                    + e.getMessage()
+            );
         }
 
-    } catch (SQLException e) {
-
-        System.out.println(
-                "Error al verificar si el perfil está completo: "
-                + e.getMessage()
-        );
+        return false;
     }
 
-    return false;
-}
-    
 }

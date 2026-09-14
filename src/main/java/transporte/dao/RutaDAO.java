@@ -18,7 +18,7 @@ import transporte.modelo.Ruta;
  * @author fernan
  */
 public class RutaDAO {
-    
+
     public boolean insertar(Ruta ruta) {
 
         String sql = """
@@ -28,8 +28,7 @@ public class RutaDAO {
             VALUES (?, ?, ?, ?, ?, ?)
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, ruta.getCodigoRuta());
             ps.setString(2, ruta.getCodigoSucursalOrigen());
@@ -45,13 +44,13 @@ public class RutaDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al insertar ruta: " + e.getMessage()
+                    "Error al insertar ruta: " + e.getMessage()
             );
 
             return false;
         }
     }
-    
+
     public Ruta obtener(String codigoRuta) {
 
         String sql = """
@@ -62,8 +61,7 @@ public class RutaDAO {
             WHERE codigo_ruta = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, codigoRuta);
 
@@ -72,25 +70,25 @@ public class RutaDAO {
             if (rs.next()) {
 
                 return new Ruta(
-                    rs.getString("codigo_ruta"),
-                    rs.getString("codigo_sucursal_origen"),
-                    rs.getString("codigo_sucursal_destino"),
-                    rs.getDouble("distancia_km"),
-                    rs.getDouble("precio_boleto"),
-                    rs.getBoolean("estado")
+                        rs.getString("codigo_ruta"),
+                        rs.getString("codigo_sucursal_origen"),
+                        rs.getString("codigo_sucursal_destino"),
+                        rs.getDouble("distancia_km"),
+                        rs.getDouble("precio_boleto"),
+                        rs.getBoolean("estado")
                 );
             }
 
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al obtener ruta: " + e.getMessage()
+                    "Error al obtener ruta: " + e.getMessage()
             );
         }
 
         return null;
     }
-    
+
     public boolean actualizar(Ruta ruta) {
 
         String sql = """
@@ -103,8 +101,7 @@ public class RutaDAO {
             WHERE codigo_ruta = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, ruta.getCodigoSucursalOrigen());
             ps.setString(2, ruta.getCodigoSucursalDestino());
@@ -120,13 +117,13 @@ public class RutaDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al actualizar ruta: " + e.getMessage()
+                    "Error al actualizar ruta: " + e.getMessage()
             );
 
             return false;
         }
     }
-    
+
     public void listar() {
 
         String sql = """
@@ -136,40 +133,37 @@ public class RutaDAO {
             FROM ruta
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
 
                 System.out.println(
-                    "Ruta: " + rs.getString("codigo_ruta")
-                    + " | Origen: " + rs.getString("codigo_sucursal_origen")
-                    + " | Destino: " + rs.getString("codigo_sucursal_destino")
-                    + " | Distancia: " + rs.getDouble("distancia_km")
-                    + " km"
-                    + " | Precio: " + rs.getDouble("precio_boleto")
-                    + " | Estado: " + rs.getBoolean("estado")
+                        "Ruta: " + rs.getString("codigo_ruta")
+                        + " | Origen: " + rs.getString("codigo_sucursal_origen")
+                        + " | Destino: " + rs.getString("codigo_sucursal_destino")
+                        + " | Distancia: " + rs.getDouble("distancia_km")
+                        + " km"
+                        + " | Precio: " + rs.getDouble("precio_boleto")
+                        + " | Estado: " + rs.getBoolean("estado")
                 );
             }
 
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al listar rutas: " + e.getMessage()
+                    "Error al listar rutas: " + e.getMessage()
             );
         }
     }
-    
-     public boolean eliminar(String codigoRuta) {
+
+    public boolean eliminar(String codigoRuta) {
 
         String sql = """
             DELETE FROM ruta
             WHERE codigo_ruta = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, codigoRuta);
 
@@ -180,18 +174,18 @@ public class RutaDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al eliminar ruta: " + e.getMessage()
+                    "Error al eliminar ruta: " + e.getMessage()
             );
 
             return false;
         }
     }
-     
-     public List<Ruta> listarPorSucursal(String codigoSucursal) {
 
-    List<Ruta> rutas = new ArrayList<>();
+    public List<Ruta> listarPorSucursal(String codigoSucursal) {
 
-    String sql = """
+        List<Ruta> rutas = new ArrayList<>();
+
+        String sql = """
         SELECT codigo_ruta,
                codigo_sucursal_origen,
                codigo_sucursal_destino,
@@ -203,97 +197,92 @@ public class RutaDAO {
         ORDER BY codigo_ruta
         """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-        ps.setString(1, codigoSucursal);
+            ps.setString(1, codigoSucursal);
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
+            while (rs.next()) {
 
-            Ruta ruta = new Ruta(
-                rs.getString("codigo_ruta"),
-                rs.getString("codigo_sucursal_origen"),
-                rs.getString("codigo_sucursal_destino"),
-                rs.getDouble("distancia_km"),
-                rs.getDouble("precio_boleto"),
-                rs.getBoolean("estado")
+                Ruta ruta = new Ruta(
+                        rs.getString("codigo_ruta"),
+                        rs.getString("codigo_sucursal_origen"),
+                        rs.getString("codigo_sucursal_destino"),
+                        rs.getDouble("distancia_km"),
+                        rs.getDouble("precio_boleto"),
+                        rs.getBoolean("estado")
+                );
+
+                rutas.add(ruta);
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al listar rutas por sucursal: "
+                    + e.getMessage()
             );
-
-            rutas.add(ruta);
         }
 
-    } catch (SQLException e) {
-
-        System.out.println(
-            "Error al listar rutas por sucursal: "
-            + e.getMessage()
-        );
+        return rutas;
     }
 
-    return rutas;
-}
-     public boolean desactivar(String codigoRuta) {
+    public boolean desactivar(String codigoRuta) {
 
-    String sql = """
+        String sql = """
         UPDATE ruta
         SET estado = FALSE
         WHERE codigo_ruta = ?
         """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-        ps.setString(1, codigoRuta);
+            ps.setString(1, codigoRuta);
 
-        int filas = ps.executeUpdate();
+            int filas = ps.executeUpdate();
 
-        return filas > 0;
+            return filas > 0;
 
-    } catch (SQLException e) {
+        } catch (SQLException e) {
 
-        System.out.println(
-            "Error al desactivar ruta: "
-            + e.getMessage()
-        );
+            System.out.println(
+                    "Error al desactivar ruta: "
+                    + e.getMessage()
+            );
 
-        return false;
+            return false;
+        }
     }
-}
 
-public boolean activar(String codigoRuta) {
+    public boolean activar(String codigoRuta) {
 
-    String sql = """
+        String sql = """
         UPDATE ruta
         SET estado = TRUE
         WHERE codigo_ruta = ?
         """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-        ps.setString(1, codigoRuta);
+            ps.setString(1, codigoRuta);
 
-        int filas = ps.executeUpdate();
+            int filas = ps.executeUpdate();
 
-        return filas > 0;
+            return filas > 0;
 
-    } catch (SQLException e) {
+        } catch (SQLException e) {
 
-        System.out.println(
-            "Error al activar ruta: "
-            + e.getMessage()
-        );
+            System.out.println(
+                    "Error al activar ruta: "
+                    + e.getMessage()
+            );
 
-        return false;
+            return false;
+        }
     }
-}
-    
+
 }

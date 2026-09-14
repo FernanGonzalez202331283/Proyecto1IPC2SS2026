@@ -16,6 +16,7 @@ import transporte.modelo.MovimientoCartera;
  * @author fernan
  */
 public class MovimientoCarteraDAO {
+
     public boolean insertar(MovimientoCartera movimiento) {
 
         String sql = """
@@ -24,8 +25,7 @@ public class MovimientoCarteraDAO {
             VALUES (?, ?, ?, ?, ?, ?)
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, movimiento.getCodigoMovimiento());
             ps.setString(2, movimiento.getUsuario());
@@ -41,14 +41,14 @@ public class MovimientoCarteraDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al insertar movimiento: "
-                + e.getMessage()
+                    "Error al insertar movimiento: "
+                    + e.getMessage()
             );
 
             return false;
         }
     }
-    
+
     public MovimientoCartera obtener(String codigoMovimiento) {
 
         String sql = """
@@ -62,8 +62,7 @@ public class MovimientoCarteraDAO {
             WHERE codigo_movimiento = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, codigoMovimiento);
 
@@ -71,31 +70,31 @@ public class MovimientoCarteraDAO {
 
             if (rs.next()) {
 
-                MovimientoCartera movimiento =
-                        new MovimientoCartera();
+                MovimientoCartera movimiento
+                        = new MovimientoCartera();
 
                 movimiento.setCodigoMovimiento(
-                    rs.getString("codigo_movimiento")
+                        rs.getString("codigo_movimiento")
                 );
 
                 movimiento.setUsuario(
-                    rs.getString("usuario")
+                        rs.getString("usuario")
                 );
 
                 movimiento.setTipo(
-                    rs.getString("tipo")
+                        rs.getString("tipo")
                 );
 
                 movimiento.setMonto(
-                    rs.getDouble("monto")
+                        rs.getDouble("monto")
                 );
 
                 movimiento.setFecha(
-                    rs.getDate("fecha")
+                        rs.getDate("fecha")
                 );
 
                 movimiento.setDescripcion(
-                    rs.getString("descripcion")
+                        rs.getString("descripcion")
                 );
 
                 return movimiento;
@@ -104,14 +103,14 @@ public class MovimientoCarteraDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al obtener movimiento: "
-                + e.getMessage()
+                    "Error al obtener movimiento: "
+                    + e.getMessage()
             );
         }
 
         return null;
     }
-    
+
     public boolean actualizar(MovimientoCartera movimiento) {
 
         String sql = """
@@ -124,8 +123,7 @@ public class MovimientoCarteraDAO {
             WHERE codigo_movimiento = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, movimiento.getUsuario());
             ps.setString(2, movimiento.getTipo());
@@ -141,14 +139,14 @@ public class MovimientoCarteraDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al actualizar movimiento: "
-                + e.getMessage()
+                    "Error al actualizar movimiento: "
+                    + e.getMessage()
             );
 
             return false;
         }
     }
-    
+
     public void listar() {
 
         String sql = """
@@ -161,33 +159,31 @@ public class MovimientoCarteraDAO {
             FROM movimiento_cartera
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
 
                 System.out.println(
-                    "Movimiento: "
-                    + rs.getString("codigo_movimiento")
-                    + " | Usuario: "
-                    + rs.getString("usuario")
-                    + " | Tipo: "
-                    + rs.getString("tipo")
-                    + " | Monto: "
-                    + rs.getDouble("monto")
-                    + " | Fecha: "
-                    + rs.getDate("fecha")
-                    + " | Descripción: "
-                    + rs.getString("descripcion")
+                        "Movimiento: "
+                        + rs.getString("codigo_movimiento")
+                        + " | Usuario: "
+                        + rs.getString("usuario")
+                        + " | Tipo: "
+                        + rs.getString("tipo")
+                        + " | Monto: "
+                        + rs.getDouble("monto")
+                        + " | Fecha: "
+                        + rs.getDate("fecha")
+                        + " | Descripción: "
+                        + rs.getString("descripcion")
                 );
             }
 
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al listar movimientos: "
-                + e.getMessage()
+                    "Error al listar movimientos: "
+                    + e.getMessage()
             );
         }
     }

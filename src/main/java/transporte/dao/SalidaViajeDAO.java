@@ -16,6 +16,7 @@ import transporte.modelo.SalidaViaje;
  * @author fernan
  */
 public class SalidaViajeDAO {
+
     public boolean insertar(SalidaViaje salida) {
 
         String sql = """
@@ -25,8 +26,7 @@ public class SalidaViajeDAO {
             VALUES (?, ?, ?, ?)
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, salida.getCodigoViaje());
             ps.setTime(2, salida.getHoraRealSalida());
@@ -40,15 +40,15 @@ public class SalidaViajeDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al insertar salida del viaje: "
-                + e.getMessage()
+                    "Error al insertar salida del viaje: "
+                    + e.getMessage()
             );
 
             return false;
         }
     }
-    
-     public SalidaViaje obtener(String codigoViaje) {
+
+    public SalidaViaje obtener(String codigoViaje) {
 
         String sql = """
             SELECT codigo_viaje,
@@ -59,8 +59,7 @@ public class SalidaViajeDAO {
             WHERE codigo_viaje = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, codigoViaje);
 
@@ -69,37 +68,23 @@ public class SalidaViajeDAO {
             if (rs.next()) {
 
                 SalidaViaje salida = new SalidaViaje();
-
-                salida.setCodigoViaje(
-                    rs.getString("codigo_viaje")
-                );
-
-                salida.setHoraRealSalida(
-                    rs.getTime("hora_real_salida")
-                );
-
-                salida.setKilometrajeInicial(
-                    rs.getDouble("kilometraje_inicial")
-                );
-
-                salida.setUsuarioRegistro(
-                    rs.getString("usuario_registro")
-                );
-
+                salida.setCodigoViaje(rs.getString("codigo_viaje"));
+                salida.setHoraRealSalida(rs.getTime("hora_real_salida"));
+                salida.setKilometrajeInicial(rs.getDouble("kilometraje_inicial"));
+                salida.setUsuarioRegistro(rs.getString("usuario_registro"));
                 return salida;
             }
 
         } catch (SQLException e) {
-
             System.out.println(
-                "Error al obtener salida del viaje: "
-                + e.getMessage()
+                    "Error al obtener salida del viaje: "
+                    + e.getMessage()
             );
         }
 
         return null;
     }
-     
+
     public void listar() {
 
         String sql = """
@@ -110,29 +95,27 @@ public class SalidaViajeDAO {
             FROM salida_viaje
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
 
                 System.out.println(
-                    "Viaje: "
-                    + rs.getString("codigo_viaje")
-                    + " | Hora salida: "
-                    + rs.getTime("hora_real_salida")
-                    + " | Kilometraje inicial: "
-                    + rs.getDouble("kilometraje_inicial")
-                    + " | Usuario: "
-                    + rs.getString("usuario_registro")
+                        "Viaje: "
+                        + rs.getString("codigo_viaje")
+                        + " | Hora salida: "
+                        + rs.getTime("hora_real_salida")
+                        + " | Kilometraje inicial: "
+                        + rs.getDouble("kilometraje_inicial")
+                        + " | Usuario: "
+                        + rs.getString("usuario_registro")
                 );
             }
 
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al listar salidas: "
-                + e.getMessage()
+                    "Error al listar salidas: "
+                    + e.getMessage()
             );
         }
     }

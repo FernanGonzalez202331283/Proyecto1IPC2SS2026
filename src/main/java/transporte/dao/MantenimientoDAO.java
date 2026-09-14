@@ -66,41 +66,17 @@ public class MantenimientoDAO {
             """;
 
         try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
-
+            PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, codigoMantenimiento);
-
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
-
-                Mantenimiento mantenimiento =
-                        new Mantenimiento();
-
-                mantenimiento.setCodigoMantenimiento(
-                    rs.getString("codigo_mantenimiento")
-                );
-
-                mantenimiento.setPlacaBus(
-                    rs.getString("placa_bus")
-                );
-
-                mantenimiento.setFecha(
-                    rs.getDate("fecha")
-                );
-
-                mantenimiento.setMontoManoObra(
-                    rs.getDouble("monto_mano_obra")
-                );
-
-                mantenimiento.setMontoRepuestos(
-                    rs.getDouble("monto_repuestos")
-                );
-
-                mantenimiento.setDescripcion(
-                    rs.getString("descripcion")
-                );
-
+                Mantenimiento mantenimiento =new Mantenimiento();
+                mantenimiento.setCodigoMantenimiento(rs.getString("codigo_mantenimiento"));
+                mantenimiento.setPlacaBus(rs.getString("placa_bus"));
+                mantenimiento.setFecha(rs.getDate("fecha"));
+                mantenimiento.setMontoManoObra(rs.getDouble("monto_mano_obra"));
+                mantenimiento.setMontoRepuestos(rs.getDouble("monto_repuestos"));
+                mantenimiento.setDescripcion(rs.getString("descripcion"));
                 return mantenimiento;
             }
 

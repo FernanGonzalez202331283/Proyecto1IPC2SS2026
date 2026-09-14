@@ -18,18 +18,16 @@ import transporte.modelo.Chofer;
  * @author fernan
  */
 public class ChoferDAO {
-    
-    public boolean insertar(Chofer chofer){
+
+    public boolean insertar(Chofer chofer) {
         String sql = """
                      INSERT INTO chofer
                      (numero_licencia, codigo_sucursal, foto, nombre_completo, tipo_licencia, fecha_vencimiento_licencia, telefono, salario_base_viaje, estado)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                      """;
-        
-        try (Connection conexion = Conexion.getConnection();
-                PreparedStatement ps = conexion.prepareStatement(sql)
-                ) {
-            
+
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+
             ps.setString(1, chofer.getNumeroLicencia());
             ps.setString(2, chofer.getCodigoSucursal());
             ps.setString(3, chofer.getFoto());
@@ -39,18 +37,18 @@ public class ChoferDAO {
             ps.setString(7, chofer.getTelefono());
             ps.setDouble(8, chofer.getSalarioBaseViaje());
             ps.setBoolean(9, chofer.isEstado());
-            
+
             ps.executeUpdate();
-            
+
             return true;
-            
+
         } catch (SQLException e) {
-            System.out.println("Error al insertar chofer: "+e.getMessage());
+            System.out.println("Error al insertar chofer: " + e.getMessage());
         }
         return false;
     }
-    
-    public Chofer obtener(String numeroLicencia){
+
+    public Chofer obtener(String numeroLicencia) {
         String sql = """
                      SELECT numero_licencia, codigo_sucursal, foto,
                             nombre_completo, tipo_licencia,
@@ -59,39 +57,37 @@ public class ChoferDAO {
                      FROM chofer
                      WHERE numero_licencia = ?
                      """;
-        try (Connection conexion = Conexion.getConnection();
-                PreparedStatement ps = conexion.prepareStatement(sql)
-                ){
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, numeroLicencia);
-            
+
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
 
-            return new Chofer(
-                rs.getString("numero_licencia"),
-                rs.getString("codigo_sucursal"),
-                rs.getString("foto"),
-                rs.getString("nombre_completo"),
-                rs.getString("tipo_licencia"),
-                rs.getString("fecha_vencimiento_licencia"),
-                rs.getString("telefono"),
-                rs.getDouble("salario_base_viaje"),
-                rs.getBoolean("estado")
+                return new Chofer(
+                        rs.getString("numero_licencia"),
+                        rs.getString("codigo_sucursal"),
+                        rs.getString("foto"),
+                        rs.getString("nombre_completo"),
+                        rs.getString("tipo_licencia"),
+                        rs.getString("fecha_vencimiento_licencia"),
+                        rs.getString("telefono"),
+                        rs.getDouble("salario_base_viaje"),
+                        rs.getBoolean("estado")
+                );
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al obtener chofer: " + e.getMessage()
             );
         }
 
-    } catch (SQLException e) {
-
-        System.out.println(
-            "Error al obtener chofer: " + e.getMessage()
-        );
+        return null;
     }
 
-    return null;
-    }
-    
-     public boolean actualizar(Chofer chofer) {
+    public boolean actualizar(Chofer chofer) {
 
         String sql = """
             UPDATE chofer
@@ -106,8 +102,7 @@ public class ChoferDAO {
             WHERE numero_licencia = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, chofer.getCodigoSucursal());
             ps.setString(2, chofer.getFoto());
@@ -127,7 +122,7 @@ public class ChoferDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al actualizar chofer: " + e.getMessage()
+                    "Error al actualizar chofer: " + e.getMessage()
             );
 
             return false;
@@ -145,27 +140,25 @@ public class ChoferDAO {
             FROM chofer
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
 
                 System.out.println(
-                    "Licencia: " + rs.getString("numero_licencia")
-                    + " | Sucursal: " + rs.getString("codigo_sucursal")
-                    + " | Nombre: " + rs.getString("nombre_completo")
-                    + " | Tipo: " + rs.getString("tipo_licencia")
-                    + " | Vencimiento: " + rs.getString("fecha_vencimiento_licencia")
-                    + " | Salario: " + rs.getDouble("salario_base_viaje")
-                    + " | Estado: " + rs.getBoolean("estado")
+                        "Licencia: " + rs.getString("numero_licencia")
+                        + " | Sucursal: " + rs.getString("codigo_sucursal")
+                        + " | Nombre: " + rs.getString("nombre_completo")
+                        + " | Tipo: " + rs.getString("tipo_licencia")
+                        + " | Vencimiento: " + rs.getString("fecha_vencimiento_licencia")
+                        + " | Salario: " + rs.getDouble("salario_base_viaje")
+                        + " | Estado: " + rs.getBoolean("estado")
                 );
             }
 
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al listar choferes: " + e.getMessage()
+                    "Error al listar choferes: " + e.getMessage()
             );
         }
     }
@@ -179,8 +172,7 @@ public class ChoferDAO {
             WHERE numero_licencia = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, numeroLicencia);
 
@@ -191,18 +183,18 @@ public class ChoferDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al desactivar chofer: " + e.getMessage()
+                    "Error al desactivar chofer: " + e.getMessage()
             );
 
             return false;
         }
-    } 
-    
-  public List<Chofer> listarPorSucursal(String codigoSucursal) {
+    }
 
-    List<Chofer> choferes = new ArrayList<>();
+    public List<Chofer> listarPorSucursal(String codigoSucursal) {
 
-    String sql = """
+        List<Chofer> choferes = new ArrayList<>();
+
+        String sql = """
         SELECT numero_licencia,
                codigo_sucursal,
                foto,
@@ -217,40 +209,38 @@ public class ChoferDAO {
         ORDER BY nombre_completo
         """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-        ps.setString(1, codigoSucursal);
+            ps.setString(1, codigoSucursal);
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
+            while (rs.next()) {
 
-            Chofer chofer = new Chofer(
-                rs.getString("numero_licencia"),
-                rs.getString("codigo_sucursal"),
-                rs.getString("foto"),
-                rs.getString("nombre_completo"),
-                rs.getString("tipo_licencia"),
-                rs.getString("fecha_vencimiento_licencia"),
-                rs.getString("telefono"),
-                rs.getDouble("salario_base_viaje"),
-                rs.getBoolean("estado")
+                Chofer chofer = new Chofer(
+                        rs.getString("numero_licencia"),
+                        rs.getString("codigo_sucursal"),
+                        rs.getString("foto"),
+                        rs.getString("nombre_completo"),
+                        rs.getString("tipo_licencia"),
+                        rs.getString("fecha_vencimiento_licencia"),
+                        rs.getString("telefono"),
+                        rs.getDouble("salario_base_viaje"),
+                        rs.getBoolean("estado")
+                );
+
+                choferes.add(chofer);
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al listar choferes por sucursal: "
+                    + e.getMessage()
             );
-
-            choferes.add(chofer);
         }
 
-    } catch (SQLException e) {
-
-        System.out.println(
-            "Error al listar choferes por sucursal: "
-            + e.getMessage()
-        );
+        return choferes;
     }
-
-    return choferes;
-}
 }

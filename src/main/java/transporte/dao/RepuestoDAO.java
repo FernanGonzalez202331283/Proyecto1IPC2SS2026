@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import transporte.conexion.Conexion;
 import transporte.modelo.Repuesto;
 
@@ -73,30 +75,13 @@ public class RepuestoDAO {
             if (rs.next()) {
 
                 Repuesto repuesto = new Repuesto();
-
-                repuesto.setCodigoRepuesto(
-                    rs.getString("codigo_repuesto")
-                );
-
-                repuesto.setNombre(
-                    rs.getString("nombre")
-                );
-
-                repuesto.setDescripcion(
-                    rs.getString("descripcion")
-                );
-
-                repuesto.setPrecio(
-                    rs.getDouble("precio")
-                );
-
-                repuesto.setEstado(
-                    rs.getBoolean("estado")
-                );
-
+                repuesto.setCodigoRepuesto(rs.getString("codigo_repuesto"));
+                repuesto.setNombre(rs.getString("nombre"));
+                repuesto.setDescripcion(rs.getString("descripcion"));
+                repuesto.setPrecio(rs.getDouble("precio"));
+                repuesto.setEstado(rs.getBoolean("estado"));
                 return repuesto;
             }
-
         } catch (SQLException e) {
 
             System.out.println(
@@ -104,7 +89,6 @@ public class RepuestoDAO {
                 + e.getMessage()
             );
         }
-
         return null;
     }
 
@@ -183,5 +167,61 @@ public class RepuestoDAO {
                 + e.getMessage()
             );
         }
+    }
+    public List<Repuesto> listarActivos() {
+
+        List<Repuesto> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT codigo_repuesto,
+                   nombre,
+                   descripcion,
+                   precio,
+                   estado
+            FROM repuesto
+            WHERE estado = TRUE
+            ORDER BY nombre
+            """;
+
+        try (Connection conexion = Conexion.getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+
+                Repuesto repuesto = new Repuesto();
+
+                repuesto.setCodigoRepuesto(
+                        rs.getString("codigo_repuesto")
+                );
+
+                repuesto.setNombre(
+                        rs.getString("nombre")
+                );
+
+                repuesto.setDescripcion(
+                        rs.getString("descripcion")
+                );
+
+                repuesto.setPrecio(
+                        rs.getDouble("precio")
+                );
+
+                repuesto.setEstado(
+                        rs.getBoolean("estado")
+                );
+
+                lista.add(repuesto);
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al listar repuestos activos: "
+                    + e.getMessage()
+            );
+        }
+
+        return lista;
     }
 }

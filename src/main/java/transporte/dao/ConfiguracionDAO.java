@@ -16,119 +16,93 @@ import transporte.modelo.Configuracion;
  * @author fernan
  */
 public class ConfiguracionDAO {
-    
-    public boolean insertar(Configuracion configuracion){
+
+   
+    public boolean insertar(Configuracion configuracion) {
+
         String sql = """
                      INSERT INTO configuracion
-                     (codigo_configuracion, depreciacion_por_km, fecha_configuracion)
-                     VALUES (?,?,?)
+                     (codigo_configuracion,
+                      depreciacion_por_km,
+                      precio_km_alquiler_privado,
+                      fecha_configuracion)
+                     VALUES (?,?,?,?)
                      """;
-        
+
         try (Connection conexion = Conexion.getConnection();
-                PreparedStatement ps = conexion.prepareStatement(sql)
-                ){
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
             ps.setString(1, configuracion.getCodigoConfiguracion());
             ps.setDouble(2, configuracion.getDepreciacionPorKm());
-            ps.setDate(3, configuracion.getFechaConfiguracion());
-            
+            ps.setDouble(3, configuracion.getPrecioKmAlquilerPrivado());
+            ps.setDate(4, configuracion.getFechaConfiguracion());
+
             ps.executeUpdate();
             return true;
-            
+
         } catch (SQLException e) {
-            System.out.println("eror al insertar configuracion: "+e.getMessage());
+            System.out.println(
+                    "Error al insertar configuracion: "
+                    + e.getMessage()
+            );
         }
+
         return false;
     }
-    
-    public boolean actualizar(Configuracion configuracion){
+
+    public boolean actualizar(Configuracion configuracion) {
+
         String sql = """
                      UPDATE configuracion
                      SET depreciacion_por_km = ?,
-                     fecha_configuracion = ?
+                         precio_km_alquiler_privado = ?,
+                         fecha_configuracion = ?
                      WHERE codigo_configuracion = ?
                      """;
-        
+
         try (Connection conexion = Conexion.getConnection();
-                PreparedStatement ps = conexion.prepareStatement(sql)
-                ){
-            
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
             ps.setDouble(1, configuracion.getDepreciacionPorKm());
-            ps.setDate(2, configuracion.getFechaConfiguracion());
-            ps.setString(3, configuracion.getCodigoConfiguracion());
-            
+            ps.setDouble(2, configuracion.getPrecioKmAlquilerPrivado());
+            ps.setDate(3, configuracion.getFechaConfiguracion());
+            ps.setString(4, configuracion.getCodigoConfiguracion());
+
             int filas = ps.executeUpdate();
+
             return filas > 0;
-            
+
         } catch (SQLException e) {
-            System.out.println("Error al actualizar configuracion: "+e.getMessage());
+            System.out.println(
+                    "Error al actualizar configuracion: "
+                    + e.getMessage()
+            );
         }
+
         return false;
     }
-    
-    public Configuracion obtener(String codigoConfiguracion){
+
+    public Configuracion obtener(String codigoConfiguracion) {
+
         String sql = """
                      SELECT codigo_configuracion,
                             depreciacion_por_km,
+                            precio_km_alquiler_privado,
                             fecha_configuracion
                      FROM configuracion
                      WHERE codigo_configuracion = ?
                      """;
-        
-        try (Connection conexion = Conexion.getConnection();    
-            PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+        try (Connection conexion = Conexion.getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
             ps.setString(1, codigoConfiguracion);
-            ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-
-                Configuracion configuracion = new Configuracion();
-
-                configuracion.setCodigoConfiguracion(
-                    rs.getString("codigo_configuracion")
-                );
-
-                configuracion.setDepreciacionPorKm(
-                    rs.getDouble("depreciacion_por_km")
-                );
-
-                configuracion.setFechaConfiguracion(
-                    rs.getDate("fecha_configuracion")
-                );
-
-                return configuracion;
-            }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                "Error al obtener configuracion: "
-                + e.getMessage()
-            );
-        }
-
-        return null;
-    }
-    
-        public Configuracion obtenerConfiguracionVigente() {
-
-            String sql = """
-                         SELECT codigo_configuracion,
-                                depreciacion_por_km,
-                                fecha_configuracion
-                         FROM configuracion
-                         ORDER BY fecha_configuracion DESC,
-                                  codigo_configuracion DESC
-                         LIMIT 1
-                         """;
-
-            try (Connection conexion = Conexion.getConnection();
-                 PreparedStatement ps = conexion.prepareStatement(sql);
-                 ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
 
                 if (rs.next()) {
 
-                    Configuracion configuracion =
-                            new Configuracion();
+                    Configuracion configuracion = new Configuracion();
 
                     configuracion.setCodigoConfiguracion(
                             rs.getString("codigo_configuracion")
@@ -138,21 +112,75 @@ public class ConfiguracionDAO {
                             rs.getDouble("depreciacion_por_km")
                     );
 
+                    configuracion.setPrecioKmAlquilerPrivado(
+                            rs.getDouble("precio_km_alquiler_privado")
+                    );
+
                     configuracion.setFechaConfiguracion(
                             rs.getDate("fecha_configuracion")
                     );
 
                     return configuracion;
                 }
-
-            } catch (SQLException e) {
-
-                System.out.println(
-                        "Error al obtener configuracion vigente: "
-                        + e.getMessage()
-                );
             }
 
-            return null;
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error al obtener configuracion: "
+                    + e.getMessage()
+            );
         }
+
+        return null;
+    }
+
+    public Configuracion obtenerConfiguracionVigente() {
+
+        String sql = """
+                     SELECT codigo_configuracion,
+                            depreciacion_por_km,
+                            precio_km_alquiler_privado,
+                            fecha_configuracion
+                     FROM configuracion
+                     ORDER BY fecha_configuracion DESC,
+                              codigo_configuracion DESC
+                     LIMIT 1
+                     """;
+
+        try (Connection conexion = Conexion.getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+
+                Configuracion configuracion = new Configuracion();
+
+                configuracion.setCodigoConfiguracion(
+                        rs.getString("codigo_configuracion")
+                );
+
+                configuracion.setDepreciacionPorKm(
+                        rs.getDouble("depreciacion_por_km")
+                );
+
+                configuracion.setPrecioKmAlquilerPrivado(
+                        rs.getDouble("precio_km_alquiler_privado")
+                );
+
+                configuracion.setFechaConfiguracion(
+                        rs.getDate("fecha_configuracion")
+                );
+
+                return configuracion;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error al obtener configuracion vigente: "
+                    + e.getMessage()
+            );
+        }
+
+        return null;
+    }
 }

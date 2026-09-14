@@ -18,7 +18,8 @@ import transporte.modelo.Bus;
  * @author fernan
  */
 public class BusDAO {
-     public boolean insertar(Bus bus) {
+
+    public boolean insertar(Bus bus) {
 
         String sql = """
             INSERT INTO bus
@@ -28,8 +29,7 @@ public class BusDAO {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, bus.getPlaca());
             ps.setString(2, bus.getCodigoSucursal());
@@ -48,7 +48,7 @@ public class BusDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al insertar bus: " + e.getMessage()
+                    "Error al insertar bus: " + e.getMessage()
             );
 
             return false;
@@ -70,8 +70,7 @@ public class BusDAO {
             WHERE placa = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, bus.getCodigoSucursal());
             ps.setString(2, bus.getFoto());
@@ -90,7 +89,7 @@ public class BusDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al actualizar bus: " + e.getMessage()
+                    "Error al actualizar bus: " + e.getMessage()
             );
 
             return false;
@@ -113,63 +112,27 @@ public class BusDAO {
             WHERE placa = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
-
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, placa);
-
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
-
                 Bus bus = new Bus();
-
-                bus.setPlaca(
-                    rs.getString("placa")
-                );
-
-                bus.setCodigoSucursal(
-                    rs.getString("codigo_sucursal")
-                );
-
-                bus.setFoto(
-                    rs.getString("foto")
-                );
-
-                bus.setMarca(
-                    rs.getString("marca")
-                );
-
-                bus.setModelo(
-                    rs.getString("modelo")
-                );
-
-                bus.setAñoFabricacion(
-                    rs.getInt("anio_fabricacion")
-                );
-
-                bus.setCapacidad(
-                    rs.getInt("capacidad")
-                );
-
-                bus.setEstadoOperativo(
-                    rs.getString("estado_operativo")
-                );
-
-                bus.setKilometrajeActual(
-                    rs.getDouble("kilometraje_actual")
-                );
-
+                bus.setPlaca(rs.getString("placa"));
+                bus.setCodigoSucursal(rs.getString("codigo_sucursal"));
+                bus.setFoto(rs.getString("foto"));
+                bus.setMarca(rs.getString("marca"));
+                bus.setModelo(rs.getString("modelo"));
+                bus.setAñoFabricacion(rs.getInt("anio_fabricacion"));
+                bus.setCapacidad(rs.getInt("capacidad"));
+                bus.setEstadoOperativo(rs.getString("estado_operativo"));
+                bus.setKilometrajeActual(rs.getDouble("kilometraje_actual"));
                 return bus;
             }
-
         } catch (SQLException e) {
-
             System.out.println(
-                "Error al obtener bus: " + e.getMessage()
+                    "Error al obtener bus: " + e.getMessage()
             );
         }
-
         return null;
     }
 
@@ -186,35 +149,34 @@ public class BusDAO {
             FROM bus
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
 
                 System.out.println(
-                    "Placa: " + rs.getString("placa")
-                    + " | Sucursal: " + rs.getString("codigo_sucursal")
-                    + " | Marca: " + rs.getString("marca")
-                    + " | Modelo: " + rs.getString("modelo")
-                    + " | Capacidad: " + rs.getInt("capacidad")
-                    + " | Estado: " + rs.getString("estado_operativo")
-                    + " | Kilometraje: " + rs.getDouble("kilometraje_actual")
+                        "Placa: " + rs.getString("placa")
+                        + " | Sucursal: " + rs.getString("codigo_sucursal")
+                        + " | Marca: " + rs.getString("marca")
+                        + " | Modelo: " + rs.getString("modelo")
+                        + " | Capacidad: " + rs.getInt("capacidad")
+                        + " | Estado: " + rs.getString("estado_operativo")
+                        + " | Kilometraje: " + rs.getDouble("kilometraje_actual")
                 );
             }
 
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al listar buses: " + e.getMessage()
+                    "Error al listar buses: " + e.getMessage()
             );
         }
     }
+
     public List<Bus> listarPorSucursal(String codigoSucursal) {
 
-    List<Bus> buses = new ArrayList<>();
+        List<Bus> buses = new ArrayList<>();
 
-    String sql = """
+        String sql = """
         SELECT placa,
                codigo_sucursal,
                foto,
@@ -228,69 +190,30 @@ public class BusDAO {
         WHERE codigo_sucursal = ?
         ORDER BY placa
         """;
-
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
-
-        ps.setString(1, codigoSucursal);
-
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-
-            Bus bus = new Bus();
-
-            bus.setPlaca(
-                rs.getString("placa")
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, codigoSucursal);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Bus bus = new Bus();
+                bus.setPlaca(rs.getString("placa"));
+                bus.setCodigoSucursal(rs.getString("codigo_sucursal"));
+                bus.setFoto(rs.getString("foto"));
+                bus.setMarca(rs.getString("marca"));
+                bus.setModelo(rs.getString("modelo"));
+                bus.setAñoFabricacion(rs.getInt("anio_fabricacion"));
+                bus.setCapacidad(rs.getInt("capacidad"));
+                bus.setEstadoOperativo(rs.getString("estado_operativo"));
+                bus.setKilometrajeActual(rs.getDouble("kilometraje_actual"));
+                buses.add(bus);
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error al listar buses de la sucursal: "
+                    + e.getMessage()
             );
-
-            bus.setCodigoSucursal(
-                rs.getString("codigo_sucursal")
-            );
-
-            bus.setFoto(
-                rs.getString("foto")
-            );
-
-            bus.setMarca(
-                rs.getString("marca")
-            );
-
-            bus.setModelo(
-                rs.getString("modelo")
-            );
-
-            bus.setAñoFabricacion(
-                rs.getInt("anio_fabricacion")
-            );
-
-            bus.setCapacidad(
-                rs.getInt("capacidad")
-            );
-
-            bus.setEstadoOperativo(
-                rs.getString("estado_operativo")
-            );
-
-            bus.setKilometrajeActual(
-                rs.getDouble("kilometraje_actual")
-            );
-
-            buses.add(bus);
         }
-
-    } catch (SQLException e) {
-
-        System.out.println(
-            "Error al listar buses de la sucursal: "
-            + e.getMessage()
-        );
+        return buses;
     }
-
-    return buses;
-}
 
     public boolean desactivar(String placa) {
 
@@ -307,9 +230,8 @@ public class BusDAO {
             WHERE placa = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement psVerificar =
-                 conexion.prepareStatement(sqlVerificar)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement psVerificar
+                = conexion.prepareStatement(sqlVerificar)) {
 
             psVerificar.setString(1, placa);
 
@@ -318,15 +240,15 @@ public class BusDAO {
             if (rs.next() && rs.getInt(1) > 0) {
 
                 System.out.println(
-                    "No se puede desactivar el bus porque "
-                    + "tiene viajes programados o en curso."
+                        "No se puede desactivar el bus porque "
+                        + "tiene viajes programados o en curso."
                 );
 
                 return false;
             }
 
-            try (PreparedStatement psDesactivar =
-                     conexion.prepareStatement(sqlDesactivar)) {
+            try (PreparedStatement psDesactivar
+                    = conexion.prepareStatement(sqlDesactivar)) {
 
                 psDesactivar.setString(1, placa);
 
@@ -338,46 +260,40 @@ public class BusDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al desactivar bus: " + e.getMessage()
+                    "Error al desactivar bus: " + e.getMessage()
             );
 
             return false;
         }
     }
+
     public boolean existe(String placa) {
 
-    String sql = """
+        String sql = """
         SELECT COUNT(*)
         FROM bus
         WHERE placa = ?
         """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, placa);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
 
-        ps.setString(1, placa);
-
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            return rs.getInt(1) > 0;
+            System.out.println(
+                    "Error al verificar si existe el bus: "
+                    + e.getMessage()
+            );
         }
-
-    } catch (SQLException e) {
-
-        System.out.println(
-            "Error al verificar si existe el bus: "
-            + e.getMessage()
-        );
+        return false;
     }
 
-    return false;
-}
     public Bus obtenerPorSucursal(String placa, String codigoSucursal) {
 
-    String sql = """
+        String sql = """
         SELECT placa,
                codigo_sucursal,
                foto,
@@ -392,119 +308,96 @@ public class BusDAO {
           AND codigo_sucursal = ?
         """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-        ps.setString(1, placa);
-        ps.setString(2, codigoSucursal);
+            ps.setString(1, placa);
+            ps.setString(2, codigoSucursal);
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
+            if (rs.next()) {
 
-            Bus bus = new Bus();
+                Bus bus = new Bus();
 
-            bus.setPlaca(rs.getString("placa"));
-            bus.setCodigoSucursal(
-                    rs.getString("codigo_sucursal")
+                bus.setPlaca(rs.getString("placa"));
+                bus.setCodigoSucursal(rs.getString("codigo_sucursal"));
+                bus.setFoto(rs.getString("foto"));
+                bus.setMarca(rs.getString("marca"));
+                bus.setModelo(rs.getString("modelo"));
+                bus.setAñoFabricacion(rs.getInt("anio_fabricacion") );
+                bus.setCapacidad(rs.getInt("capacidad"));
+                bus.setEstadoOperativo(rs.getString("estado_operativo"));
+                bus.setKilometrajeActual(rs.getDouble("kilometraje_actual"));
+                return bus;
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error al obtener bus por sucursal: "
+                    + e.getMessage()
             );
-            bus.setFoto(rs.getString("foto"));
-            bus.setMarca(rs.getString("marca"));
-            bus.setModelo(rs.getString("modelo"));
-            bus.setAñoFabricacion(
-                    rs.getInt("anio_fabricacion")
-            );
-            bus.setCapacidad(
-                    rs.getInt("capacidad")
-            );
-            bus.setEstadoOperativo(
-                    rs.getString("estado_operativo")
-            );
-            bus.setKilometrajeActual(
-                    rs.getDouble("kilometraje_actual")
-            );
-
-            return bus;
         }
-
-    } catch (SQLException e) {
-
-        System.out.println(
-            "Error al obtener bus por sucursal: "
-            + e.getMessage()
-        );
+        return null;
     }
 
-    return null;
-}
     public boolean desactivarPorSucursal(
         String placa,
         String codigoSucursal) {
 
-    String sqlVerificar = """
+        String sqlVerificar = """
         SELECT COUNT(*)
         FROM viaje
         WHERE placa_bus = ?
           AND estado IN ('PROGRAMADO', 'EN_CURSO')
         """;
 
-    String sqlDesactivar = """
+        String sqlDesactivar = """
         UPDATE bus
         SET estado_operativo = 'INACTIVO'
         WHERE placa = ?
           AND codigo_sucursal = ?
         """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement psVerificar =
-                conexion.prepareStatement(sqlVerificar)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement psVerificar
+                = conexion.prepareStatement(sqlVerificar)) {
+            psVerificar.setString(1, placa);
+            ResultSet rs = psVerificar.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                System.out.println(
+                        "No se puede desactivar el bus porque "
+                        + "tiene viajes programados o en curso."
+                );
+                return false;
+            }
+            try (
+                    PreparedStatement psDesactivar
+                    = conexion.prepareStatement(sqlDesactivar)) {
 
-        psVerificar.setString(1, placa);
+                psDesactivar.setString(1, placa);
+                psDesactivar.setString(2, codigoSucursal);
 
-        ResultSet rs = psVerificar.executeQuery();
+                int filas = psDesactivar.executeUpdate();
 
-        if (rs.next() && rs.getInt(1) > 0) {
+                return filas > 0;
+            }
+
+        } catch (SQLException e) {
 
             System.out.println(
-                "No se puede desactivar el bus porque "
-                + "tiene viajes programados o en curso."
+                    "Error al desactivar bus por sucursal: "
+                    + e.getMessage()
             );
 
             return false;
         }
-
-        try (
-            PreparedStatement psDesactivar =
-                    conexion.prepareStatement(sqlDesactivar)
-        ) {
-
-            psDesactivar.setString(1, placa);
-            psDesactivar.setString(2, codigoSucursal);
-
-            int filas = psDesactivar.executeUpdate();
-
-            return filas > 0;
-        }
-
-    } catch (SQLException e) {
-
-        System.out.println(
-            "Error al desactivar bus por sucursal: "
-            + e.getMessage()
-        );
-
-        return false;
     }
-}
+
     public boolean activarPorSucursal(
         String placa,
         String codigoSucursal) {
 
-    String sql = """
+        String sql = """
         UPDATE bus
         SET estado_operativo = 'DISPONIBLE'
         WHERE placa = ?
@@ -512,26 +405,24 @@ public class BusDAO {
           AND estado_operativo = 'INACTIVO'
         """;
 
-    try (
-        Connection conexion = Conexion.getConnection();
-        PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-        ps.setString(1, placa);
-        ps.setString(2, codigoSucursal);
+            ps.setString(1, placa);
+            ps.setString(2, codigoSucursal);
 
-        int filas = ps.executeUpdate();
+            int filas = ps.executeUpdate();
 
-        return filas > 0;
+            return filas > 0;
 
-    } catch (SQLException e) {
+        } catch (SQLException e) {
 
-        System.out.println(
-            "Error al activar bus por sucursal: "
-            + e.getMessage()
-        );
+            System.out.println(
+                    "Error al activar bus por sucursal: "
+                    + e.getMessage()
+            );
 
-        return false;
+            return false;
+        }
     }
-}
 }

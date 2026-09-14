@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import transporte.conexion.Conexion;
 import transporte.modelo.Boleto;
 
@@ -16,7 +18,7 @@ import transporte.modelo.Boleto;
  * @author fernan
  */
 public class BoletoDAO {
-    
+
     public boolean insertar(Boleto boleto) {
 
         String sql = """
@@ -27,8 +29,7 @@ public class BoletoDAO {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, boleto.getCodigoBoleto());
             ps.setString(2, boleto.getCodigoViaje());
@@ -46,14 +47,14 @@ public class BoletoDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al insertar boleto: "
-                + e.getMessage()
+                    "Error al insertar boleto: "
+                    + e.getMessage()
             );
 
             return false;
         }
     }
-    
+
     public Boleto obtener(String codigoBoleto) {
 
         String sql = """
@@ -69,8 +70,7 @@ public class BoletoDAO {
             WHERE codigo_boleto = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, codigoBoleto);
 
@@ -81,35 +81,35 @@ public class BoletoDAO {
                 Boleto boleto = new Boleto();
 
                 boleto.setCodigoBoleto(
-                    rs.getString("codigo_boleto")
+                        rs.getString("codigo_boleto")
                 );
 
                 boleto.setCodigoViaje(
-                    rs.getString("codigo_viaje")
+                        rs.getString("codigo_viaje")
                 );
 
                 boleto.setUsuarioCliente(
-                    rs.getString("usuario_cliente")
+                        rs.getString("usuario_cliente")
                 );
 
                 boleto.setNumeroAsiento(
-                    rs.getInt("numero_asiento")
+                        rs.getInt("numero_asiento")
                 );
 
                 boleto.setPrecio(
-                    rs.getDouble("precio")
+                        rs.getDouble("precio")
                 );
 
                 boleto.setFechaPago(
-                    rs.getDate("fecha_pago")
+                        rs.getDate("fecha_pago")
                 );
 
                 boleto.setEstado(
-                    rs.getString("estado")
+                        rs.getString("estado")
                 );
 
                 boleto.setCodigoMovimiento(
-                    rs.getString("codigo_movimiento")
+                        rs.getString("codigo_movimiento")
                 );
 
                 return boleto;
@@ -118,15 +118,15 @@ public class BoletoDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al obtener boleto: "
-                + e.getMessage()
+                    "Error al obtener boleto: "
+                    + e.getMessage()
             );
         }
 
         return null;
     }
-    
-     public boolean actualizar(Boleto boleto) {
+
+    public boolean actualizar(Boleto boleto) {
 
         String sql = """
             UPDATE boleto
@@ -140,8 +140,7 @@ public class BoletoDAO {
             WHERE codigo_boleto = ?
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, boleto.getCodigoViaje());
             ps.setString(2, boleto.getUsuarioCliente());
@@ -159,14 +158,14 @@ public class BoletoDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al actualizar boleto: "
-                + e.getMessage()
+                    "Error al actualizar boleto: "
+                    + e.getMessage()
             );
 
             return false;
         }
     }
-     
+
     public void listar() {
 
         String sql = """
@@ -181,38 +180,126 @@ public class BoletoDAO {
             FROM boleto
             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
 
                 System.out.println(
-                    "Boleto: "
-                    + rs.getString("codigo_boleto")
-                    + " | Viaje: "
-                    + rs.getString("codigo_viaje")
-                    + " | Cliente: "
-                    + rs.getString("usuario_cliente")
-                    + " | Asiento: "
-                    + rs.getInt("numero_asiento")
-                    + " | Precio: "
-                    + rs.getDouble("precio")
-                    + " | Fecha: "
-                    + rs.getDate("fecha_pago")
-                    + " | Estado: "
-                    + rs.getString("estado")
-                    + " | Movimiento: "
-                    + rs.getString("codigo_movimiento")
+                        "Boleto: "
+                        + rs.getString("codigo_boleto")
+                        + " | Viaje: "
+                        + rs.getString("codigo_viaje")
+                        + " | Cliente: "
+                        + rs.getString("usuario_cliente")
+                        + " | Asiento: "
+                        + rs.getInt("numero_asiento")
+                        + " | Precio: "
+                        + rs.getDouble("precio")
+                        + " | Fecha: "
+                        + rs.getDate("fecha_pago")
+                        + " | Estado: "
+                        + rs.getString("estado")
+                        + " | Movimiento: "
+                        + rs.getString("codigo_movimiento")
                 );
             }
 
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al listar boletos: "
-                + e.getMessage()
+                    "Error al listar boletos: "
+                    + e.getMessage()
             );
         }
+    }
+
+    public List<Integer> listarAsientosOcupados(String codigoViaje) {
+
+        List<Integer> asientosOcupados = new ArrayList<>();
+
+        String sql = """
+            SELECT numero_asiento
+            FROM boleto
+            WHERE codigo_viaje = ?
+              AND estado = 'PAGADO'
+            ORDER BY numero_asiento
+            """;
+
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps
+                = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, codigoViaje);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+
+                    asientosOcupados.add(
+                            rs.getInt("numero_asiento")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al listar asientos ocupados: "
+                    + e.getMessage()
+            );
+        }
+
+        return asientosOcupados;
+    }
+
+    public List<Boleto> listarPorUsuario(String usuario) {
+
+        List<Boleto> boletos = new ArrayList<>();
+
+        String sql = """
+            SELECT codigo_boleto,
+                   codigo_viaje,
+                   usuario_cliente,
+                   numero_asiento,
+                   precio,
+                   fecha_pago,
+                   estado,
+                   codigo_movimiento
+            FROM boleto
+            WHERE usuario_cliente = ?
+            ORDER BY fecha_pago DESC, codigo_boleto DESC
+            """;
+
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, usuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Boleto boleto = new Boleto();
+
+                    boleto.setCodigoBoleto(rs.getString("codigo_boleto"));
+                    boleto.setCodigoViaje(rs.getString("codigo_viaje"));
+                    boleto.setUsuarioCliente(rs.getString("usuario_cliente"));
+                    boleto.setNumeroAsiento(rs.getInt("numero_asiento"));
+                    boleto.setPrecio(rs.getDouble("precio"));
+                    boleto.setFechaPago(rs.getDate("fecha_pago"));
+                    boleto.setEstado(rs.getString("estado"));
+                    boleto.setCodigoMovimiento(rs.getString("codigo_movimiento"));
+                    boletos.add(boleto);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error al listar boletos del usuario: "
+                    + e.getMessage()
+            );
+        }
+
+        return boletos;
     }
 }
