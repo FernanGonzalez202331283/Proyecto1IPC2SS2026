@@ -14,9 +14,8 @@ public class Usuario {
     private String rol;
     private boolean estado;
     private String codigoSucursal;
-    
-    public Usuario(){
-        
+
+    public Usuario() {
     }
 
     public Usuario(String usuario, String contraseña, String rol, boolean estado) {
@@ -25,16 +24,14 @@ public class Usuario {
         this.rol = rol;
         this.estado = estado;
     }
-    
-     public Usuario(String usuario, String contraseña, String rol,
-                   boolean estado, String codigoSucursal) {
+
+    public Usuario(String usuario, String contraseña, String rol, boolean estado, String codigoSucursal) {
         this.usuario = usuario;
         this.contraseña = contraseña;
         this.rol = rol;
         this.estado = estado;
         this.codigoSucursal = codigoSucursal;
     }
-
 
     public String getUsuario() {
         return usuario;

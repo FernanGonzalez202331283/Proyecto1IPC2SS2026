@@ -16,7 +16,6 @@ import transporte.modelo.Perfil;
  * @author fernan
  */
 public class PerfilDAO {
-
     public boolean insertar(Perfil perfil) {
         String sql = """
                      INSERT INTO perfil
@@ -24,7 +23,9 @@ public class PerfilDAO {
                      VALUES (?,?,?,?,?,?)
                      """;
 
-        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
             ps.setString(1, perfil.getUsuario());
             ps.setString(2, perfil.getNit());
             ps.setString(3, perfil.getDpi());
@@ -36,13 +37,12 @@ public class PerfilDAO {
             return true;
 
         } catch (SQLException e) {
-            System.out.println("Error al insertar Perfil" + e.getMessage());
+            System.out.println("Error al insertar Perfil: " + e.getMessage());
             return false;
         }
     }
 
     public Perfil buscarPorUsuario(String usuario) {
-
         String sql = """
                      SELECT usuario,
                             nit,
@@ -54,15 +54,13 @@ public class PerfilDAO {
                      WHERE usuario = ?
                      """;
 
-        try (
-                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); 
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, usuario);
-
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-
                 return new Perfil(
                         rs.getString("usuario"),
                         rs.getString("nit"),
@@ -74,18 +72,13 @@ public class PerfilDAO {
             }
 
         } catch (SQLException e) {
-
-            System.out.println(
-                    "Error al buscar Perfil: "
-                    + e.getMessage()
-            );
+            System.out.println("Error al buscar Perfil: " + e.getMessage());
         }
 
         return null;
     }
 
     public boolean actualizar(Perfil perfil) {
-
         String sql = """
                      UPDATE perfil
                      SET nit = ?,
@@ -96,8 +89,8 @@ public class PerfilDAO {
                      WHERE usuario = ?
                      """;
 
-        try (
-                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); 
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, perfil.getNit());
             ps.setString(2, perfil.getDpi());
@@ -107,43 +100,35 @@ public class PerfilDAO {
             ps.setString(6, perfil.getUsuario());
 
             int filas = ps.executeUpdate();
-
             return filas > 0;
 
         } catch (SQLException e) {
-
-            System.out.println(
-                    "Error al actualizar Perfil: "
-                    + e.getMessage()
-            );
-
+            System.out.println("Error al actualizar Perfil: " + e.getMessage());
             return false;
         }
     }
 
     public boolean estaCompleto(String usuario) {
-
         String sql = """
-                 SELECT COUNT(*) AS cantidad
-                 FROM perfil
-                 WHERE usuario = ?
-                   AND nit IS NOT NULL
-                   AND TRIM(nit) <> ''
-                   AND dpi IS NOT NULL
-                   AND TRIM(dpi) <> ''
-                   AND nombre_completo IS NOT NULL
-                   AND TRIM(nombre_completo) <> ''
-                   AND telefono IS NOT NULL
-                   AND TRIM(telefono) <> ''
-                   AND direccion IS NOT NULL
-                   AND TRIM(direccion) <> ''
-                 """;
+                     SELECT COUNT(*) AS cantidad
+                     FROM perfil
+                     WHERE usuario = ?
+                       AND nit IS NOT NULL
+                       AND TRIM(nit) <> ''
+                       AND dpi IS NOT NULL
+                       AND TRIM(dpi) <> ''
+                       AND nombre_completo IS NOT NULL
+                       AND TRIM(nombre_completo) <> ''
+                       AND telefono IS NOT NULL
+                       AND TRIM(telefono) <> ''
+                       AND direccion IS NOT NULL
+                       AND TRIM(direccion) <> ''
+                     """;
 
-        try (
-                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); 
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, usuario);
-
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -151,14 +136,9 @@ public class PerfilDAO {
             }
 
         } catch (SQLException e) {
-
-            System.out.println(
-                    "Error al verificar si el perfil está completo: "
-                    + e.getMessage()
-            );
+            System.out.println("Error al verificar si el perfil está completo: " + e.getMessage());
         }
 
         return false;
     }
-
 }
