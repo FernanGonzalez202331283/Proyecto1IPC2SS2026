@@ -1,0 +1,368 @@
+CREATE DATABASE IF NOT EXISTS transporte_extraurbano;
+USE transporte_extraurbano;
+CREATE TABLE sucursal (
+    codigo_sucursal VARCHAR(20) NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(250) NOT NULL,
+    telefono VARCHAR(30),
+    municipio VARCHAR(100),
+    departamento VARCHAR(100),
+    latitud DECIMAL(10,7),
+    longitud DECIMAL(10,7),
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (codigo_sucursal),
+    UNIQUE KEY uk_sucursal_nombre (nombre)
+);
+
+CREATE TABLE usuario (
+    usuario VARCHAR(50) NOT NULL,
+    contraseña VARCHAR(255) NOT NULL,
+    rol ENUM(
+        'ADMIN_SISTEMA',
+        'ADMIN_SUCURSAL',
+        'CLIENTE'
+    ) NOT NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+    codigo_sucursal VARCHAR(20),
+
+    PRIMARY KEY (usuario),
+
+    CONSTRAINT fk_usuario_sucursal
+        FOREIGN KEY (codigo_sucursal)
+        REFERENCES sucursal(codigo_sucursal)
+);
+
+CREATE TABLE perfil (
+    usuario VARCHAR(50) NOT NULL,
+    nit VARCHAR(30),
+    dpi VARCHAR(30),
+    nombre_completo VARCHAR(150) NOT NULL,
+    telefono VARCHAR(30),
+    direccion VARCHAR(250),
+
+    PRIMARY KEY (usuario),
+
+    CONSTRAINT fk_perfil_usuario
+        FOREIGN KEY (usuario)
+        REFERENCES usuario(usuario)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE administrador_sucursal (
+    usuario VARCHAR(50) NOT NULL,
+    codigo_sucursal VARCHAR(20) NOT NULL,
+
+    PRIMARY KEY (usuario),
+
+    CONSTRAINT fk_admin_sucursal_usuario
+        FOREIGN KEY (usuario)
+        REFERENCES usuario(usuario)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_admin_sucursal_sucursal
+        FOREIGN KEY (codigo_sucursal)
+        REFERENCES sucursal(codigo_sucursal)
+);
+
+
+CREATE TABLE bus (
+    placa VARCHAR(20) NOT NULL,
+    codigo_sucursal VARCHAR(20) NOT NULL,
+    foto VARCHAR(500),
+    marca VARCHAR(100) NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    anio_fabricacion YEAR NOT NULL,
+    capacidad INT NOT NULL,
+    estado_operativo ENUM(
+        'DISPONIBLE',
+        'EN_VIAJE',
+        'MANTENIMIENTO',
+        'INACTIVO'
+    ) NOT NULL DEFAULT 'DISPONIBLE',
+    kilometraje_actual DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+
+    PRIMARY KEY (placa),
+
+    CONSTRAINT fk_bus_sucursal
+        FOREIGN KEY (codigo_sucursal)
+        REFERENCES sucursal(codigo_sucursal)
+);
+
+
+CREATE TABLE chofer (
+    numero_licencia VARCHAR(50) NOT NULL,
+    codigo_sucursal VARCHAR(20) NOT NULL,
+    foto VARCHAR(500),
+    nombre_completo VARCHAR(150) NOT NULL,
+    tipo_licencia VARCHAR(50) NOT NULL,
+    fecha_vencimiento_licencia DATE NOT NULL,
+    telefono VARCHAR(30),
+    salario_base_viaje DECIMAL(10,2) NOT NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (numero_licencia),
+
+    CONSTRAINT fk_chofer_sucursal
+        FOREIGN KEY (codigo_sucursal)
+        REFERENCES sucursal(codigo_sucursal)
+);
+
+
+CREATE TABLE ruta (
+    codigo_ruta VARCHAR(20) NOT NULL,
+    codigo_sucursal_origen VARCHAR(20) NOT NULL,
+    codigo_sucursal_destino VARCHAR(20) NOT NULL,
+    distancia_km DECIMAL(10,2) NOT NULL,
+    precio_boleto DECIMAL(10,2) NOT NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (codigo_ruta),
+
+    CONSTRAINT fk_ruta_origen
+        FOREIGN KEY (codigo_sucursal_origen)
+        REFERENCES sucursal(codigo_sucursal),
+
+    CONSTRAINT fk_ruta_destino
+        FOREIGN KEY (codigo_sucursal_destino)
+        REFERENCES sucursal(codigo_sucursal)
+);
+
+
+CREATE TABLE ruta_privada (
+    codigo_ruta_privada VARCHAR(20) NOT NULL,
+    origen VARCHAR(250) NOT NULL,
+    destino VARCHAR(250) NOT NULL,
+    distancia_km DECIMAL(10,2) NOT NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (codigo_ruta_privada)
+);
+
+CREATE TABLE configuracion (
+    codigo_configuracion VARCHAR(20) NOT NULL,
+    depreciacion_por_km DECIMAL(10,2) NOT NULL,
+    fecha_configuracion DATE NOT NULL,
+    precio_km_alquiler_privado DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+
+    PRIMARY KEY (codigo_configuracion)
+);
+
+CREATE TABLE viaje (
+    codigo_viaje VARCHAR(20) NOT NULL,
+    tipo_viaje ENUM('REGULAR','PRIVADO') NOT NULL,
+    placa_bus VARCHAR(20) NOT NULL,
+    numero_licencia VARCHAR(50) NOT NULL,
+    codigo_ruta VARCHAR(20),
+    origen VARCHAR(250) NOT NULL,
+    destino VARCHAR(250) NOT NULL,
+    fecha_salida DATE NOT NULL,
+    hora_salida TIME NOT NULL,
+    fecha_llegada_estimada DATE NOT NULL,
+    hora_llegada_estimada TIME NOT NULL,
+    estado ENUM(
+        'PROGRAMADO',
+        'EN_CURSO',
+        'FINALIZADO',
+        'CANCELADO'
+    ) NOT NULL DEFAULT 'PROGRAMADO',
+    depreciacion_por_km DECIMAL(10,2) NOT NULL,
+    depreciacion_total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+
+    PRIMARY KEY (codigo_viaje),
+
+    CONSTRAINT fk_viaje_bus
+        FOREIGN KEY (placa_bus)
+        REFERENCES bus(placa),
+
+    CONSTRAINT fk_viaje_chofer
+        FOREIGN KEY (numero_licencia)
+        REFERENCES chofer(numero_licencia),
+
+    CONSTRAINT fk_viaje_ruta
+        FOREIGN KEY (codigo_ruta)
+        REFERENCES ruta(codigo_ruta)
+);
+
+
+CREATE TABLE salida_viaje (
+    codigo_viaje VARCHAR(20) NOT NULL,
+    hora_real_salida TIME NOT NULL,
+    kilometraje_inicial DECIMAL(10,2) NOT NULL,
+    usuario_registro VARCHAR(50) NOT NULL,
+
+    PRIMARY KEY (codigo_viaje),
+
+    CONSTRAINT fk_salida_viaje
+        FOREIGN KEY (codigo_viaje)
+        REFERENCES viaje(codigo_viaje),
+
+    CONSTRAINT fk_salida_usuario
+        FOREIGN KEY (usuario_registro)
+        REFERENCES usuario(usuario)
+);
+
+
+CREATE TABLE llegada_viaje (
+    codigo_viaje VARCHAR(20) NOT NULL,
+    hora_real_llegada TIME NOT NULL,
+    kilometraje_final DECIMAL(10,2) NOT NULL,
+    gasto_combustible DECIMAL(10,2) NOT NULL,
+    usuario_registro VARCHAR(50) NOT NULL,
+
+    PRIMARY KEY (codigo_viaje),
+
+    CONSTRAINT fk_llegada_viaje
+        FOREIGN KEY (codigo_viaje)
+        REFERENCES viaje(codigo_viaje),
+
+    CONSTRAINT fk_llegada_usuario
+        FOREIGN KEY (usuario_registro)
+        REFERENCES usuario(usuario)
+);
+
+
+CREATE TABLE cartera (
+    usuario VARCHAR(50) NOT NULL,
+    saldo DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    PRIMARY KEY (usuario),
+
+    CONSTRAINT fk_cartera_usuario
+        FOREIGN KEY (usuario)
+        REFERENCES usuario(usuario)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE movimiento_cartera (
+    codigo_movimiento VARCHAR(20) NOT NULL,
+    usuario VARCHAR(50) NOT NULL,
+    tipo ENUM('RECARGA','PAGO') NOT NULL,
+    monto DECIMAL(12,2) NOT NULL,
+    fecha DATE NOT NULL,
+    descripcion VARCHAR(250),
+
+    PRIMARY KEY (codigo_movimiento),
+
+    CONSTRAINT fk_movimiento_usuario
+        FOREIGN KEY (usuario)
+        REFERENCES usuario(usuario)
+);
+
+CREATE TABLE boleto (
+    codigo_boleto VARCHAR(20) NOT NULL,
+    codigo_viaje VARCHAR(20) NOT NULL,
+    usuario_cliente VARCHAR(50) NOT NULL,
+    numero_asiento INT NOT NULL,
+    precio DECIMAL(10,2) NOT NULL,
+    fecha_pago DATE NOT NULL,
+    estado ENUM('PAGADO','CANCELADO') NOT NULL DEFAULT 'PAGADO',
+    codigo_movimiento VARCHAR(20) NOT NULL,
+
+    PRIMARY KEY (codigo_boleto),
+
+    CONSTRAINT fk_boleto_viaje
+        FOREIGN KEY (codigo_viaje)
+        REFERENCES viaje(codigo_viaje),
+
+    CONSTRAINT fk_boleto_cliente
+        FOREIGN KEY (usuario_cliente)
+        REFERENCES usuario(usuario),
+
+    CONSTRAINT fk_boleto_movimiento
+        FOREIGN KEY (codigo_movimiento)
+        REFERENCES movimiento_cartera(codigo_movimiento)
+);
+
+CREATE TABLE alquiler (
+    codigo_alquiler VARCHAR(20) NOT NULL,
+    codigo_viaje VARCHAR(20) NOT NULL,
+    usuario_cliente VARCHAR(50) NOT NULL,
+    numero_pasajeros INT NOT NULL,
+    fecha_retorno DATE,
+    precio_estimado DECIMAL(10,2) NOT NULL,
+    precio_confirmado DECIMAL(10,2),
+    estado ENUM(
+        'SOLICITADO',
+        'CONFIRMADO',
+        'PAGADO',
+        'CANCELADO',
+        'FINALIZADO'
+    ) NOT NULL DEFAULT 'SOLICITADO',
+
+    PRIMARY KEY (codigo_alquiler),
+    UNIQUE KEY uk_alquiler_viaje (codigo_viaje),
+
+    CONSTRAINT fk_alquiler_viaje
+        FOREIGN KEY (codigo_viaje)
+        REFERENCES viaje(codigo_viaje),
+
+    CONSTRAINT fk_alquiler_cliente
+        FOREIGN KEY (usuario_cliente)
+        REFERENCES usuario(usuario)
+);
+
+CREATE TABLE pago_alquiler (
+    codigo_pago VARCHAR(20) NOT NULL,
+    codigo_alquiler VARCHAR(20) NOT NULL,
+    codigo_movimiento VARCHAR(20) NOT NULL,
+    monto DECIMAL(10,2) NOT NULL,
+    fecha_pago DATE NOT NULL,
+
+    PRIMARY KEY (codigo_pago),
+    UNIQUE KEY uk_pago_alquiler (codigo_alquiler),
+    UNIQUE KEY uk_pago_movimiento (codigo_movimiento),
+
+    CONSTRAINT fk_pago_alquiler
+        FOREIGN KEY (codigo_alquiler)
+        REFERENCES alquiler(codigo_alquiler),
+
+    CONSTRAINT fk_pago_movimiento
+        FOREIGN KEY (codigo_movimiento)
+        REFERENCES movimiento_cartera(codigo_movimiento)
+);
+
+CREATE TABLE mantenimiento (
+    codigo_mantenimiento VARCHAR(20) NOT NULL,
+    placa_bus VARCHAR(20) NOT NULL,
+    fecha DATE NOT NULL,
+    monto_mano_obra DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    monto_repuestos DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    descripcion VARCHAR(500),
+
+    PRIMARY KEY (codigo_mantenimiento),
+
+    CONSTRAINT fk_mantenimiento_bus
+        FOREIGN KEY (placa_bus)
+        REFERENCES bus(placa)
+);
+
+CREATE TABLE repuesto (
+    codigo_repuesto VARCHAR(20) NOT NULL,
+    nombre VARCHAR(150) NOT NULL,
+    descripcion VARCHAR(250),
+    precio DECIMAL(10,2) NOT NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (codigo_repuesto)
+);
+
+CREATE TABLE detalle_mantenimiento (
+    codigo_mantenimiento VARCHAR(20) NOT NULL,
+    codigo_repuesto VARCHAR(20) NOT NULL,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(10,2) NOT NULL,
+
+    PRIMARY KEY (
+        codigo_mantenimiento,
+        codigo_repuesto
+    ),
+
+    CONSTRAINT fk_detalle_mantenimiento
+        FOREIGN KEY (codigo_mantenimiento)
+        REFERENCES mantenimiento(codigo_mantenimiento),
+
+    CONSTRAINT fk_detalle_repuesto
+        FOREIGN KEY (codigo_repuesto)
+        REFERENCES repuesto(codigo_repuesto)
+);
