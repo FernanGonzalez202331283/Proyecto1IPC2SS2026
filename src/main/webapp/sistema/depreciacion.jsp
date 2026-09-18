@@ -23,7 +23,7 @@ Author     : fernan
         return;
     }
 
-    ConfiguracionDAO cosnfiguracionDAO
+    ConfiguracionDAO configuracionDAO
             = new ConfiguracionDAO();
 
     String mensaje = "";

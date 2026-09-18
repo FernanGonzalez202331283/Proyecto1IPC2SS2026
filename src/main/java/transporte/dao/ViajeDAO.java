@@ -115,9 +115,7 @@ public class ViajeDAO {
             """;
 
         try (
-            Connection conexion = Conexion.getConnection();
-            PreparedStatement ps = conexion.prepareStatement(sql)
-        ) {
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, codigoViaje);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -142,8 +140,8 @@ public class ViajeDAO {
                     viaje.setPrecioBoletos(rs.getDouble("precio_boleto"));
                     int capacidad = rs.getInt("capacidad");
                     viaje.setCapacidadBus(capacidad);
-                    int boletosVendidos =rs.getInt("boletos_vendidos");
-                    int asientosDisponibles =capacidad - boletosVendidos;
+                    int boletosVendidos = rs.getInt("boletos_vendidos");
+                    int asientosDisponibles = capacidad - boletosVendidos;
                     viaje.setAsientosDisponibles(asientosDisponibles);
                     return viaje;
                 }
@@ -152,7 +150,7 @@ public class ViajeDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                "Error al obtener viaje: " + e.getMessage()
+                    "Error al obtener viaje: " + e.getMessage()
             );
         }
 
@@ -209,8 +207,8 @@ public class ViajeDAO {
     }
 
     public boolean actualizarPorSucursal(
-        Viaje viaje,
-        String codigoSucursal) {
+            Viaje viaje,
+            String codigoSucursal) {
 
         String sql = """
         UPDATE viaje v
@@ -606,10 +604,10 @@ public class ViajeDAO {
     }
 
     public boolean iniciarViaje(
-        String codigoViaje,
-        String codigoSucursal,
-        String horaRealSalida,
-        String usuarioRegistro) {
+            String codigoViaje,
+            String codigoSucursal,
+            String horaRealSalida,
+            String usuarioRegistro) {
 
         String sqlVerificar = """
         SELECT v.placa_bus,
@@ -687,31 +685,31 @@ public class ViajeDAO {
                     kilometrajeInicial
                             = rs.getDouble("kilometraje_actual");
                 }
-                psSalida.setString(1,codigoViaje);
-                psSalida.setTime(2,Time.valueOf(horaRealSalida));
-                psSalida.setDouble(3,kilometrajeInicial);
-                psSalida.setString(4,usuarioRegistro);
-                int filasSalida= psSalida.executeUpdate();
+                psSalida.setString(1, codigoViaje);
+                psSalida.setTime(2, Time.valueOf(horaRealSalida));
+                psSalida.setDouble(3, kilometrajeInicial);
+                psSalida.setString(4, usuarioRegistro);
+                int filasSalida = psSalida.executeUpdate();
                 if (filasSalida == 0) {
                     conexion.rollback();
                     return false;
                 }
-                psViaje.setString(1,codigoViaje);
-                int filasViaje= psViaje.executeUpdate();
+                psViaje.setString(1, codigoViaje);
+                int filasViaje = psViaje.executeUpdate();
                 if (filasViaje == 0) {
                     conexion.rollback();
                     return false;
                 }
-                psBus.setString(1,placaBus);
-                psBus.setString(2,codigoSucursal);
-                int filasBus= psBus.executeUpdate();
+                psBus.setString(1, placaBus);
+                psBus.setString(2, codigoSucursal);
+                int filasBus = psBus.executeUpdate();
                 if (filasBus == 0) {
                     conexion.rollback();
                     return false;
                 }
                 conexion.commit();
                 System.out.println("Viaje iniciado correctamente.");
-                System.out.println("Kilometraje inicial registrado: "+ kilometrajeInicial);
+                System.out.println("Kilometraje inicial registrado: " + kilometrajeInicial);
                 return true;
             } catch (SQLException e) {
                 conexion.rollback();
@@ -738,8 +736,8 @@ public class ViajeDAO {
             double gastoCombustible,
             String usuarioRegistro) {
 
-        ConfiguracionDAO configuracionDAO= new ConfiguracionDAO();
-        Configuracion configuracion= configuracionDAO.obtenerConfiguracionVigente();
+        ConfiguracionDAO configuracionDAO = new ConfiguracionDAO();
+        Configuracion configuracion = configuracionDAO.obtenerConfiguracionVigente();
         if (configuracion == null) {
             System.out.println(
                     "No existe una configuración de "
@@ -804,12 +802,12 @@ public class ViajeDAO {
                     = conexion.prepareStatement(sqlLlegada); PreparedStatement psViaje
                     = conexion.prepareStatement(sqlViaje); PreparedStatement psBus
                     = conexion.prepareStatement(sqlBus)) {
-                psVerificar.setString(1,codigoViaje);
+                psVerificar.setString(1, codigoViaje);
 
-                psVerificar.setString(2,codigoSucursal);
+                psVerificar.setString(2, codigoSucursal);
                 String placaBus;
                 double kilometrajeInicial;
-                try (ResultSet rs= psVerificar.executeQuery()) {
+                try (ResultSet rs = psVerificar.executeQuery()) {
                     if (!rs.next()) {
                         conexion.rollback();
                         System.out.println(
@@ -820,7 +818,7 @@ public class ViajeDAO {
                         return false;
                     }
                     placaBus = rs.getString("placa_bus");
-                    kilometrajeInicial= rs.getDouble("kilometraje_inicial");
+                    kilometrajeInicial = rs.getDouble("kilometraje_inicial");
                 }
 
                 if (kilometrajeFinal < kilometrajeInicial) {
@@ -846,27 +844,27 @@ public class ViajeDAO {
                 double depreciacionTotal
                         = kilometrosReales
                         * depreciacionPorKm;
-                psLlegada.setString(1,codigoViaje );
-                psLlegada.setTime(2,Time.valueOf(horaRealLlegada));
-                psLlegada.setDouble(3,kilometrajeFinal);
-                psLlegada.setDouble(4,gastoCombustible);
-                psLlegada.setString(5,usuarioRegistro);
-                int filasLlegada= psLlegada.executeUpdate();
+                psLlegada.setString(1, codigoViaje);
+                psLlegada.setTime(2, Time.valueOf(horaRealLlegada));
+                psLlegada.setDouble(3, kilometrajeFinal);
+                psLlegada.setDouble(4, gastoCombustible);
+                psLlegada.setString(5, usuarioRegistro);
+                int filasLlegada = psLlegada.executeUpdate();
                 if (filasLlegada == 0) {
                     conexion.rollback();
                     return false;
                 }
-                psViaje.setDouble(1,depreciacionPorKm);
-                psViaje.setDouble(2,depreciacionTotal);
-                psViaje.setString(3,codigoViaje);
+                psViaje.setDouble(1, depreciacionPorKm);
+                psViaje.setDouble(2, depreciacionTotal);
+                psViaje.setString(3, codigoViaje);
                 int filasViaje = psViaje.executeUpdate();
                 if (filasViaje == 0) {
                     conexion.rollback();
                     return false;
                 }
-                psBus.setDouble(1,kilometrajeFinal);
-                psBus.setString(2,codigoViaje);
-                psBus.setString(3,codigoSucursal);
+                psBus.setDouble(1, kilometrajeFinal);
+                psBus.setString(2, codigoViaje);
+                psBus.setString(3, codigoSucursal);
                 int filasBus = psBus.executeUpdate();
                 if (filasBus == 0) {
                     conexion.rollback();
@@ -874,11 +872,11 @@ public class ViajeDAO {
                 }
                 conexion.commit();
                 System.out.println("Viaje finalizado correctamente.");
-                System.out.println("Kilometraje inicial: "+ kilometrajeInicial);
-                System.out.println("Kilometraje final: "+ kilometrajeFinal);
-                System.out.println("Kilómetros reales: "+ kilometrosReales);
-                System.out.println("Depreciación por km: Q"+ depreciacionPorKm);
-                System.out.println("Depreciación total: Q"+ depreciacionTotal);
+                System.out.println("Kilometraje inicial: " + kilometrajeInicial);
+                System.out.println("Kilometraje final: " + kilometrajeFinal);
+                System.out.println("Kilómetros reales: " + kilometrosReales);
+                System.out.println("Depreciación por km: Q" + depreciacionPorKm);
+                System.out.println("Depreciación total: Q" + depreciacionTotal);
                 return true;
             } catch (SQLException e) {
                 conexion.rollback();
@@ -902,8 +900,8 @@ public class ViajeDAO {
     }
 
     public boolean cancelarViaje(
-        String codigoViaje,
-        String codigoSucursal) {
+            String codigoViaje,
+            String codigoSucursal) {
 
         String sql = """
         UPDATE viaje v
@@ -1178,13 +1176,14 @@ public class ViajeDAO {
         }
         return viajes;
     }
-    public boolean asignarBusYChofer(
-        String codigoViaje,
-        String placaBus,
-        String numeroLicencia,
-        String codigoSucursal) {
 
-    String sqlVerificarViaje = """
+    public boolean asignarBusYChofer(
+            String codigoViaje,
+            String placaBus,
+            String numeroLicencia,
+            String codigoSucursal) {
+
+        String sqlVerificarViaje = """
         SELECT v.fecha_salida,
                v.hora_salida,
                v.fecha_llegada_estimada,
@@ -1198,7 +1197,7 @@ public class ViajeDAO {
           AND v.placa_bus IS NULL
         """;
 
-    String sqlVerificarBus = """
+        String sqlVerificarBus = """
         SELECT estado_operativo
         FROM bus
         WHERE placa = ?
@@ -1206,7 +1205,7 @@ public class ViajeDAO {
           AND estado_operativo = 'DISPONIBLE'
         """;
 
-    String sqlVerificarChofer = """
+        String sqlVerificarChofer = """
         SELECT estado
         FROM chofer
         WHERE numero_licencia = ?
@@ -1214,7 +1213,7 @@ public class ViajeDAO {
           AND estado = TRUE
         """;
 
-    String sqlActualizar = """
+        String sqlActualizar = """
         UPDATE viaje
         SET placa_bus = ?,
             numero_licencia = ?
@@ -1224,162 +1223,159 @@ public class ViajeDAO {
           AND placa_bus IS NULL
         """;
 
-    try (Connection conexion = Conexion.getConnection()) {
+        try (Connection conexion = Conexion.getConnection()) {
 
-        conexion.setAutoCommit(false);
+            conexion.setAutoCommit(false);
 
-        try (
-                PreparedStatement psViaje =conexion.prepareStatement(sqlVerificarViaje);
-                PreparedStatement psBus =conexion.prepareStatement(sqlVerificarBus);
-                PreparedStatement psChofer =conexion.prepareStatement(sqlVerificarChofer);
-                PreparedStatement psActualizar =conexion.prepareStatement(sqlActualizar)) {
+            try (
+                    PreparedStatement psViaje = conexion.prepareStatement(sqlVerificarViaje); PreparedStatement psBus = conexion.prepareStatement(sqlVerificarBus); PreparedStatement psChofer = conexion.prepareStatement(sqlVerificarChofer); PreparedStatement psActualizar = conexion.prepareStatement(sqlActualizar)) {
 
-            psViaje.setString(1, codigoViaje);
+                psViaje.setString(1, codigoViaje);
 
-            java.sql.Date fechaSalida;
-            Time horaSalida;
-            java.sql.Date fechaLlegada;
-            Time horaLlegada;
+                java.sql.Date fechaSalida;
+                Time horaSalida;
+                java.sql.Date fechaLlegada;
+                Time horaLlegada;
 
-            try (ResultSet rs = psViaje.executeQuery()) {
+                try (ResultSet rs = psViaje.executeQuery()) {
 
-                if (!rs.next()) {
+                    if (!rs.next()) {
+
+                        conexion.rollback();
+
+                        System.out.println(
+                                "El viaje privado no existe, "
+                                + "ya fue asignado o no está PROGRAMADO."
+                        );
+
+                        return false;
+                    }
+
+                    fechaSalida = rs.getDate("fecha_salida");
+                    horaSalida = rs.getTime("hora_salida");
+                    fechaLlegada = rs.getDate("fecha_llegada_estimada");
+                    horaLlegada = rs.getTime("hora_llegada_estimada");
+                }
+
+                psBus.setString(1, placaBus);
+                psBus.setString(2, codigoSucursal);
+
+                try (ResultSet rs = psBus.executeQuery()) {
+
+                    if (!rs.next()) {
+
+                        conexion.rollback();
+
+                        System.out.println(
+                                "El bus no pertenece a la sucursal "
+                                + "o no está disponible."
+                        );
+
+                        return false;
+                    }
+                }
+
+                psChofer.setString(1, numeroLicencia);
+                psChofer.setString(2, codigoSucursal);
+
+                try (ResultSet rs = psChofer.executeQuery()) {
+
+                    if (!rs.next()) {
+
+                        conexion.rollback();
+
+                        System.out.println(
+                                "El chofer no pertenece a la sucursal "
+                                + "o no está activo."
+                        );
+
+                        return false;
+                    }
+                }
+
+                if (busTieneViajeActivo(
+                        placaBus,
+                        fechaSalida,
+                        horaSalida,
+                        fechaLlegada,
+                        horaLlegada,
+                        codigoViaje)) {
 
                     conexion.rollback();
 
                     System.out.println(
-                            "El viaje privado no existe, "
-                            + "ya fue asignado o no está PROGRAMADO."
+                            "El bus ya tiene otro viaje "
+                            + "en ese horario."
                     );
 
                     return false;
                 }
 
-                fechaSalida =rs.getDate("fecha_salida");
-                horaSalida =rs.getTime("hora_salida");
-                fechaLlegada =rs.getDate("fecha_llegada_estimada");
-                horaLlegada =rs.getTime("hora_llegada_estimada");
-            }
-
-            psBus.setString(1, placaBus);
-            psBus.setString(2, codigoSucursal);
-
-            try (ResultSet rs = psBus.executeQuery()) {
-
-                if (!rs.next()) {
+                if (choferTieneViajeActivo(
+                        numeroLicencia,
+                        fechaSalida,
+                        horaSalida,
+                        fechaLlegada,
+                        horaLlegada,
+                        codigoViaje)) {
 
                     conexion.rollback();
 
                     System.out.println(
-                            "El bus no pertenece a la sucursal "
-                            + "o no está disponible."
+                            "El chofer ya tiene otro viaje "
+                            + "en ese horario."
                     );
 
                     return false;
                 }
-            }
 
-            psChofer.setString(1, numeroLicencia);
-            psChofer.setString(2, codigoSucursal);
+                psActualizar.setString(1, placaBus);
+                psActualizar.setString(2, numeroLicencia);
+                psActualizar.setString(3, codigoViaje);
 
-            try (ResultSet rs = psChofer.executeQuery()) {
+                int filas = psActualizar.executeUpdate();
 
-                if (!rs.next()) {
+                if (filas == 0) {
 
                     conexion.rollback();
 
-                    System.out.println(
-                            "El chofer no pertenece a la sucursal "
-                            + "o no está activo."
-                    );
-
                     return false;
                 }
-            }
 
-            if (busTieneViajeActivo(
-                    placaBus,
-                    fechaSalida,
-                    horaSalida,
-                    fechaLlegada,
-                    horaLlegada,
-                    codigoViaje)) {
+                conexion.commit();
+
+                System.out.println(
+                        "Bus y chofer asignados correctamente."
+                );
+
+                return true;
+
+            } catch (SQLException e) {
 
                 conexion.rollback();
 
                 System.out.println(
-                        "El bus ya tiene otro viaje "
-                        + "en ese horario."
+                        "Error al asignar bus y chofer: "
+                        + e.getMessage()
                 );
 
                 return false;
             }
-
-            if (choferTieneViajeActivo(
-                    numeroLicencia,
-                    fechaSalida,
-                    horaSalida,
-                    fechaLlegada,
-                    horaLlegada,
-                    codigoViaje)) {
-
-                conexion.rollback();
-
-                System.out.println(
-                        "El chofer ya tiene otro viaje "
-                        + "en ese horario."
-                );
-
-                return false;
-            }
-
-
-            psActualizar.setString(1, placaBus);
-            psActualizar.setString(2, numeroLicencia);
-            psActualizar.setString(3, codigoViaje);
-
-            int filas = psActualizar.executeUpdate();
-
-            if (filas == 0) {
-
-                conexion.rollback();
-
-                return false;
-            }
-
-            conexion.commit();
-
-            System.out.println(
-                    "Bus y chofer asignados correctamente."
-            );
-
-            return true;
 
         } catch (SQLException e) {
 
-            conexion.rollback();
-
             System.out.println(
-                    "Error al asignar bus y chofer: "
+                    "Error de conexión al asignar bus y chofer: "
                     + e.getMessage()
             );
 
             return false;
         }
-
-    } catch (SQLException e) {
-
-        System.out.println(
-                "Error de conexión al asignar bus y chofer: "
-                + e.getMessage()
-        );
-
-        return false;
     }
-}
+
     public Viaje obtenerPrivado(String codigoViaje) {
 
-    String sql = """
+        String sql = """
         SELECT codigo_viaje,
                tipo_viaje,
                placa_bus,
@@ -1399,87 +1395,85 @@ public class ViajeDAO {
           AND tipo_viaje = 'PRIVADO'
         """;
 
-    try (
-            Connection conexion = Conexion.getConnection();
-            PreparedStatement ps = conexion.prepareStatement(sql)
-    ) {
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-        ps.setString(1, codigoViaje);
+            ps.setString(1, codigoViaje);
 
-        try (ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
 
-            if (rs.next()) {
+                if (rs.next()) {
 
-                Viaje viaje = new Viaje();
+                    Viaje viaje = new Viaje();
 
-                viaje.setCodigoViaje(
-                        rs.getString("codigo_viaje")
-                );
+                    viaje.setCodigoViaje(
+                            rs.getString("codigo_viaje")
+                    );
 
-                viaje.setTipoViaje(
-                        rs.getString("tipo_viaje")
-                );
+                    viaje.setTipoViaje(
+                            rs.getString("tipo_viaje")
+                    );
 
-                viaje.setPlacaBus(
-                        rs.getString("placa_bus")
-                );
+                    viaje.setPlacaBus(
+                            rs.getString("placa_bus")
+                    );
 
-                viaje.setNumeroLicencia(
-                        rs.getString("numero_licencia")
-                );
+                    viaje.setNumeroLicencia(
+                            rs.getString("numero_licencia")
+                    );
 
-                viaje.setCodigoRuta(
-                        rs.getString("codigo_ruta")
-                );
+                    viaje.setCodigoRuta(
+                            rs.getString("codigo_ruta")
+                    );
 
-                viaje.setOrigen(
-                        rs.getString("origen")
-                );
+                    viaje.setOrigen(
+                            rs.getString("origen")
+                    );
 
-                viaje.setDestino(
-                        rs.getString("destino")
-                );
+                    viaje.setDestino(
+                            rs.getString("destino")
+                    );
 
-                viaje.setFechaSalida(
-                        rs.getDate("fecha_salida")
-                );
+                    viaje.setFechaSalida(
+                            rs.getDate("fecha_salida")
+                    );
 
-                viaje.setHoraSalida(
-                        rs.getTime("hora_salida")
-                );
+                    viaje.setHoraSalida(
+                            rs.getTime("hora_salida")
+                    );
 
-                viaje.setFechaLlegadaEstimada(
-                        rs.getDate("fecha_llegada_estimada")
-                );
+                    viaje.setFechaLlegadaEstimada(
+                            rs.getDate("fecha_llegada_estimada")
+                    );
 
-                viaje.setHoraLlegadaEstimada(
-                        rs.getTime("hora_llegada_estimada")
-                );
+                    viaje.setHoraLlegadaEstimada(
+                            rs.getTime("hora_llegada_estimada")
+                    );
 
-                viaje.setEstado(
-                        rs.getString("estado")
-                );
+                    viaje.setEstado(
+                            rs.getString("estado")
+                    );
 
-                viaje.setDepreciacionPorKm(
-                        rs.getDouble("depreciacion_por_km")
-                );
+                    viaje.setDepreciacionPorKm(
+                            rs.getDouble("depreciacion_por_km")
+                    );
 
-                viaje.setDepreciacionTotal(
-                        rs.getDouble("depreciacion_total")
-                );
+                    viaje.setDepreciacionTotal(
+                            rs.getDouble("depreciacion_total")
+                    );
 
-                return viaje;
+                    return viaje;
+                }
             }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al obtener viaje privado: "
+                    + e.getMessage()
+            );
         }
 
-    } catch (SQLException e) {
-
-        System.out.println(
-                "Error al obtener viaje privado: "
-                + e.getMessage()
-        );
+        return null;
     }
-
-    return null;
-}
 }

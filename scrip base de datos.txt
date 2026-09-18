@@ -149,41 +149,45 @@ CREATE TABLE configuracion (
 );
 
 CREATE TABLE viaje (
-    codigo_viaje VARCHAR(20) NOT NULL,
-    tipo_viaje ENUM('REGULAR','PRIVADO') NOT NULL,
-    placa_bus VARCHAR(20) NOT NULL,
-    numero_licencia VARCHAR(50) NOT NULL,
+    codigo_viaje VARCHAR(20) PRIMARY KEY,
+
+    tipo_viaje ENUM('REGULAR', 'PRIVADO') NOT NULL,
+
+    placa_bus VARCHAR(20),
+    numero_licencia VARCHAR(50),
     codigo_ruta VARCHAR(20),
-    origen VARCHAR(250) NOT NULL,
-    destino VARCHAR(250) NOT NULL,
+
+    origen VARCHAR(250),
+    destino VARCHAR(250),
+
     fecha_salida DATE NOT NULL,
     hora_salida TIME NOT NULL,
+
     fecha_llegada_estimada DATE NOT NULL,
     hora_llegada_estimada TIME NOT NULL,
+
     estado ENUM(
         'PROGRAMADO',
         'EN_CURSO',
         'FINALIZADO',
         'CANCELADO'
     ) NOT NULL DEFAULT 'PROGRAMADO',
-    depreciacion_por_km DECIMAL(10,2) NOT NULL,
-    depreciacion_total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 
-    PRIMARY KEY (codigo_viaje),
+    depreciacion_por_km DECIMAL(10,2),
+    depreciacion_total DECIMAL(10,2) DEFAULT 0,
 
-    CONSTRAINT fk_viaje_bus
-        FOREIGN KEY (placa_bus)
+    FOREIGN KEY (placa_bus)
         REFERENCES bus(placa),
 
-    CONSTRAINT fk_viaje_chofer
-        FOREIGN KEY (numero_licencia)
+    FOREIGN KEY (numero_licencia)
         REFERENCES chofer(numero_licencia),
 
-    CONSTRAINT fk_viaje_ruta
-        FOREIGN KEY (codigo_ruta)
-        REFERENCES ruta(codigo_ruta)
-);
+    FOREIGN KEY (codigo_ruta)
+        REFERENCES ruta(codigo_ruta),
 
+    CHECK (depreciacion_por_km >= 0),
+    CHECK (depreciacion_total >= 0)
+);
 
 CREATE TABLE salida_viaje (
     codigo_viaje VARCHAR(20) NOT NULL,
