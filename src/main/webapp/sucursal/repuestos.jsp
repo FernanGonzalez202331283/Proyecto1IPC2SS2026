@@ -3,11 +3,6 @@
     Created on : 13 sept 2026, 19:27:09
     Author     : fernan
 --%>
-<%--
-Document   : repuestos
-Created on : 14 sept 2026
-Author     : fernan
---%>
 
 <%@page import="java.util.List"%>
 <%@page import="transporte.dao.RepuestoDAO"%>
@@ -40,8 +35,6 @@ Author     : fernan
 <!DOCTYPE html>
 
 <html lang="es">
-
-    ```
     <head>
 
         <meta charset="UTF-8">

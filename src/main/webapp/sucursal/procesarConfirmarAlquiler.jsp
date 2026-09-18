@@ -313,10 +313,6 @@
         return;
     }
 
-    /*
-     * Guardar el precio confirmado
-     * y cambiar el estado del alquiler.
-     */
     alquiler.setPrecioConfirmado(
             precioConfirmado
     );

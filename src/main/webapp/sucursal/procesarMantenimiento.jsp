@@ -414,11 +414,6 @@
             psMantenimiento.executeUpdate();
         }
 
-
-        // ==============================
-        // INSERTAR DETALLES
-        // ==============================
-
         if (codigosRepuesto != null
                 && cantidades != null) {
 
@@ -474,10 +469,6 @@
                     if (cantidad <= 0) {
                         continue;
                     }
-
-
-                    // Obtener nuevamente
-                    // el precio real de MySQL.
 
                     psPrecio.setString(
                             1,
@@ -542,22 +533,12 @@
             }
         }
 
-
-        // ==============================
-        // CONFIRMAR
-        // ==============================
-
         conexion.commit();
 
         registrado = true;
 
 
     } catch (Exception e) {
-
-
-        // ==============================
-        // ROLLBACK
-        // ==============================
 
         if (conexion != null) {
 
@@ -604,11 +585,6 @@
             }
         }
     }
-
-
-    // ==============================
-    // COSTO TOTAL
-    // ==============================
 
     double costoTotal
             = montoManoObra + montoRepuestos;

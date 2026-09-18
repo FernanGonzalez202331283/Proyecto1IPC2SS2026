@@ -58,8 +58,6 @@ if (alquiler == null) {
 <!DOCTYPE html>
 
 <html lang="es">
-
-```
 <head>
 
     <meta charset="UTF-8">
@@ -96,7 +94,6 @@ if (alquiler == null) {
     </main>
 
 </body>
-```
 
 </html>
 
@@ -112,7 +109,6 @@ if (!"SOLICITADO".equals(alquiler.getEstado())) {
 
 <html lang="es">
 
-```
 <head>
 
     <meta charset="UTF-8">
@@ -154,7 +150,6 @@ if (!"SOLICITADO".equals(alquiler.getEstado())) {
     </main>
 
 </body>
-```
 
 </html>
 
@@ -175,7 +170,6 @@ if (viaje == null) {
 
 <html lang="es">
 
-```
 <head>
 
     <meta charset="UTF-8">
@@ -212,7 +206,6 @@ if (viaje == null) {
     </main>
 
 </body>
-```
 
 </html>
 
@@ -237,7 +230,6 @@ if (rutaPrivada == null) {
 
 <html lang="es">
 
-```
 <head>
 
     <meta charset="UTF-8">
@@ -334,7 +326,6 @@ if (rutaPrivada == null) {
     </main>
 
 </body>
-```
 
 </html>
 
@@ -376,7 +367,6 @@ List<Chofer> choferes
 
 <html lang="es">
 
-```
 <head>
 
     <meta charset="UTF-8">
