@@ -14,25 +14,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-  
-    Usuario usuarioSesion
-            = (Usuario) session.getAttribute("usuario");
+Usuario usuarioSesion =
+        (Usuario) session.getAttribute("usuario");
 
-    String rolSesion
-            = (String) session.getAttribute("rol");
+if (usuarioSesion == null) {
+    response.sendRedirect("../login.jsp");
+    return;
+}
 
-    if (usuarioSesion == null
-            || rolSesion == null
-            || !"ADMIN_SUCURSAL".equals(rolSesion)) {
-
-        response.sendRedirect("../login.jsp");
-        return;
-    }
-
+if (!"ADMIN_SUCURSAL".equals(usuarioSesion.getRol())) {
+    response.sendRedirect("../inicio.jsp");
+    return;
+}
     String codigoSucursal
             = usuarioSesion.getCodigoSucursal();
 
-    
     String mensaje = "";
     String tipoMensaje = "";
 
@@ -71,7 +67,6 @@
             precioTexto = precioTexto.trim();
         }
 
-        
         if (codigoRuta == null || codigoRuta.isEmpty()
                 || codigoSucursalDestino == null
                 || codigoSucursalDestino.isEmpty()
@@ -118,7 +113,6 @@
 
                 } else {
 
-                   
                     RutaDAO rutaDAO = new RutaDAO();
 
                     Ruta rutaExistente
@@ -133,7 +127,6 @@
 
                     } else {
 
-                       
                         SucursalDAO sucursalDAO
                                 = new SucursalDAO();
 
@@ -156,7 +149,6 @@
 
                         } else {
 
-                           
                             Ruta ruta = new Ruta(
                                     codigoRuta,
                                     codigoSucursal,
@@ -171,7 +163,7 @@
 
                             if (registrado) {
 
-                                response.sendRedirect("rutas.jsp");
+                                response.sendRedirect("ruta.jsp");
                                 return;
 
                             } else {
@@ -215,138 +207,6 @@
 
         <link rel="stylesheet"
               href="../resources/css/styles.css">
-
-        <style>
-
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f4f6f8;
-                margin: 0;
-                padding: 30px;
-            }
-
-            .contenedor {
-                width: 600px;
-                max-width: 100%;
-                margin: 40px auto;
-                background-color: white;
-                padding: 30px;
-                border-radius: 10px;
-                box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-                box-sizing: border-box;
-            }
-
-            h1 {
-                text-align: center;
-                margin-bottom: 10px;
-            }
-
-            .subtitulo {
-                text-align: center;
-                color: #666;
-                margin-bottom: 25px;
-            }
-
-            .campo {
-                margin-bottom: 18px;
-            }
-
-            label {
-                display: block;
-                margin-bottom: 6px;
-                font-weight: bold;
-            }
-
-            input,
-            select {
-                width: 100%;
-                padding: 10px;
-                box-sizing: border-box;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                font-size: 14px;
-            }
-
-            input:focus,
-            select:focus {
-                outline: none;
-                border-color: #007bff;
-            }
-
-            input[readonly] {
-                background-color: #e9ecef;
-                cursor: not-allowed;
-            }
-
-            .info {
-                background-color: #e9f5ff;
-                border: 1px solid #b8daff;
-                color: #004085;
-                padding: 12px;
-                border-radius: 5px;
-                margin-bottom: 20px;
-            }
-
-            .mensaje {
-                padding: 12px;
-                margin-bottom: 20px;
-                border-radius: 5px;
-            }
-
-            .error {
-                background-color: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-            }
-
-            .obligatorio {
-                color: red;
-            }
-
-            .botones {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 25px;
-            }
-
-            button,
-            .boton-volver {
-                padding: 11px 20px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                text-decoration: none;
-                font-size: 14px;
-            }
-
-            button {
-                background-color: #007bff;
-                color: white;
-            }
-
-            button:hover {
-                background-color: #0056b3;
-            }
-
-            .boton-volver {
-                background-color: #6c757d;
-                color: white;
-            }
-
-            .boton-volver:hover {
-                background-color: #545b62;
-            }
-
-            .sin-destinos {
-                padding: 15px;
-                background-color: #fff3cd;
-                border: 1px solid #ffeeba;
-                color: #856404;
-                border-radius: 5px;
-            }
-
-        </style>
-
     </head>
 
     <body>
@@ -384,18 +244,15 @@
             <% }%>
 
 
-            <form method="POST"
-                  action="registrarRuta.jsp"
-                  onsubmit="return validarFormulario();">
-
+            <form id="formularioRegistrarRuta"
+                  method="POST"
+                  action="registrarRuta.jsp">
 
                 <div class="campo">
 
                     <label for="codigoRuta">
-
                         Código de ruta
                         <span class="obligatorio">*</span>
-
                     </label>
 
                     <input
@@ -406,15 +263,15 @@
                         value="<%= codigoRuta%>"
                         required>
 
+                    <p id="mensajeCodigoRuta" class="campo-error"></p>
+
                 </div>
 
 
                 <div class="campo">
 
                     <label for="origen">
-
                         Sucursal de origen
-
                     </label>
 
                     <input
@@ -429,10 +286,8 @@
                 <div class="campo">
 
                     <label for="codigoSucursalDestino">
-
                         Sucursal de destino
                         <span class="obligatorio">*</span>
-
                     </label>
 
                     <select
@@ -476,13 +331,13 @@
 
                     </select>
 
+                    <p id="mensajeDestino" class="campo-error"></p>
+
                     <% if (!hayDestinos) { %>
 
                     <div class="sin-destinos">
-
                         No existen otras sucursales activas
                         disponibles como destino.
-
                     </div>
 
                     <% }%>
@@ -493,10 +348,8 @@
                 <div class="campo">
 
                     <label for="distanciaKm">
-
                         Distancia en kilómetros
                         <span class="obligatorio">*</span>
-
                     </label>
 
                     <input
@@ -508,16 +361,16 @@
                         value="<%= distanciaTexto%>"
                         required>
 
+                    <p id="mensajeDistancia" class="campo-error"></p>
+
                 </div>
 
 
                 <div class="campo">
 
                     <label for="precioBoleto">
-
                         Precio del boleto
                         <span class="obligatorio">*</span>
-
                     </label>
 
                     <input
@@ -529,81 +382,32 @@
                         value="<%= precioTexto%>"
                         required>
 
+                    <p id="mensajePrecio" class="campo-error"></p>
+
                 </div>
 
 
                 <div class="botones">
-
-                    <a href="ruta.jsp"
-                       class="boton-volver">
-
-                        Cancelar
-
-                    </a>
-
                     <button type="submit">
-
                         Registrar ruta
-
                     </button>
-
                 </div>
+                  <!-- VOLVER -->
+                    <div class="botones-inferiores">
+
+                <a
+                    href="../sucursal/viajes.jsp"
+                    class="boton boton-volver">
+
+                       regresar
+                </a>
+
+           
 
             </form>
 
         </div>
-
-
-        <script>
-
-            function validarFormulario() {
-
-                const codigo =
-                        document.getElementById("codigoRuta").value.trim();
-
-                const destino =
-                        document.getElementById("codigoSucursalDestino").value;
-
-                const distancia =
-                        document.getElementById("distanciaKm").value;
-
-                const precio =
-                        document.getElementById("precioBoleto").value;
-
-
-                if (codigo === "") {
-
-                    alert("Ingrese el código de la ruta.");
-                    return false;
-                }
-
-
-                if (destino === "") {
-
-                    alert("Seleccione la sucursal de destino.");
-                    return false;
-                }
-
-
-                if (distancia === "" || Number(distancia) <= 0) {
-
-                    alert("La distancia debe ser mayor que cero.");
-                    return false;
-                }
-
-
-                if (precio === "" || Number(precio) < 0) {
-
-                    alert("Ingrese un precio de boleto válido.");
-                    return false;
-                }
-
-
-                return true;
-            }
-
-        </script>
-
+        <script src="../resources/js/registrarRuta.js"></script>
     </body>
 
 </html>

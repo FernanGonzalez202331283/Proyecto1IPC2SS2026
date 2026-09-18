@@ -74,10 +74,8 @@
         } else {
 
             try {
-
                 int anioFabricacion
                         = Integer.parseInt(anioTexto.trim());
-
                 int capacidad
                         = Integer.parseInt(capacidadTexto.trim());
 
@@ -90,7 +88,14 @@
                             = "La capacidad debe ser mayor que cero.";
                     tipoMensaje = "error";
 
-                } else if (kilometrajeActual < 0) {
+                } else if (capacidad > 200) {
+
+                mensaje
+                        = "La capacidad máxima permitida es de 200 pasajeros.";
+                tipoMensaje = "error";
+
+                }
+                else if (kilometrajeActual < 0) {
 
                     mensaje
                             = "El kilometraje no puede ser negativo.";
@@ -131,9 +136,6 @@
 
                         bus.setCapacidad(capacidad);
 
-                        /*
-                         * Todo bus nuevo comienza disponible.
-                         */
                         bus.setEstadoOperativo("DISPONIBLE");
 
                         bus.setKilometrajeActual(
@@ -211,8 +213,7 @@
 
                 <h2>Datos del bus</h2>
 
-                <form method="POST">
-
+                    <form id="formularioRegistrarBus" method="POST">
                     <div class="form-group">
 
                         <label for="placa">
@@ -228,6 +229,7 @@
                                     ? request.getParameter("placa")
                                     : ""%>"
                             required>
+                            <p id="mensajePlaca" class="campo-error"></p>
 
                     </div>
 
@@ -268,7 +270,7 @@
                                     ? request.getParameter("marca")
                                     : ""%>"
                             required>
-
+                            <p id="mensajeMarca" class="campo-error"></p>
                     </div>
 
                     <div class="form-group">
@@ -286,26 +288,23 @@
                                     ? request.getParameter("modelo")
                                     : ""%>"
                             required>
-
+                            <p id="mensajeModelo" class="campo-error"></p>
                     </div>
 
                     <div class="form-group">
-
-                        <label for="anioFabricacion">
-                            Año de fabricación
-                        </label>
-
-                        <input
-                            type="number"
-                            id="anioFabricacion"
-                            name="anioFabricacion"
-                            min="1900"
-                            max="2100"
-                            value="<%= request.getParameter("anioFabricacion") != null
-                                    ? request.getParameter("anioFabricacion")
-                                    : ""%>"
+                        <label for="anioFabricacion">Año de fabricación</label>
+                        <input 
+                            type="number" 
+                            id="anioFabricacion" 
+                            name="anioFabricacion" 
+                            min="1900" 
+                            max="<%= java.time.Year.now().getValue() %>" 
+                            placeholder="Ej. 2026"
+                            value="<%= request.getParameter("anioFabricacion") != null 
+                                    ? request.getParameter("anioFabricacion") 
+                                    : "" %>" 
                             required>
-
+                        <p id="mensajeAnio" class="campo-error"></p>
                     </div>
 
                     <div class="form-group">
@@ -323,7 +322,7 @@
                                     ? request.getParameter("capacidad")
                                     : ""%>"
                             required>
-
+                            <p id="mensajeCapacidad" class="campo-error"></p>
                     </div>
 
                     <div class="form-group">
@@ -359,7 +358,7 @@
                                     ? request.getParameter("kilometrajeActual")
                                     : "0"%>"
                             required>
-
+                            <p id="mensajeKilometraje" class="campo-error"></p>
                     </div>
 
                     <button type="submit">
@@ -369,14 +368,19 @@
                 </form>
 
             </div>
+            <!-- VOLVER -->
+            <div class="botones-inferiores">
 
-            <br>
+                <a
+                    href="../sucursal/buses.jsp"
+                    class="boton boton-volver">
 
-            <a href="buses.jsp">
-                Regresar a buses
-            </a>
+                    regresar
+                </a>
+            </div>
 
         </main>
+        <script src="../resources/js/registrarBus.js"></script>
 
     </body>
 

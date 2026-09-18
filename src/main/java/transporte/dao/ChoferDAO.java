@@ -243,4 +243,33 @@ public class ChoferDAO {
 
         return choferes;
     }
+// activar
+
+    public boolean activar(String numeroLicencia) {
+
+        String sql = """
+        UPDATE chofer
+        SET estado = TRUE
+        WHERE numero_licencia = ?
+        """;
+
+        try (
+                Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, numeroLicencia);
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0;
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al activar chofer: " + e.getMessage()
+            );
+
+            return false;
+        }
+    }
+
 }

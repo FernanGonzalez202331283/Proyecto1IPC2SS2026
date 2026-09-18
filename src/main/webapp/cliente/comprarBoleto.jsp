@@ -12,8 +12,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuario =
-            (Usuario) session.getAttribute("usuario");
+    Usuario usuario
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuario == null) {
         response.sendRedirect("../login.jsp");
@@ -25,10 +25,11 @@
         return;
     }
 
-    String codigoViaje =request.getParameter("codigoViaje");
+    String codigoViaje
+            = request.getParameter("codigoViaje");
 
-    if (codigoViaje == null ||
-        codigoViaje.trim().isEmpty()) {
+    if (codigoViaje == null
+            || codigoViaje.trim().isEmpty()) {
 
         response.sendRedirect("viajes.jsp");
         return;
@@ -36,171 +37,113 @@
 
     codigoViaje = codigoViaje.trim();
 
-    ViajeDAO viajeDAO =
-            new ViajeDAO();
+    ViajeDAO viajeDAO
+            = new ViajeDAO();
 
-    Viaje viaje =
-            viajeDAO.obtener(codigoViaje);
+    Viaje viaje
+            = viajeDAO.obtener(codigoViaje);
 
-    if (viaje == null ||
-        !"REGULAR".equals(viaje.getTipoViaje()) ||
-        !"PROGRAMADO".equals(viaje.getEstado())) {
+    if (viaje == null
+            || !"REGULAR".equals(viaje.getTipoViaje())
+            || !"PROGRAMADO".equals(viaje.getEstado())) {
 
         response.sendRedirect("viajes.jsp");
         return;
     }
 
-    BoletoDAO boletoDAO =
-            new BoletoDAO();
+    BoletoDAO boletoDAO
+            = new BoletoDAO();
 
-    List<Integer> asientosOcupados =
-            boletoDAO.listarAsientosOcupados(codigoViaje);
+    List<Integer> asientosOcupados
+            = boletoDAO.listarAsientosOcupados(codigoViaje);
 %>
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Comprar boleto</title>
+    <head>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
-</head>
+        <meta charset="UTF-8">
 
-<body>
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-<main class="pagina">
+        <title>Comprar boletos</title>
 
-    <header class="encabezado">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-        <h1>Comprar boleto</h1>
+    </head>
 
-        <p>
-            Seleccione el asiento que desea utilizar.
-        </p>
+    <body>
 
-    </header>
+        <main class="pagina">
 
+            <header class="encabezado">
 
-    <!-- INFORMACIÓN DEL VIAJE -->
-    <div class="card-menu">
-        <h2>
-            <%= viaje.getOrigen() %>
-            ->
-            <%= viaje.getDestino() %>
-        </h2>
+                <h1>Comprar boletos</h1>
 
-        <p>
-            <strong>Código del viaje:</strong>
-            <%= viaje.getCodigoViaje() %>
-        </p>
+                <p>
+                    Seleccione uno o varios asientos para realizar su compra.
+                </p>
 
-        <p>
-            <strong>Ruta:</strong>
-            <%= viaje.getCodigoRuta() %>
-        </p>
-
-        <p>
-            <strong>Fecha de salida:</strong>
-            <%= viaje.getFechaSalida() %>
-        </p>
-
-        <p>
-            <strong>Hora de salida:</strong>
-            <%= viaje.getHoraSalida() %>
-        </p>
-
-        <p>
-            <strong>Llegada estimada:</strong>
-            <%= viaje.getFechaLlegadaEstimada() %>
-            -
-            <%= viaje.getHoraLlegadaEstimada() %>
-        </p>
-
-        <p>
-            <strong>Bus:</strong>
-            <%= viaje.getPlacaBus() %>
-        </p>
-
-        <p>
-            <strong>Precio del boleto:</strong>
-            Q<%= String.format("%.2f",
-                    viaje.getPrecioBoletos()) %>
-        </p>
-
-        <p>
-            <strong>Asientos disponibles:</strong>
-            <%= viaje.getAsientosDisponibles() %>
-        </p>
-
-    </div>
+            </header>
 
 
-    <br>
+            <!-- INFORMACIÓN DEL VIAJE -->
 
+            <div class="card-menu">
 
-    <!-- SELECCIÓN DE ASIENTO -->
+                <h2>
+                    <%= viaje.getOrigen()%>
+                    ->
+                    <%= viaje.getDestino()%>
+                </h2>
 
-    <div class="card-menu">
+                <p>
+                    <strong>Código del viaje:</strong>
+                    <%= viaje.getCodigoViaje()%>
+                </p>
 
-        <h2>Seleccione su asiento</h2>
+                <p>
+                    <strong>Ruta:</strong>
+                    <%= viaje.getCodigoRuta()%>
+                </p>
 
-        <p>
-            Los asientos ocupados no pueden seleccionarse.
-        </p>
+                <p>
+                    <strong>Fecha de salida:</strong>
+                    <%= viaje.getFechaSalida()%>
+                </p>
 
+                <p>
+                    <strong>Hora de salida:</strong>
+                    <%= viaje.getHoraSalida()%>
+                </p>
 
-        <form method="post"
-              action="confirmarCompra.jsp"
-              id="formComprarBoleto">
+                <p>
+                    <strong>Llegada estimada:</strong>
+                    <%= viaje.getFechaLlegadaEstimada()%>
+                    -
+                    <%= viaje.getHoraLlegadaEstimada()%>
+                </p>
 
+                <p>
+                    <strong>Bus:</strong>
+                    <%= viaje.getPlacaBus()%>
+                </p>
 
-            <!-- VIAJE -->
+                <p>
+                    <strong>Precio por boleto:</strong>
+                    Q<%= String.format(
+                            "%.2f",
+                            viaje.getPrecioBoletos()
+                    )%>
+                </p>
 
-            <input type="hidden"
-                   name="codigoViaje"
-                   value="<%= viaje.getCodigoViaje() %>">
-
-
-            <!-- ASIENTOS -->
-
-            <div class="asientos">
-
-                <%
-                    for (int asiento = 1;
-                         asiento <= viaje.getCapacidadBus();
-                         asiento++) {
-
-                        boolean ocupado =
-                                asientosOcupados.contains(asiento);
-                %>
-
-                    <label class="asiento
-                        <%= ocupado
-                            ? "asiento-ocupado"
-                            : "asiento-disponible" %>">
-
-                        <input
-                            type="radio"
-                            name="numeroAsiento"
-                            value="<%= asiento %>"
-                            <%= ocupado
-                                ? "disabled"
-                                : "" %>
-                            required
-                        >
-
-                        <span>
-                            <%= asiento %>
-                        </span>
-
-                    </label>
-
-                <%
-                    }
-                %>
+                <p>
+                    <strong>Asientos disponibles:</strong>
+                    <%= viaje.getAsientosDisponibles()%>
+                </p>
 
             </div>
 
@@ -208,32 +151,130 @@
             <br>
 
 
-            <!-- BOTONES -->
+            <!-- SELECCIÓN DE ASIENTOS -->
 
-            <div class="form-actions">
+            <div class="card-menu">
 
-                <button type="submit">
-                    Continuar con la compra
-                </button>
+                <h2>Seleccione sus asientos</h2>
 
-                <a href="viajes.jsp">
-                    Cancelar
+                <p>
+                    Los asientos ocupados no pueden seleccionarse.
+                </p>
+
+                <p>
+                    Puede seleccionar uno o varios asientos.
+                </p>
+                <p id="mensajeAsientos"></p>
+
+                <p>
+                    Asientos seleccionados:
+                    <strong id="cantidadSeleccionada">0</strong>
+                </p>
+
+                <p>
+                    Total estimado:
+                    <strong>
+                        Q<span id="totalCompra">0.00</span>
+                    </strong>
+                </p>
+
+
+                <form 
+                    method="post"
+                    action="confirmarCompra.jsp"
+                    id="formComprarBoleto"
+                    data-precio="<%= viaje.getPrecioBoletos()%>"
+                    data-disponibles="<%= viaje.getAsientosDisponibles()%>">
+
+
+
+                    <!-- VIAJE -->
+
+                    <input type="hidden"
+                           name="codigoViaje"
+                           value="<%= viaje.getCodigoViaje()%>">
+
+
+                    <!-- ASIENTOS -->
+
+                    <div class="asientos">
+
+                        <%
+                            for (int asiento = 1;
+                                    asiento <= viaje.getCapacidadBus();
+                                    asiento++) {
+
+                                boolean ocupado
+                                        = asientosOcupados.contains(asiento);
+                        %>
+
+                        <label class="asiento
+                               <%= ocupado
+                                ? "asiento-ocupado"
+                                : "asiento-disponible"%>">
+
+                            <input
+                                type="checkbox"
+                                name="numeroAsiento"
+                                value="<%= asiento%>"
+                                <%= ocupado
+                                    ? "disabled"
+                                    : ""%>
+                                >
+
+                            <span>
+                                <%= asiento%>
+                            </span>
+
+                        </label>
+
+                        <%
+                            }
+                        %>
+
+                    </div>
+
+
+                    <br>
+
+
+                    <!-- BOTONES -->
+
+                    <div class="form-actions">
+
+                        <button type="submit">
+                            Continuar con la compra
+                        </button>
+
+                    </div>
+            <div class="botones-inferiores">
+
+                <a
+                    href="../cliente/viajes.jsp"
+                    class="boton boton-volver">
+
+                    cancelar
                 </a>
 
             </div>
+                </form>
 
-        </form>
+            </div>
+            <br>
+             <div class="botones-inferiores">
 
-    </div>
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
+                    Volver al menú principal
 
-    <br>
+                </a>
 
-    <a href="../inicio.jsp">
-        Regresar al inicio
-    </a>
+            </div>
+        </main>
+        <script src="../resources/js/comprarBoleto.js"></script>
 
-</main>
+    </body>
 
-</body>
 </html>

@@ -10,22 +10,18 @@
 <%
     Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-    // Verificar sesión
     if (usuario == null) {
         response.sendRedirect("../login.jsp");
         return;
     }
 
-    // Verificar rol
     if (!"ADMIN_SUCURSAL".equals(usuario.getRol())) {
         response.sendRedirect("../inicio.jsp");
         return;
     }
 
-    // Obtener la sucursal del administrador
     String codigoSucursal = usuario.getCodigoSucursal();
 
-    // Obtener filtro de estado
     String estadoOperativo = request.getParameter("estadoOperativo");
 
     if (estadoOperativo == null) {
@@ -51,341 +47,355 @@
 
     }
 %>
-
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Reporte general de buses</title>
+        <title>Reporte general de buses</title>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+        <link
+            rel="stylesheet"
+            href="<%= request.getContextPath()%>/resources/css/styles.css">
 
-</head>
+    </head>
 
-<body class="bg-light">
+    <body>
 
-    <div class="container-fluid py-4">
+        <main class="pagina">
 
-        <!-- ENCABEZADO -->
+            <!-- ENCABEZADO -->
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+            <header class="encabezado">
 
-            <div>
-
-                <h1 class="fw-bold">
+                <h1>
                     Listado general de buses
                 </h1>
 
-                <p class="text-muted mb-0">
+                <p>
                     Buses pertenecientes a la sucursal:
-                    <strong><%= codigoSucursal %></strong>
+                    <strong><%= codigoSucursal%></strong>
                 </p>
 
-            </div>
-
-            <a href="../inicio.jsp"
-               class="btn btn-secondary">
-
-                Volver al inicio
-
-            </a>
-
-        </div>
+            </header>
 
 
-        <!-- FILTRO -->
+            <!-- FILTRO -->
 
-        <div class="card shadow-sm mb-4">
+            <section class="formulario">
 
-            <div class="card-body">
-
-                <h5 class="card-title">
+                <h2>
                     Filtrar buses
-                </h5>
+                </h2>
 
-                <form method="GET"
-                      action="reporteBuses.jsp">
+                <p>
+                    Selecciona un estado operativo para consultar
+                    los buses de la sucursal.
+                </p>
 
-                    <div class="row g-3 align-items-end">
+                <form
+                    method="GET"
+                    action="reporteBuses.jsp"
+                    id="formularioReporteBuses">
 
-                        <div class="col-md-4">
+                    <div class="campo">
 
-                            <label
-                                for="estadoOperativo"
-                                class="form-label">
+                        <label for="estadoOperativo">
+                            Estado operativo
+                        </label>
 
-                                Estado operativo
+                        <select
+                            id="estadoOperativo"
+                            name="estadoOperativo">
 
-                            </label>
+                            <option
+                                value=""
+                                <%= "".equals(estadoOperativo)
+                                        ? "selected"
+                                        : ""%>>
+                                Todos los estados
+                            </option>
 
-                            <select
-                                class="form-select"
-                                id="estadoOperativo"
-                                name="estadoOperativo">
+                            <option
+                                value="DISPONIBLE"
+                                <%= "DISPONIBLE".equals(estadoOperativo)
+                                        ? "selected"
+                                        : ""%>>
+                                Disponible
+                            </option>
 
-                                <option value=""
-                                    <%= "".equals(estadoOperativo)
-                                            ? "selected"
-                                            : "" %>>
+                            <option
+                                value="EN_VIAJE"
+                                <%= "EN_VIAJE".equals(estadoOperativo)
+                                        ? "selected"
+                                        : ""%>>
+                                En viaje
+                            </option>
 
-                                    Todos los estados
+                            <option
+                                value="INACTIVO"
+                                <%= "INACTIVO".equals(estadoOperativo)
+                                        ? "selected"
+                                        : ""%>>
+                                Inactivo
+                            </option>
 
-                                </option>
+                        </select>
 
-                                <option value="DISPONIBLE"
-                                    <%= "DISPONIBLE".equals(estadoOperativo)
-                                            ? "selected"
-                                            : "" %>>
+                        <p
+                            id="mensajeEstado"
+                            class="campo-error">
+                        </p>
 
-                                    Disponible
+                    </div>
 
-                                </option>
+                    <div class="botones-formulario">
 
-                                <option value="EN_VIAJE"
-                                    <%= "EN_VIAJE".equals(estadoOperativo)
-                                            ? "selected"
-                                            : "" %>>
+                        <button
+                            type="submit"
+                            class="boton">
+                            Filtrar
+                        </button>
 
-                                    En viaje
+                        <br>
 
-                                </option>
-
-                                <option value="MANTENIMIENTO"
-                                    <%= "MANTENIMIENTO".equals(estadoOperativo)
-                                            ? "selected"
-                                            : "" %>>
-
-                                    Mantenimiento
-
-                                </option>
-
-                                <option value="INACTIVO"
-                                    <%= "INACTIVO".equals(estadoOperativo)
-                                            ? "selected"
-                                            : "" %>>
-
-                                    Inactivo
-
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <button
-                                type="submit"
-                                class="btn btn-primary">
-
-                                Filtrar
-
-                            </button>
-
-                            <a
-                                href="reporteBuses.jsp"
-                                class="btn btn-outline-secondary">
-
-                                Limpiar
-
-                            </a>
-
-                        </div>
+                        <a
+                            href="reporteBuses.jsp"
+                            class="boton">
+                            Limpiar
+                        </a>
 
                     </div>
 
                 </form>
 
-            </div>
-
-        </div>
+            </section>
 
 
-        <!-- MENSAJE DE ERROR -->
+            <!-- MENSAJE DE ERROR -->
 
-        <% if (mensaje != null) { %>
+            <% if (mensaje != null) {%>
 
-            <div class="alert alert-danger">
+            <section class="formulario">
 
-                <%= mensaje %>
+                <div class="mensaje mensaje-error">
 
-            </div>
-
-        <% } %>
-
-
-        <!-- TABLA -->
-
-        <% if (resultado != null) { %>
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h5 class="card-title mb-3">
-                        Buses registrados
-                    </h5>
-
-                    <div class="table-responsive">
-
-                        <table class="table table-bordered table-hover align-middle">
-
-                            <thead class="table-dark">
-
-                                <tr>
-
-                                    <th>
-                                        Placa
-                                    </th>
-
-                                    <th>
-                                        Marca
-                                    </th>
-
-                                    <th>
-                                        Modelo
-                                    </th>
-
-                                    <th>
-                                        Capacidad
-                                    </th>
-
-                                    <th>
-                                        Estado operativo
-                                    </th>
-
-                                    <th>
-                                        Chofer asignado actualmente
-                                    </th>
-
-                                    <th>
-                                        Kilometraje actual
-                                    </th>
-
-                                    <th>
-                                        Total de viajes
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody>
-
-                                <%
-                                    int cantidadBuses = 0;
-
-                                    while (resultado.next()) {
-
-                                        cantidadBuses++;
-                                %>
-
-                                <tr>
-
-                                    <td>
-                                        <%= resultado.getString("placa") %>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getString("marca") %>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getString("modelo") %>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getInt("capacidad") %>
-                                    </td>
-
-                                    <td>
-
-                                        <%
-                                            String estado =
-                                                    resultado.getString("estado_operativo");
-
-                                            String claseEstado = "bg-secondary";
-
-                                            if ("DISPONIBLE".equals(estado)) {
-                                                claseEstado = "bg-success";
-                                            } else if ("EN_VIAJE".equals(estado)) {
-                                                claseEstado = "bg-primary";
-                                            } else if ("MANTENIMIENTO".equals(estado)) {
-                                                claseEstado = "bg-warning text-dark";
-                                            } else if ("INACTIVO".equals(estado)) {
-                                                claseEstado = "bg-danger";
-                                            }
-                                        %>
-
-                                        <span class="badge <%= claseEstado %>">
-
-                                            <%= estado %>
-
-                                        </span>
-
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getString("chofer_asignado") %>
-                                    </td>
-
-                                    <td>
-                                        <%= String.format(
-                                                "%.2f",
-                                                resultado.getDouble("kilometraje_actual")
-                                            ) %>
-                                        km
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        <span class="badge bg-dark">
-
-                                            <%= resultado.getInt("total_viajes") %>
-
-                                        </span>
-
-                                    </td>
-
-                                </tr>
-
-                                <% } %>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                    <div class="mt-3 text-muted">
-
-                        Total de buses encontrados:
-                        <strong><%= cantidadBuses %></strong>
-
-                    </div>
+                    <%= mensaje%>
 
                 </div>
 
+            </section>
+
+            <% } %>
+
+
+            <!-- TABLA -->
+
+            <% if (resultado != null) { %>
+
+            <section class="formulario">
+
+                <h2>
+                    Buses registrados
+                </h2>
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Placa
+                                </th>
+
+                                <th>
+                                    Marca
+                                </th>
+
+                                <th>
+                                    Modelo
+                                </th>
+
+                                <th>
+                                    Capacidad
+                                </th>
+
+                                <th>
+                                    Estado operativo
+                                </th>
+
+                                <th>
+                                    Chofer asignado actualmente
+                                </th>
+
+                                <th>
+                                    Kilometraje actual
+                                </th>
+
+                                <th>
+                                    Total de viajes
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <%
+                                int cantidadBuses = 0;
+
+                                while (resultado.next()) {
+
+                                    cantidadBuses++;
+
+                                    String estado
+                                            = resultado.getString(
+                                                    "estado_operativo"
+                                            );
+                            %>
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        <%= resultado.getString("placa")%>
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    <%= resultado.getString("marca")%>
+                                </td>
+
+                                <td>
+                                    <%= resultado.getString("modelo")%>
+                                </td>
+
+                                <td>
+                                    <%= resultado.getInt("capacidad")%>
+                                </td>
+
+                                <td>
+
+                                    <% if ("DISPONIBLE".equals(estado)) { %>
+
+                                    <span class="estado-activo">
+                                        Disponible
+                                    </span>
+
+                                    <% } else if ("EN_VIAJE".equals(estado)) { %>
+
+                                    <span class="estado-activo">
+                                        En viaje
+                                    </span>
+
+                                    <% } else if ("MANTENIMIENTO".equals(estado)) { %>
+
+                                    <span class="estado-inactivo">
+                                        Mantenimiento
+                                    </span>
+
+                                    <% } else if ("INACTIVO".equals(estado)) { %>
+
+                                    <span class="estado-inactivo">
+                                        Inactivo
+                                    </span>
+
+                                    <% } else {%>
+
+                                    <span>
+                                        <%= estado%>
+                                    </span>
+
+                                    <% }%>
+
+                                </td>
+
+                                <td>
+                                    <%= resultado.getString("chofer_asignado")%>
+                                </td>
+
+                                <td>
+
+                                    <%= String.format(
+                                            "%.2f",
+                                            resultado.getDouble(
+                                                    "kilometraje_actual"
+                                            )
+                                    )%>
+                                    km
+
+                                </td>
+
+                                <td>
+
+                                    <%= resultado.getInt("total_viajes")%>
+
+                                </td>
+
+                            </tr>
+
+                            <% }%>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="mensaje">
+
+                    Total de buses encontrados:
+                    <strong><%= cantidadBuses%></strong>
+
+                </div>
+                <!-- EXPORTAR REPORTE A HTML -->
+
+                <form
+                    method="GET"
+                    action="exportarReporteBuses.jsp"
+                    class="botones">
+
+                    <input
+                        type="hidden"
+                        name="estadoOperativo"
+                        value="<%= estadoOperativo%>">
+
+                    <button
+                        type="submit"
+                        class="boton">
+
+                        Exportar HTML
+
+                    </button>
+
+                </form>
+
+            </section>
+
+            <% }%>
+
+            <!-- BOTÓN VOLVER -->
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+
+                    Volver al menú principal
+
+                </a>
+
             </div>
-
-        <% } %>
-
-    </div>
-
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
-
-</body>
-
+        </main>
+        <script src="../resources/js/reporteBuses.js"></script>
+    </body>
 </html>
-

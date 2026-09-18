@@ -3,24 +3,29 @@
     Created on : 15 sept 2026, 1:25:11
     Author     : fernan
 --%>
+
 <%@page import="transporte.Reporte.ReporteAlquileresDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="transporte.modelo.Usuario"%>
 
-<%
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-    if (usuario == null) {
+<%
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
+
+    if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
         return;
     }
 
-    if (!"ADMIN_SUCURSAL".equals(usuario.getRol())) {
+    if (!"ADMIN_SUCURSAL".equals(usuarioSesion.getRol())) {
         response.sendRedirect("../inicio.jsp");
         return;
     }
 
-    String codigoSucursal = usuario.getCodigoSucursal();
+    String codigoSucursal
+            = usuarioSesion.getCodigoSucursal();
 
     String fechaInicio = request.getParameter("fechaInicio");
     String fechaFin = request.getParameter("fechaFin");
@@ -33,7 +38,8 @@
         fechaFin = null;
     }
 
-    ReporteAlquileresDAO dao = new ReporteAlquileresDAO();
+    ReporteAlquileresDAO dao
+            = new ReporteAlquileresDAO();
 
     ResultSet resultado = null;
 
@@ -46,7 +52,6 @@
                 fechaInicio,
                 fechaFin
         );
-
 %>
 
 <!DOCTYPE html>
@@ -56,300 +61,333 @@
 
         <meta charset="UTF-8">
 
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
-        <title>Ingresos por alquiler de buses</title>
+        <title>Reporte de Alquileres</title>
 
         <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet">
+            rel="stylesheet"
+            href="<%= request.getContextPath()%>/resources/css/styles.css">
 
     </head>
 
-    <body class="bg-light">
+    <body>
 
-        <nav class="navbar navbar-dark bg-dark">
-
-            <div class="container">
-
-                <a class="navbar-brand" href="../inicio.jsp">
-                    Transporte Extraurbano
-                </a>
-
-                <span class="navbar-text text-white">
-                    Reporte de alquileres
-                </span>
-
-            </div>
-
-        </nav>
-
-
-        <main class="container py-5">
+        <main class="pagina">
 
             <!-- ENCABEZADO -->
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <header class="encabezado">
 
-                <div>
+                <h1>
+                    Ingresos por alquiler de buses
+                </h1>
 
-                    <h1 class="h3 mb-1">
-                        Ingresos por alquiler de buses
-                    </h1>
+                <p>
+                    Consulta los alquileres realizados por
+                    clientes de tu sucursal.
+                </p>
 
-                    <p class="text-muted mb-0">
-                        Consulta los alquileres realizados por clientes
-                        de la sucursal.
-                    </p>
+                <p>
+                    Sucursal:
+                    <strong>
+                        <%= codigoSucursal%>
+                    </strong>
+                </p>
 
-                </div>
-
-                <a href="../inicio.jsp"
-                   class="btn btn-outline-secondary">
-
-                    Volver
-
-                </a>
-
-            </div>
+            </header>
 
 
             <!-- FILTROS -->
 
-            <div class="card shadow-sm mb-4">
+            <section class="formulario">
 
-                <div class="card-header bg-primary text-white">
+                <h2>
+                    Filtros de consulta
+                </h2>
 
-                    <h2 class="h5 mb-0">
-                        Filtros de consulta
-                    </h2>
+                <p>
+                    Selecciona un rango de fechas para consultar
+                    los alquileres registrados.
+                </p>
 
-                </div>
+                <form
+                    method="get"
+                    action="reporteAlquileres.jsp"
+                    id="formularioReporteAlquileres">
 
-                <div class="card-body">
+                    <div class="form-group">
 
-                    <form method="get"
-                          action="reporteAlquileres.jsp">
+                        <label for="fechaInicio">
+                            Fecha inicial
+                        </label>
 
-                        <div class="row g-3">
+                        <input
+                            type="date"
+                            id="fechaInicio"
+                            name="fechaInicio"
+                            class="campo"
+                            value="<%= fechaInicio != null ? fechaInicio : ""%>">
 
-                            <!-- FECHA INICIAL -->
+                        <p
+                            id="mensajeFechaInicio"
+                            class="campo-error">
+                        </p>
 
-                            <div class="col-md-6">
-
-                                <label for="fechaInicio"
-                                       class="form-label">
-
-                                    Fecha inicial
-
-                                </label>
-
-                                <input
-                                    type="date"
-                                    class="form-control"
-                                    id="fechaInicio"
-                                    name="fechaInicio"
-                                    value="<%= fechaInicio != null ? fechaInicio : ""%>">
-
-                            </div>
-
-
-                            <!-- FECHA FINAL -->
-
-                            <div class="col-md-6">
-
-                                <label for="fechaFin"
-                                       class="form-label">
-
-                                    Fecha final
-
-                                </label>
-
-                                <input
-                                    type="date"
-                                    class="form-control"
-                                    id="fechaFin"
-                                    name="fechaFin"
-                                    value="<%= fechaFin != null ? fechaFin : ""%>">
-
-                            </div>
+                    </div>
 
 
-                            <!-- BOTONES -->
+                    <div class="form-group">
 
-                            <div class="col-12">
+                        <label for="fechaFin">
+                            Fecha final
+                        </label>
 
-                                <div class="d-flex gap-2">
+                        <input
+                            type="date"
+                            id="fechaFin"
+                            name="fechaFin"
+                            class="campo"
+                            value="<%= fechaFin != null ? fechaFin : ""%>">
 
-                                    <button
-                                        type="submit"
-                                        class="btn btn-primary">
+                        <p
+                            id="mensajeFechaFin"
+                            class="campo-error">
+                        </p>
 
-                                        Consultar
+                    </div>
 
-                                    </button>
 
-                                    <a
-                                        href="reporteAlquileres.jsp"
-                                        class="btn btn-outline-secondary">
+                    <div class="form-group">
 
-                                        Limpiar filtros
+                        <p
+                            id="mensajeReporte"
+                            class="campo-error">
+                        </p>
 
-                                    </a>
+                    </div>
 
-                                </div>
 
-                            </div>
+                    <div class="botones-formulario">
 
-                        </div>
+                        <button
+                            type="submit"
+                            class="boton">
 
-                    </form>
+                            Consultar
 
-                </div>
+                        </button>
 
-            </div>
+                        <a
+                            href="reporteAlquileres.jsp"
+                            class="boton">
+
+                            Limpiar filtros
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </section>
 
 
             <!-- RESULTADOS -->
 
-            <div class="card shadow-sm">
+            <section class="formulario">
 
-                <div class="card-header">
+                <h2>
+                    Resultados
+                </h2>
 
-                    <h2 class="h5 mb-0">
-                        Resultados
-                    </h2>
+                <%
+                    boolean hayResultados = false;
+                %>
 
-                </div>
+                <div class="tabla-contenedor">
 
-                <div class="card-body p-0">
+                    <table>
 
-                    <div class="table-responsive">
+                        <thead>
 
-                        <table class="table table-striped table-hover mb-0">
+                            <tr>
 
-                            <thead class="table-dark">
+                                <th>
+                                    Código de alquiler
+                                </th>
 
-                                <tr>
+                                <th>
+                                    Cliente
+                                </th>
 
-                                    <th>
-                                        C�digo de alquiler
-                                    </th>
+                                <th>
+                                    Origen
+                                </th>
 
-                                    <th>
-                                        Cliente
-                                    </th>
+                                <th>
+                                    Destino
+                                </th>
 
-                                    <th>
-                                        Origen
-                                    </th>
+                                <th>
+                                    Fecha de salida
+                                </th>
 
-                                    <th>
-                                        Destino
-                                    </th>
+                                <th>
+                                    Fecha de retorno
+                                </th>
 
-                                    <th>
-                                        Fecha de salida
-                                    </th>
+                                <th>
+                                    Bus
+                                </th>
 
-                                    <th>
-                                        Fecha de retorno
-                                    </th>
+                                <th>
+                                    Precio total
+                                </th>
 
-                                    <th>
-                                        Bus
-                                    </th>
+                            </tr>
 
-                                    <th>
-                                        Precio total
-                                    </th>
+                        </thead>
 
-                                </tr>
+                        <tbody>
 
-                            </thead>
+                            <%
+                                while (resultado.next()) {
 
-                            <tbody>
+                                    hayResultados = true;
+                            %>
 
-                                <%
-                                    boolean hayResultados = false;
+                            <tr>
 
-                                    while (resultado.next()) {
-
-                                        hayResultados = true;
-                                %>
-
-                                <tr>
-
-                                    <td>
-                                        <%= resultado.getString("codigo_alquiler")%>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getString("cliente")%>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getString("origen")%>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getString("destino")%>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getDate("fecha_salida")%>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getDate("fecha_retorno")%>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getString("bus")%>
-                                    </td>
-
-                                    <td>
-
-                                        Q
-                                        <%= String.format(
-                                                "%.2f",
-                                                resultado.getDouble("precio_total")
+                                <td>
+                                    <strong>
+                                        <%= resultado.getString(
+                                                "codigo_alquiler"
                                         )%>
+                                    </strong>
+                                </td>
 
-                                    </td>
+                                <td>
+                                    <%= resultado.getString(
+                                            "cliente"
+                                    )%>
+                                </td>
 
-                                </tr>
+                                <td>
+                                    <%= resultado.getString(
+                                            "origen"
+                                    )%>
+                                </td>
 
-                                <%
-                                    }
+                                <td>
+                                    <%= resultado.getString(
+                                            "destino"
+                                    )%>
+                                </td>
 
-                                    if (!hayResultados) {
-                                %>
+                                <td>
+                                    <%= resultado.getDate(
+                                            "fecha_salida"
+                                    )%>
+                                </td>
 
-                                <tr>
+                                <td>
+                                    <%= resultado.getDate(
+                                            "fecha_retorno"
+                                    )%>
+                                </td>
 
-                                    <td colspan="8"
-                                        class="text-center text-muted py-4">
+                                <td>
+                                    <%= resultado.getString(
+                                            "bus"
+                                    )%>
+                                </td>
+
+                                <td>
+                                    Q
+                                    <%= String.format(
+                                            "%.2f",
+                                            resultado.getDouble(
+                                                    "precio_total"
+                                            )
+                                    )%>
+                                </td>
+
+                            </tr>
+
+                            <%
+                                }
+
+                                if (!hayResultados) {
+                            %>
+
+                            <tr>
+
+                                <td colspan="8">
+
+                                    <div class="mensaje">
 
                                         No se encontraron alquileres
                                         para los filtros seleccionados.
 
-                                    </td>
+                                    </div>
 
-                                </tr>
+                                </td>
 
-                                <%
-                                    }
-                                %>
+                            </tr>
 
-                            </tbody>
+                            <%
+                                }
+                            %>
 
-                        </table>
+                        </tbody>
 
-                    </div>
+                    </table>
 
                 </div>
+
+            </section>
+            <!-- EXPORTAR REPORTE A HTML -->
+
+            <form
+                method="GET"
+                action="exportarReporteAlquileres.jsp"
+                class="botones">
+
+                <input
+                    type="hidden"
+                    name="fechaInicio"
+                    value="<%= fechaInicio != null ? fechaInicio : ""%>">
+
+                <input
+                    type="hidden"
+                    name="fechaFin"
+                    value="<%= fechaFin != null ? fechaFin : ""%>">
+
+                <button
+                    type="submit"
+                    class="boton">
+
+                    Exportar HTML
+
+                </button>
+
+            </form>
+
+
+            <!-- BOTÓN VOLVER -->
+
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+
+                    Volver al menú principal
+
+                </a>
 
             </div>
 
@@ -357,7 +395,7 @@
 
 
         <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+            src="../resources/js/reporteAlquileres.js">
         </script>
 
     </body>
@@ -368,32 +406,74 @@
 } catch (Exception e) {
 
     mensajeError = e.getMessage();
-
 %>
 
-<div class="container mt-5">
+<!DOCTYPE html>
+<html lang="es">
 
-    <div class="alert alert-danger">
+    <head>
 
-        <strong>
-            Error al generar el reporte:
-        </strong>
+        <meta charset="UTF-8">
 
-        <%= mensajeError%>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
-    </div>
+        <title>Error - Reporte de Alquileres</title>
 
-    <a href="../inicio.jsp"
-       class="btn btn-secondary">
+        <link
+            rel="stylesheet"
+            href="<%= request.getContextPath()%>/resources/css/styles.css">
 
-        Volver al inicio
+    </head>
 
-    </a>
+    <body>
 
-</div>
+        <main class="pagina">
+
+            <header class="encabezado">
+
+                <h1>
+                    Reporte de alquileres
+                </h1>
+
+            </header>
+
+            <section class="formulario">
+
+                <div class="mensaje">
+
+                    <strong>
+                        Error al generar el reporte:
+                    </strong>
+
+                    <p>
+                        <%= mensajeError%>
+                    </p>
+
+                </div>
+
+            </section>
+
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+
+                    Volver al menú principal
+
+                </a>
+
+            </div>
+
+        </main>
+
+    </body>
+
+</html>
 
 <%
-
     } finally {
 
         try {
@@ -404,8 +484,5 @@
 
         } catch (Exception e) {
         }
-
     }
-
 %>
-

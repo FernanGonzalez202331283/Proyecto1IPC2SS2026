@@ -118,8 +118,7 @@ boolean pagoRealizado
                 </p>
 
                 <p>
-                    Esto puede ocurrir si el alquiler no está
-                    confirmado, el saldo de la cartera es
+                    el saldo de la cartera puede ser 
                     insuficiente o el pago ya fue realizado.
                 </p>
 

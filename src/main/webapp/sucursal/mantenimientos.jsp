@@ -363,121 +363,18 @@
 
             <!-- REGRESAR -->
 
-            <div class="card-acciones">
+            <div class="botones-inferiores">
 
-                <a href="../inicio.jsp">
+                <a href="../inicio.jsp"
+                   class="boton boton-volver">
                     Regresar al inicio
                 </a>
 
             </div>
-
-
         </main>
-
-
-        <!-- JAVASCRIPT -->
-
-        <script>
-
-            function calcularTotales() {
-
-                let cantidades
-                        = document.querySelectorAll(
-                                ".cantidad-repuesto"
-                        );
-
-                let subtotales
-                        = document.querySelectorAll(
-                                ".subtotal-repuesto"
-                        );
-
-                let totalRepuestos = 0;
-
-
-                for (let i = 0;
-                        i < cantidades.length;
-                        i++) {
-
-                    let cantidad
-                            = parseInt(
-                                    cantidades[i].value
-                            ) || 0;
-
-                    let precio
-                            = parseFloat(
-                                    cantidades[i].dataset.precio
-                            ) || 0;
-
-
-                    let subtotal
-                            = cantidad * precio;
-
-
-                    subtotales[i].textContent
-                            = subtotal.toFixed(2);
-
-
-                    totalRepuestos
-                            += subtotal;
-                }
-
-
-                let manoObra
-                        = parseFloat(
-                                document.getElementById(
-                                        "montoManoObra"
-                                ).value
-                        ) || 0;
-
-
-                let total
-                        = manoObra + totalRepuestos;
-
-
-                document.getElementById(
-                        "totalRepuestos"
-                ).textContent
-                        = totalRepuestos.toFixed(2);
-
-
-                document.getElementById(
-                        "totalManoObra"
-                ).textContent
-                        = manoObra.toFixed(2);
-
-
-                document.getElementById(
-                        "totalMantenimiento"
-                ).textContent
-                        = total.toFixed(2);
-
-                document.getElementById(
-                        "montoRepuestos"
-                ).value
-                        = totalRepuestos.toFixed(2);
-            }
-
-            document.querySelectorAll(
-                    ".cantidad-repuesto"
-            ).forEach(function (campo) {
-
-                campo.addEventListener(
-                        "input",
-                        calcularTotales
-                );
-
-            });
-
-            document.getElementById(
-                    "montoManoObra"
-            ).addEventListener(
-                    "input",
-                    calcularTotales
-            );
-
-            calcularTotales();
-
-        </script>
+        
+        <script src="../resources/js/mantenimientos.js"></script>
+      
     </body>
 </html>
 

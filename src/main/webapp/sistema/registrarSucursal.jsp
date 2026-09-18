@@ -123,6 +123,10 @@
             <section class="formulario">
 
                 <h2>Información de la sucursal</h2>
+                    <div
+                        id="mensajeSucursal"
+                        class="mensaje">
+                    </div>
 
                 <form method="post"
                       onsubmit="return validarSucursal();">
@@ -253,12 +257,16 @@
                 </form>
 
             </section>
+             <div class="botones-inferiores">
 
-            <br>
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+                    Volver al menú principal
 
-            <a href="../inicio.jsp">
-                Volver al menú principal
-            </a>
+                </a>
+
+            </div>
 
         </div>
 

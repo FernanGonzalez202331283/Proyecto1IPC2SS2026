@@ -83,17 +83,21 @@
     List<Sucursal> sucursales = sucursalDAO.listar();
 %>
 
+
 <!DOCTYPE html>
 <html lang="es">
 
     <head>
 
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
         <title>Modificar sucursal</title>
 
-        <link rel="stylesheet" href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
         <script src="../resources/js/sucursales.js"></script>
 
@@ -103,19 +107,29 @@
 
         <main class="pagina">
 
-            <h1>Modificar sucursal</h1>
+            <div class="encabezado">
 
-            <p>
-                Seleccione una sucursal para modificar su información.
-            </p>
+                <div>
 
+                    <h1>Modificar sucursal</h1>
 
-            <% if (!mensaje.isEmpty()) {%>
+                    <p class="subtitulo">
+                        Seleccione una sucursal para modificar su información.
+                    </p>
 
-            <div class="mensaje <%= tipoMensaje%>">
-                <%= mensaje%>
+                </div>
+
             </div>
+
+
+            <% if (!mensaje.isEmpty()) { %>
+
+            <div class="mensaje <%= tipoMensaje %>">
+                <%= mensaje %>
+            </div>
+
             <% } %>
+
 
             <!-- SELECCIONAR SUCURSAL -->
 
@@ -123,48 +137,51 @@
 
                 <h2>Seleccionar sucursal</h2>
 
-                <label for="seleccionarSucursal">
-                    Sucursal:
-                </label>
+                <div class="campo">
 
-                <select
-                    id="seleccionarSucursal"
-                    onchange="mostrarSucursal()"
-                    >
+                    <label for="seleccionarSucursal">
+                        Sucursal
+                    </label>
 
-                    <option value="">
-                        -- Seleccione una sucursal --
-                    </option>
+                    <select
+                        id="seleccionarSucursal"
+                        onchange="mostrarSucursal()">
 
-                    <%
-                        for (Sucursal sucursal : sucursales) {
+                        <option value="">
+                            -- Seleccione una sucursal --
+                        </option>
 
-                            if (sucursal != null) {
-                    %>
+                        <%
+                            for (Sucursal sucursal : sucursales) {
 
-                    <option
-                        value="<%= sucursal.getCodigoSucursal()%>"
-                        data-nombre="<%= sucursal.getNombre()%>"
-                        data-direccion="<%= sucursal.getDireccion()%>"
-                        data-telefono="<%= sucursal.getTelefono()%>"
-                        data-municipio="<%= sucursal.getMunicipio()%>"
-                        data-departamento="<%= sucursal.getDepartamento()%>"
-                        data-latitud="<%= sucursal.getLatitud()%>"
-                        data-longitud="<%= sucursal.getLongitud()%>"
-                        >
+                                if (sucursal != null) {
+                        %>
 
-                        <%= sucursal.getCodigoSucursal()%>
-                        - 
-                        <%= sucursal.getNombre()%>
+                        <option
+                            value="<%= sucursal.getCodigoSucursal() %>"
+                            data-nombre="<%= sucursal.getNombre() %>"
+                            data-direccion="<%= sucursal.getDireccion() %>"
+                            data-telefono="<%= sucursal.getTelefono() %>"
+                            data-municipio="<%= sucursal.getMunicipio() %>"
+                            data-departamento="<%= sucursal.getDepartamento() %>"
+                            data-latitud="<%= sucursal.getLatitud() %>"
+                            data-longitud="<%= sucursal.getLongitud() %>"
+                            >
 
-                    </option>
+                            <%= sucursal.getCodigoSucursal() %>
+                            -
+                            <%= sucursal.getNombre() %>
 
-                    <%
+                        </option>
+
+                        <%
+                                }
                             }
-                        }
-                    %>
+                        %>
 
-                </select>
+                    </select>
+
+                </div>
 
             </section>
 
@@ -174,128 +191,236 @@
             <section
                 class="formulario"
                 id="formularioModificar"
-                style="display: none;"
-                >
+                style="display: none;">
 
                 <h2>Información de la sucursal</h2>
 
+                <div
+                    id="mensajeSucursal"
+                    class="mensaje">
+                </div>
+
+
                 <form
                     method="post"
-                    onsubmit="return validarSucursal();"
-                    >
+                    onsubmit="return validarSucursal();">
 
                     <input
                         type="hidden"
                         name="accion"
-                        value="modificar"
-                        >
+                        value="modificar">
 
 
-                    <label for="codigo">
-                        Código:
-                    </label>
+                    <!-- CÓDIGO -->
 
-                    <input
-                        type="text"
-                        id="codigo"
-                        name="codigo"
-                        readonly
-                        >
+                    <div class="form-group">
 
+                        <label for="codigo">
+                            Código
+                        </label>
 
-                    <label for="nombre">
-                        Nombre:
-                    </label>
+                        <input
+                            type="text"
+                            id="codigo"
+                            name="codigo"
+                            readonly>
 
-                    <input
-                        type="text"
-                        id="nombre"
-                        name="nombre"
-                        >
+                    </div>
 
 
-                    <label for="direccion">
-                        Dirección:
-                    </label>
+                    <!-- NOMBRE -->
 
-                    <input
-                        type="text"
-                        id="direccion"
-                        name="direccion"
-                        >
+                    <div class="form-group">
 
+                        <label for="nombre">
+                            Nombre
+                        </label>
 
-                    <label for="telefono">
-                        Teléfono:
-                    </label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            maxlength="100">
 
-                    <input
-                        type="text"
-                        id="telefono"
-                        name="telefono"
-                        >
+                        <p
+                            id="mensajeNombre"
+                            class="campo-error">
+                        </p>
 
-
-                    <label for="municipio">
-                        Municipio:
-                    </label>
-
-                    <input
-                        type="text"
-                        id="municipio"
-                        name="municipio"
-                        >
+                    </div>
 
 
-                    <label for="departamento">
-                        Departamento:
-                    </label>
+                    <!-- DIRECCIÓN -->
 
-                    <input
-                        type="text"
-                        id="departamento"
-                        name="departamento"
-                        >
+                    <div class="form-group">
 
+                        <label for="direccion">
+                            Dirección
+                        </label>
 
-                    <label for="latitud">
-                        Latitud:
-                    </label>
+                        <input
+                            type="text"
+                            id="direccion"
+                            name="direccion"
+                            maxlength="250">
 
-                    <input
-                        type="number"
-                        step="any"
-                        id="latitud"
-                        name="latitud"
-                        >
+                        <p
+                            id="mensajeDireccion"
+                            class="campo-error">
+                        </p>
 
-
-                    <label for="longitud">
-                        Longitud:
-                    </label>
-
-                    <input
-                        type="number"
-                        step="any"
-                        id="longitud"
-                        name="longitud"
-                        >
+                    </div>
 
 
-                    <button type="submit">
-                        Guardar cambios
-                    </button>
+                    <!-- TELÉFONO -->
+
+                    <div class="form-group">
+
+                        <label for="telefono">
+                            Teléfono
+                        </label>
+
+                        <input
+                            type="text"
+                            id="telefono"
+                            name="telefono"
+                            maxlength="8"
+                            inputmode="numeric">
+
+                        <p
+                            id="mensajeTelefono"
+                            class="campo-error">
+                        </p>
+
+                    </div>
+
+
+                    <!-- MUNICIPIO -->
+
+                    <div class="form-group">
+
+                        <label for="municipio">
+                            Municipio
+                        </label>
+
+                        <input
+                            type="text"
+                            id="municipio"
+                            name="municipio"
+                            maxlength="100">
+
+                        <p
+                            id="mensajeMunicipio"
+                            class="campo-error">
+                        </p>
+
+                    </div>
+
+
+                    <!-- DEPARTAMENTO -->
+
+                    <div class="form-group">
+
+                        <label for="departamento">
+                            Departamento
+                        </label>
+
+                        <input
+                            type="text"
+                            id="departamento"
+                            name="departamento"
+                            maxlength="100">
+
+                        <p
+                            id="mensajeDepartamento"
+                            class="campo-error">
+                        </p>
+
+                    </div>
+
+
+                    <!-- LATITUD -->
+
+                    <div class="form-group">
+
+                        <label for="latitud">
+                            Latitud
+                        </label>
+
+                        <input
+                            type="number"
+                            step="any"
+                            id="latitud"
+                            name="latitud">
+
+                        <p
+                            id="mensajeLatitud"
+                            class="campo-error">
+                        </p>
+
+                    </div>
+
+
+                    <!-- LONGITUD -->
+
+                    <div class="form-group">
+
+                        <label for="longitud">
+                            Longitud
+                        </label>
+
+                        <input
+                            type="number"
+                            step="any"
+                            id="longitud"
+                            name="longitud">
+
+                        <p
+                            id="mensajeLongitud"
+                            class="campo-error">
+                        </p>
+
+                    </div>
+
+
+                    <!-- BOTONES -->
+
+                    <div class="botones">
+
+                        <a
+                            href="../inicio.jsp"
+                            class="boton boton-volver">
+
+                            Cancelar
+
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="boton-principal">
+
+                            Guardar cambios
+
+                        </button>
+
+                    </div>
 
                 </form>
 
             </section>
 
 
-            <br>
+            <div class="botones-inferiores">
 
-            <a href="../inicio.jsp">
-                Volver al menú principal
-            </a>
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+
+                    Volver al menú principal
+
+                </a>
+
+            </div>
 
         </main>
 

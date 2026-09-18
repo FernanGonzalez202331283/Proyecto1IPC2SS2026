@@ -1,8 +1,9 @@
-<%-- 
-    Document   : depreciacion
-    Created on : 9 sept 2026, 17:09:37
-    Author     : fernan
+<%--
+Document   : depreciacion
+Created on : 9 sept 2026, 17:09:37
+Author     : fernan
 --%>
+
 <%@page import="java.sql.Date"%>
 <%@page import="transporte.modelo.Usuario"%>
 <%@page import="transporte.modelo.Configuracion"%>
@@ -11,10 +12,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion =
-            (Usuario) session.getAttribute("usuario");
-
-    // Verificar sesión
+    Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");// Verificar sesión
     if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
         return;
@@ -25,21 +23,25 @@
         return;
     }
 
-    ConfiguracionDAO configuracionDAO =
-            new ConfiguracionDAO();
+    ConfiguracionDAO cosnfiguracionDAO
+            = new ConfiguracionDAO();
 
     String mensaje = "";
     String tipoMensaje = "";
+
+    String depreciacionTexto
+            = request.getParameter("depreciacionPorKm");
+
+    if (depreciacionTexto == null) {
+        depreciacionTexto = "";
+    }
+
     if ("POST".equalsIgnoreCase(request.getMethod())) {
 
-        String depreciacionTexto =
-                request.getParameter("depreciacionPorKm");
+        if (depreciacionTexto.trim().isEmpty()) {
 
-        if (depreciacionTexto == null
-                || depreciacionTexto.trim().isEmpty()) {
-
-            mensaje =
-                    "Debe ingresar la depreciación por kilómetro.";
+            mensaje
+                    = "Debe ingresar la depreciación por kilómetro.";
 
             tipoMensaje = "error";
 
@@ -47,27 +49,28 @@
 
             try {
 
-                double depreciacion =
-                        Double.parseDouble(
+                double depreciacion
+                        = Double.parseDouble(
                                 depreciacionTexto.trim()
                         );
 
                 if (depreciacion < 0) {
 
-                    mensaje =
-                            "La depreciación no puede ser negativa.";
+                    mensaje
+                            = "La depreciación no puede ser negativa.";
 
                     tipoMensaje = "error";
 
                 } else {
+
                     int numeroConfiguracion = 1;
 
                     String codigoConfiguracion;
 
                     do {
 
-                        codigoConfiguracion =
-                                String.format(
+                        codigoConfiguracion
+                                = String.format(
                                         "CFG%03d",
                                         numeroConfiguracion
                                 );
@@ -82,12 +85,14 @@
                         numeroConfiguracion++;
 
                     } while (true);
-                    Date fechaConfiguracion =
-                            new Date(
+
+                    Date fechaConfiguracion
+                            = new Date(
                                     System.currentTimeMillis()
                             );
-                    Configuracion configuracion =
-                            new Configuracion();
+
+                    Configuracion configuracion
+                            = new Configuracion();
 
                     configuracion.setCodigoConfiguracion(
                             codigoConfiguracion
@@ -96,29 +101,36 @@
                     configuracion.setDepreciacionPorKm(
                             depreciacion
                     );
+                    
+                    configuracion.setPrecioKmAlquilerPrivado(
+                            depreciacion
+                    );
 
                     configuracion.setFechaConfiguracion(
                             fechaConfiguracion
                     );
 
-
-                    boolean insertado =
-                            configuracionDAO.insertar(
+                    boolean insertado
+                            = configuracionDAO.insertar(
                                     configuracion
                             );
+
                     if (insertado) {
 
-                        mensaje =
-                                "Configuración guardada correctamente. "
+                        mensaje
+                                = "Configuración guardada correctamente. "
                                 + "Código: "
                                 + codigoConfiguracion;
 
                         tipoMensaje = "exito";
 
+                        // Limpiar solamente si se guardó correctamente
+                        depreciacionTexto = "";
+
                     } else {
 
-                        mensaje =
-                                "No se pudo guardar la configuración.";
+                        mensaje
+                                = "No se pudo guardar la configuración.";
 
                         tipoMensaje = "error";
                     }
@@ -126,22 +138,20 @@
 
             } catch (NumberFormatException e) {
 
-                mensaje =
-                        "La depreciación debe ser un número válido.";
+                mensaje
+                        = "La depreciación debe ser un número válido.";
 
                 tipoMensaje = "error";
             }
         }
     }
-    Configuracion configuracionVigente =
-            configuracionDAO.obtenerConfiguracionVigente();
 
+    Configuracion configuracionVigente = configuracionDAO.obtenerConfiguracionVigente();
 %>
 
 <!DOCTYPE html>
 
 <html lang="es">
-
     <head>
 
         <meta charset="UTF-8">
@@ -156,32 +166,32 @@
 
     </head>
 
+
     <body>
 
-        <main class="pagina">
-
+        <div class="pagina">
 
             <!-- ENCABEZADO -->
 
-            <header class="encabezado">
+            <h1>
+                Configuración de depreciación
+            </h1>
 
-                <h1>Configuración de depreciación</h1>
-
-                <p>
-                    Administrador:
-                    <strong>
-                        <%= usuarioSesion.getUsuario() %>
-                    </strong>
-                </p>
-
-            </header>
+            <p>
+                Administrador:
+                <strong>
+                    <%= usuarioSesion.getUsuario()%>
+                </strong>
+            </p>
 
 
             <!-- FORMULARIO -->
 
-            <section class="card-menu">
+            <section class="formulario">
 
-                <h2>Depreciación por kilómetro</h2>
+                <h2>
+                    Depreciación por kilómetro
+                </h2>
 
                 <p>
                     Configure el valor que utilizará el sistema
@@ -192,15 +202,15 @@
 
                 <!-- MENSAJE -->
 
-                <% if (!mensaje.isEmpty()) { %>
+                <% if (!mensaje.isEmpty()) {%>
 
-                <div class="<%= tipoMensaje %>">
+                <div class="mensaje <%= tipoMensaje%>">
 
-                    <%= mensaje %>
+                    <%= mensaje%>
 
                 </div>
 
-                <% } %>
+                <% }%>
 
 
                 <form
@@ -209,14 +219,13 @@
                     id="formDepreciacion">
 
 
-                    <div class="formulario-grupo">
+                    <div class="form-group">
 
                         <label for="depreciacionPorKm">
 
-                            Depreciación por kilómetro
+                            Depreciación por kilómetro:
 
                         </label>
-
 
                         <input
                             type="number"
@@ -225,28 +234,17 @@
                             min="0"
                             step="0.01"
                             placeholder="Ejemplo: 2.50"
+                            value="<%= depreciacionTexto%>"
                             required>
 
-
                     </div>
 
 
-                    <div class="card-acciones">
+                    <button type="submit">
 
-                        <button type="submit">
+                        Guardar configuración
 
-                            Guardar configuración
-
-                        </button>
-
-
-                        <a href="../index.jsp">
-
-                            Regresar
-
-                        </a>
-
-                    </div>
+                    </button>
 
 
                 </form>
@@ -256,79 +254,91 @@
 
             <!-- CONFIGURACIÓN VIGENTE -->
 
-            <section class="card-menu">
+            <section class="formulario">
 
-                <h2>Configuración vigente</h2>
+                <h2>
+                    Configuración vigente
+                </h2>
 
 
-                <% if (configuracionVigente != null) { %>
+                <% if (configuracionVigente != null) {%>
 
+                <div class="form-group">
 
-                <p>
-
-                    <strong>
+                    <label>
                         Código:
-                    </strong>
+                    </label>
 
-                    <%= configuracionVigente
-                            .getCodigoConfiguracion() %>
+                    <input
+                        type="text"
+                        value="<%= configuracionVigente.getCodigoConfiguracion()%>"
+                        readonly>
 
-                </p>
+                </div>
 
 
-                <p>
+                <div class="form-group">
 
-                    <strong>
+                    <label>
                         Depreciación por kilómetro:
-                    </strong>
+                    </label>
 
-                    Q<%= String.format(
-                            "%.2f",
-                            configuracionVigente
-                                    .getDepreciacionPorKm()
-                    ) %>
+                    <input
+                        type="text"
+                        value="Q<%= String.format(
+                                "%.2f",
+                                configuracionVigente
+                                        .getDepreciacionPorKm()
+                        )%>"
+                        readonly>
 
-                </p>
+                </div>
 
 
-                <p>
-                    <strong>
+                <div class="form-group">
+
+                    <label>
                         Fecha de configuración:
-                    </strong>
+                    </label>
 
-                    <%= configuracionVigente
-                            .getFechaConfiguracion() %>
+                    <input
+                        type="text"
+                        value="<%= configuracionVigente.getFechaConfiguracion()%>"
+                        readonly>
 
-                </p>
+                </div>
+
+
                 <% } else { %>
+
                 <p>
                     No existe una configuración de
                     depreciación registrada.
-
                 </p>
-                <% } %>
+
+                <% }%>
+
             </section>
-            <!-- CERRAR SESIÓN -->
-            <div class="cerrar-sesion">
 
-                <form
-                    action="../logout.jsp"
-                    method="post">
 
-                    <button type="submit">
+            <!-- BOTÓN VOLVER -->
 
-                        Cerrar sesión
+            <div class="botones-inferiores">
 
-                    </button>
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
-                </form>
+                    Volver al menú principal
+
+                </a>
 
             </div>
-        </main>
+
         <!-- JAVASCRIPT -->
         <script
             src="../resources/js/depreciacion.js">
         </script>
+
     </body>
 </html>
-

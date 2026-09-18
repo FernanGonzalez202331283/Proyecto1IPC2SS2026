@@ -3,13 +3,13 @@
     Created on : 12 sept 2026, 18:35:07
     Author     : fernan
 --%>
-<%@page import="transporte.dao.RutaPrivadaDAO"%>
-<%@page import="transporte.modelo.RutaPrivada"%>
+
 <%@page import="transporte.modelo.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    Usuario usuario
+            = (Usuario) session.getAttribute("usuario");
 
     if (usuario == null) {
         response.sendRedirect("../login.jsp");
@@ -19,6 +19,25 @@
     if (!"ADMIN_SUCURSAL".equals(usuario.getRol())) {
         response.sendRedirect("../inicio.jsp");
         return;
+    }
+    String origen
+            = request.getParameter("origen");
+
+    String destino
+            = request.getParameter("destino");
+
+    String codigoAlquiler
+            = request.getParameter("codigoAlquiler");
+    if (origen == null) {
+        origen = "";
+    }
+
+    if (destino == null) {
+        destino = "";
+    }
+
+    if (codigoAlquiler == null) {
+        codigoAlquiler = "";
     }
 %>
 
@@ -66,9 +85,47 @@
 
                 <h2>Datos de la ruta</h2>
 
+                <%
+
+                    if (!codigoAlquiler.trim().isEmpty()) {
+                %>
+
+                <div class="alert alert-info">
+
+                    <strong>
+                        Registro de ruta para una solicitud de alquiler
+                    </strong>
+
+                    <p>
+                        Código de alquiler:
+                        <strong>
+                            <%= codigoAlquiler%>
+                        </strong>
+                    </p>
+
+                    <p>
+                        El origen y destino fueron obtenidos
+                        automáticamente de la solicitud.
+                    </p>
+
+                </div>
+
+                <%
+                    }
+                %>
+
+
                 <form method="post"
                       action="procesarRutaPrivada.jsp"
                       id="formRutaPrivada">
+
+
+                    <!-- CÓDIGO DEL ALQUILER -->
+
+                    <input
+                        type="hidden"
+                        name="codigoAlquiler"
+                        value="<%= codigoAlquiler%>">
 
 
                     <!-- ORIGEN -->
@@ -84,7 +141,10 @@
                             id="origen"
                             name="origen"
                             maxlength="250"
+                            value="<%= origen%>"
                             required>
+
+                        <p id="mensajeOrigen" class="campo-error"></p>
 
                     </div>
 
@@ -102,7 +162,10 @@
                             id="destino"
                             name="destino"
                             maxlength="250"
+                            value="<%= destino%>"
                             required>
+
+                        <p id="mensajeDestino" class="campo-error"></p>
 
                     </div>
 
@@ -128,8 +191,9 @@
                             el origen y el destino.
                         </small>
 
-                    </div>
+                        <p id="mensajeDistancia" class="campo-error"></p>
 
+                    </div>
 
                     <div class="form-actions">
 
@@ -137,9 +201,35 @@
                             Registrar ruta
                         </button>
 
-                        <a href="../inicio.jsp">
+                        <%
+
+                            if (!codigoAlquiler.trim().isEmpty()) {
+                        %>
+
+                        <a href="confirmarAlquiler.jsp?codigoAlquiler=<%= codigoAlquiler%>">
                             Cancelar
                         </a>
+
+                        <%
+                        } else {
+                        %>
+                        <br>
+                        <!-- VOLVER -->
+                        <br>
+
+                        <div class="botones-inferiores">
+
+                            <a
+                                href="../inicio.jsp"
+                                class="boton boton-volver">
+                                Cancelar
+                            </a>
+
+                        </div>
+
+                        <%
+                            }
+                        %>
 
                     </div>
 
@@ -150,12 +240,35 @@
 
             <br>
 
-            <a href="../inicio.jsp">
-                Regresar al inicio
+            <%
+                if (!codigoAlquiler.trim().isEmpty()) {
+            %>
+
+            <a href="confirmarAlquiler.jsp?codigoAlquiler=<%= codigoAlquiler%>">
+                Regresar a la solicitud
             </a>
 
-        </main>
+            <%
+            } else {
+            %>
+            <!-- VOLVER -->
+            <br>
 
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+                    regresar
+                </a>
+
+            </div>
+            <%
+                }
+            %>
+
+        </main>
+        <script src="../resources/js/registrarRutaPrivada.js"></script>
     </body>
 
 </html>

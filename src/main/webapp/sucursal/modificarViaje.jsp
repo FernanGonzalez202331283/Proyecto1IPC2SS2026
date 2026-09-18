@@ -10,57 +10,39 @@
 <%@page import="transporte.modelo.Chofer"%>
 <%@page import="transporte.modelo.Ruta"%>
 <%@page import="transporte.dao.ViajeDAO"%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
 <%
-    Usuario usuarioSesion
-            = (Usuario) session.getAttribute("usuario");
-
-    String rolSesion
-            = (String) session.getAttribute("rol");
-
+    Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+    String rolSesion = (String) session.getAttribute("rol");
     if (usuarioSesion == null
             || rolSesion == null
             || !"ADMIN_SUCURSAL".equals(rolSesion)) {
-
         response.sendRedirect("../login.jsp");
         return;
     }
+    String codigoSucursal = usuarioSesion.getCodigoSucursal();
 
-    String codigoSucursal
-            = usuarioSesion.getCodigoSucursal();
-
-    String codigoViaje
-            = request.getParameter("codigoViaje");
-
-    if (codigoViaje == null
-            || codigoViaje.trim().isEmpty()) {
-
+    String codigoViaje = request.getParameter("codigoViaje");
+    if (codigoViaje == null || codigoViaje.trim().isEmpty()) {
         response.sendRedirect("viajes.jsp");
         return;
     }
-
+    codigoViaje = codigoViaje.trim();
     ViajeDAO viajeDAO = new ViajeDAO();
 
-    Viaje viaje
-            = viajeDAO.obtenerPorSucursal(
-                    codigoViaje.trim(),
-                    codigoSucursal
-            );
+    Viaje viaje = viajeDAO.obtenerPorSucursal(
+            codigoViaje,
+            codigoSucursal
+    );
 
     if (viaje == null) {
-
         response.sendRedirect("viajes.jsp");
         return;
     }
-
     if (!"PROGRAMADO".equals(viaje.getEstado())) {
-
         response.sendRedirect("viajes.jsp");
         return;
     }
-
     String mensaje = "";
     String tipoMensaje = "";
     List<Bus> buses
@@ -68,45 +50,23 @@
                     codigoSucursal
             );
 
-    List<Chofer> choferes
-            = viajeDAO.listarChoferesActivosPorSucursal(
-                    codigoSucursal
-            );
-
-    List<Ruta> rutas
-            = viajeDAO.listarRutasActivasPorSucursal(
-                    codigoSucursal
-            );
+    List<Chofer> choferes = viajeDAO.listarChoferesActivosPorSucursal(
+            codigoSucursal
+    );
+    List<Ruta> rutas = viajeDAO.listarRutasActivasPorSucursal(
+            codigoSucursal
+    );
 
     if ("POST".equalsIgnoreCase(request.getMethod())) {
-
-        String placaBus
-                = request.getParameter("placaBus");
-
-        String numeroLicencia
-                = request.getParameter("numeroLicencia");
-
-        String codigoRuta
-                = request.getParameter("codigoRuta");
-
-        String origen
-                = request.getParameter("origen");
-
-        String destino
-                = request.getParameter("destino");
-
-        String fechaSalida
-                = request.getParameter("fechaSalida");
-
-        String horaSalida
-                = request.getParameter("horaSalida");
-
-        String fechaLlegada
-                = request.getParameter("fechaLlegada");
-
-        String horaLlegada
-                = request.getParameter("horaLlegada");
-
+        String placaBus = request.getParameter("placaBus");
+        String numeroLicencia = request.getParameter("numeroLicencia");
+        String codigoRuta = request.getParameter("codigoRuta");
+        String origen = request.getParameter("origen");
+        String destino = request.getParameter("destino");
+        String fechaSalida = request.getParameter("fechaSalida");
+        String horaSalida = request.getParameter("horaSalida");
+        String fechaLlegada = request.getParameter("fechaLlegada");
+        String horaLlegada = request.getParameter("horaLlegada");
         boolean datosValidos = true;
         if (placaBus == null
                 || placaBus.trim().isEmpty()) {
@@ -127,7 +87,9 @@
                 || horaSalida == null
                 || horaSalida.trim().isEmpty()) {
 
-            mensaje = "Debe indicar la fecha y hora de salida.";
+            mensaje
+                    = "Debe indicar la fecha y hora de salida.";
+
             tipoMensaje = "error";
             datosValidos = false;
 
@@ -136,7 +98,9 @@
                 || horaLlegada == null
                 || horaLlegada.trim().isEmpty()) {
 
-            mensaje = "Debe indicar la fecha y hora de llegada.";
+            mensaje
+                    = "Debe indicar la fecha y hora de llegada.";
+
             tipoMensaje = "error";
             datosValidos = false;
         }
@@ -163,7 +127,6 @@
                 datosValidos = false;
             }
         }
-
         Chofer choferSeleccionado = null;
 
         if (datosValidos) {
@@ -188,7 +151,6 @@
                 datosValidos = false;
             }
         }
-
         Ruta rutaSeleccionada = null;
 
         if (datosValidos
@@ -224,6 +186,7 @@
                 }
             }
         }
+
         if (datosValidos
                 && "PRIVADO".equals(viaje.getTipoViaje())) {
 
@@ -239,11 +202,11 @@
                 datosValidos = false;
             }
         }
+
         java.sql.Date fechaSalidaSQL = null;
         java.sql.Time horaSalidaSQL = null;
         java.sql.Date fechaLlegadaSQL = null;
         java.sql.Time horaLlegadaSQL = null;
-
         if (datosValidos) {
 
             try {
@@ -255,7 +218,9 @@
 
                 horaSalidaSQL
                         = java.sql.Time.valueOf(
-                                horaSalida
+                                horaSalida.length() == 5
+                                ? horaSalida + ":00"
+                                : horaSalida
                         );
 
                 fechaLlegadaSQL
@@ -265,7 +230,9 @@
 
                 horaLlegadaSQL
                         = java.sql.Time.valueOf(
-                                horaLlegada
+                                horaLlegada.length() == 5
+                                ? horaLlegada + ":00"
+                                : horaLlegada
                         );
 
             } catch (IllegalArgumentException e) {
@@ -277,6 +244,7 @@
                 datosValidos = false;
             }
         }
+
         if (datosValidos) {
 
             java.util.Date salida
@@ -301,10 +269,7 @@
                 datosValidos = false;
             }
         }
-        double depreciacionPorKm = 0;
-        double depreciacionTotal = 0;
 
-        // Verificar que el bus no tenga otro viaje
         if (datosValidos) {
 
             boolean busOcupado
@@ -327,8 +292,6 @@
                 datosValidos = false;
             }
         }
-
-// Verificar que el chofer no tenga otro viaje
         if (datosValidos) {
 
             boolean choferOcupado
@@ -351,6 +314,9 @@
                 datosValidos = false;
             }
         }
+
+        double depreciacionPorKm = 0;
+        double depreciacionTotal = 0;
 
         if (datosValidos) {
 
@@ -392,11 +358,11 @@
             );
 
             viajeActualizado.setPlacaBus(
-                    placaBus
+                    placaBus.trim()
             );
 
             viajeActualizado.setNumeroLicencia(
-                    numeroLicencia
+                    numeroLicencia.trim()
             );
 
             viajeActualizado.setCodigoRuta(
@@ -438,6 +404,7 @@
             viajeActualizado.setDepreciacionTotal(
                     depreciacionTotal
             );
+
             boolean actualizado
                     = viajeDAO.actualizarPorSucursal(
                             viajeActualizado,
@@ -447,6 +414,7 @@
             if (actualizado) {
 
                 response.sendRedirect("viajes.jsp");
+                return;
 
             } else {
 
@@ -481,398 +449,377 @@
 %>
 
 <!DOCTYPE html>
+
 <html lang="es">
 
+    ```
     <head>
 
         <meta charset="UTF-8">
 
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
         <title>Modificar viaje</title>
 
-        <style>
-
-            body {
-                font-family: Arial, sans-serif;
-                margin: 30px;
-            }
-
-            .contenedor {
-                max-width: 800px;
-                margin: auto;
-            }
-
-            .campo {
-                margin-bottom: 15px;
-            }
-
-            label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
-
-            input,
-            select,
-            textarea {
-                width: 100%;
-                padding: 8px;
-                box-sizing: border-box;
-            }
-
-            button {
-                padding: 10px 20px;
-                cursor: pointer;
-            }
-
-            .error {
-                padding: 10px;
-                margin-bottom: 15px;
-                background-color: #f8d7da;
-                color: #842029;
-            }
-
-            .info {
-                padding: 10px;
-                margin-bottom: 15px;
-                background-color: #cff4fc;
-                color: #055160;
-            }
-
-        </style>
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
     </head>
 
+
     <body>
 
-        <div class="contenedor">
+        <main class="pagina">
 
-            <h1>Modificar viaje</h1>
+            <header class="encabezado">
 
-            <p>
-                <strong>Código del viaje:</strong>
-                <%= viaje.getCodigoViaje()%>
-            </p>
+                <h1>Modificar viaje</h1>
 
-            <p>
-                <strong>Tipo de viaje:</strong>
-                <%= viaje.getTipoViaje()%>
-            </p>
+                <p>
+                    <strong>Código del viaje:</strong>
+                    <%= viaje.getCodigoViaje()%>
+                </p>
 
-            <p>
-                <strong>Estado actual:</strong>
-                <%= viaje.getEstado()%>
-            </p>
+                <p>
+                    <strong>Tipo de viaje:</strong>
+                    <%= viaje.getTipoViaje()%>
+                </p>
+
+                <p>
+                    <strong>Estado actual:</strong>
+                    <%= viaje.getEstado()%>
+                </p>
+
+            </header>
+
 
             <% if (!mensaje.isEmpty()) {%>
 
-            <div class="<%= tipoMensaje%>">
+            <div class="mensaje <%= tipoMensaje%>">
                 <%= mensaje%>
             </div>
 
-            <% } %>
+            <% }%>
 
-            <form method="POST">
 
-                <!-- BUS -->
+            <div class="formulario">
 
-                <div class="campo">
+                <h2>Datos del viaje</h2>
 
-                    <label for="placaBus">
-                        Bus
-                    </label>
 
-                    <select
-                        id="placaBus"
-                        name="placaBus"
-                        required>
+                <form id="formularioModificarViaje"
+                      method="POST">
 
-                        <option value="">
-                            Seleccione un bus
-                        </option>
 
-                        <%
-                            for (Bus bus : buses) {
-                        %>
+                    <!-- BUS -->
 
-                        <option
-                            value="<%= bus.getPlaca()%>"
-                            <%= bus.getPlaca()
-                                    .equals(viaje.getPlacaBus())
-                                    ? "selected"
-                                    : ""%>>
+                    <div class="form-group">
 
-                            <%= bus.getPlaca()%>
-                            -
-                            <%= bus.getMarca()%>
-                            <%= bus.getModelo()%>
+                        <label for="placaBus">
+                            Bus
+                        </label>
 
-                        </option>
+                        <select
+                            id="placaBus"
+                            name="placaBus"
+                            required>
 
-                        <%
-                            }
-                        %>
+                            <option value="">
+                                Seleccione un bus
+                            </option>
 
-                    </select>
+                            <%
+                                for (Bus bus : buses) {
+                            %>
 
-                </div>
-                <!-- CHOFER -->
+                            <option
+                                value="<%= bus.getPlaca()%>"
+                                <%= bus.getPlaca()
+                                        .equals(viaje.getPlacaBus())
+                                        ? "selected"
+                                        : ""%>>
 
-                <div class="campo">
+                                <%= bus.getPlaca()%>
+                                -
+                                <%= bus.getMarca()%>
+                                <%= bus.getModelo()%>
 
-                    <label for="numeroLicencia">
-                        Chofer
-                    </label>
+                            </option>
 
-                    <select
-                        id="numeroLicencia"
-                        name="numeroLicencia"
-                        required>
+                            <%
+                                }
+                            %>
 
-                        <option value="">
-                            Seleccione un chofer
-                        </option>
+                        </select>
 
-                        <%
-                            for (Chofer chofer : choferes) {
-                        %>
+                        <p id="mensajeBus"
+                           class="campo-error"></p>
 
-                        <option
-                            value="<%= chofer.getNumeroLicencia()%>"
-                            <%= chofer.getNumeroLicencia()
-                                    .equals(viaje.getNumeroLicencia())
-                                    ? "selected"
-                                    : ""%>>
+                    </div>
 
-                            <%= chofer.getNombreCompleto()%>
-                            -
-                            Licencia:
-                            <%= chofer.getNumeroLicencia()%>
 
-                        </option>
+                    <!-- CHOFER -->
 
-                        <%
-                            }
-                        %>
+                    <div class="form-group">
 
-                    </select>
+                        <label for="numeroLicencia">
+                            Chofer
+                        </label>
 
-                </div>
+                        <select
+                            id="numeroLicencia"
+                            name="numeroLicencia"
+                            required>
 
+                            <option value="">
+                                Seleccione un chofer
+                            </option>
 
-                <% if ("REGULAR".equals(viaje.getTipoViaje())) { %>
+                            <%
+                                for (Chofer chofer : choferes) {
+                            %>
 
-                <!-- RUTA -->
+                            <option
+                                value="<%= chofer.getNumeroLicencia()%>"
+                                <%= chofer.getNumeroLicencia()
+                                        .equals(viaje.getNumeroLicencia())
+                                        ? "selected"
+                                        : ""%>>
 
-                <div class="campo">
+                                <%= chofer.getNombreCompleto()%>
+                                -
+                                Licencia:
+                                <%= chofer.getNumeroLicencia()%>
 
-                    <label for="codigoRuta">
-                        Ruta
-                    </label>
+                            </option>
 
-                    <select
-                        id="codigoRuta"
-                        name="codigoRuta"
-                        required>
+                            <%
+                                }
+                            %>
 
-                        <option value="">
-                            Seleccione una ruta
-                        </option>
+                        </select>
 
-                        <%
-                            for (Ruta ruta : rutas) {
-                        %>
+                        <p id="mensajeChofer"
+                           class="campo-error"></p>
 
-                        <option
-                            value="<%= ruta.getCodigoRuta()%>"
-                            data-origen="<%= ruta.getCodigoSucursalOrigen()%>"
-                            data-destino="<%= ruta.getCodigoSucursalDestino()%>"
-                            <%= ruta.getCodigoRuta()
-                                    .equals(viaje.getCodigoRuta())
-                                    ? "selected"
-                                    : ""%>>
+                    </div>
 
-                            <%= ruta.getCodigoRuta()%>
-                            -
-                            <%= ruta.getCodigoSucursalOrigen()%>
-                            →
-                            <%= ruta.getCodigoSucursalDestino()%>
 
-                        </option>
+                    <% if ("REGULAR".equals(viaje.getTipoViaje())) { %>
 
-                        <%
-                            }
-                        %>
+                    <!-- RUTA -->
 
-                    </select>
+                    <div class="form-group">
 
-                </div>
+                        <label for="codigoRuta">
+                            Ruta
+                        </label>
 
-                <% }%>
+                        <select
+                            id="codigoRuta"
+                            name="codigoRuta"
+                            required>
 
+                            <option value="">
+                                Seleccione una ruta
+                            </option>
 
-                <!-- ORIGEN -->
+                            <%
+                                for (Ruta ruta : rutas) {
+                            %>
 
-                <div class="campo">
+                            <option
+                                value="<%= ruta.getCodigoRuta()%>"
+                                data-origen="<%= ruta.getCodigoSucursalOrigen()%>"
+                                data-destino="<%= ruta.getCodigoSucursalDestino()%>"
+                                <%= ruta.getCodigoRuta()
+                                        .equals(viaje.getCodigoRuta())
+                                        ? "selected"
+                                        : ""%>>
 
-                    <label for="origen">
-                        Origen
-                    </label>
+                                <%= ruta.getCodigoRuta()%>
+                                -
+                                <%= ruta.getCodigoSucursalOrigen()%>
+                                →
+                                <%= ruta.getCodigoSucursalDestino()%>
 
-                    <input
-                        type="text"
-                        id="origen"
-                        name="origen"
-                        value="<%= valorOrigen%>"
-                        <%= "REGULAR".equals(viaje.getTipoViaje())
-                                ? "readonly"
-                                : ""%>
-                        required>
+                            </option>
 
-                </div>
+                            <%
+                                }
+                            %>
 
+                        </select>
 
-                <!-- DESTINO -->
+                        <p id="mensajeRuta"
+                           class="campo-error"></p>
 
-                <div class="campo">
+                    </div>
 
-                    <label for="destino">
-                        Destino
-                    </label>
+                    <% }%>
 
-                    <input
-                        type="text"
-                        id="destino"
-                        name="destino"
-                        value="<%= valorDestino%>"
-                        <%= "REGULAR".equals(viaje.getTipoViaje())
-                                ? "readonly"
-                                : ""%>
-                        required>
 
-                </div>
+                    <!-- ORIGEN -->
 
+                    <div class="form-group">
 
-                <!-- FECHA SALIDA -->
+                        <label for="origen">
+                            Origen
+                        </label>
 
-                <div class="campo">
+                        <input
+                            type="text"
+                            id="origen"
+                            name="origen"
+                            value="<%= valorOrigen%>"
+                            <%= "REGULAR".equals(viaje.getTipoViaje())
+                                    ? "readonly"
+                                    : ""%>
+                            required>
 
-                    <label for="fechaSalida">
-                        Fecha de salida
-                    </label>
+                        <p id="mensajeOrigen"
+                           class="campo-error"></p>
 
-                    <input
-                        type="date"
-                        id="fechaSalida"
-                        name="fechaSalida"
-                        value="<%= viaje.getFechaSalida()%>"
-                        required>
+                    </div>
 
-                </div>
 
+                    <!-- DESTINO -->
 
-                <!-- HORA SALIDA -->
+                    <div class="form-group">
 
-                <div class="campo">
+                        <label for="destino">
+                            Destino
+                        </label>
 
-                    <label for="horaSalida">
-                        Hora de salida
-                    </label>
+                        <input
+                            type="text"
+                            id="destino"
+                            name="destino"
+                            value="<%= valorDestino%>"
+                            <%= "REGULAR".equals(viaje.getTipoViaje())
+                                    ? "readonly"
+                                    : ""%>
+                            required>
 
-                    <input
-                        type="time"
-                        id="horaSalida"
-                        name="horaSalida"
-                        value="<%= viaje.getHoraSalida()%>"
-                        required>
+                        <p id="mensajeDestino"
+                           class="campo-error"></p>
 
-                </div>
+                    </div>
 
 
-                <!-- FECHA LLEGADA -->
+                    <!-- FECHA SALIDA -->
 
-                <div class="campo">
+                    <div class="form-group">
 
-                    <label for="fechaLlegada">
-                        Fecha de llegada estimada
-                    </label>
+                        <label for="fechaSalida">
+                            Fecha de salida
+                        </label>
 
-                    <input
-                        type="date"
-                        id="fechaLlegada"
-                        name="fechaLlegada"
-                        value="<%= viaje.getFechaLlegadaEstimada()%>"
-                        required>
+                        <input
+                            type="date"
+                            id="fechaSalida"
+                            name="fechaSalida"
+                            value="<%= viaje.getFechaSalida()%>"
+                            required>
 
-                </div>
+                        <p id="mensajeFechaSalida"
+                           class="campo-error"></p>
 
+                    </div>
 
-                <!-- HORA LLEGADA -->
 
-                <div class="campo">
+                    <!-- HORA SALIDA -->
 
-                    <label for="horaLlegada">
-                        Hora de llegada estimada
-                    </label>
+                    <div class="form-group">
 
-                    <input
-                        type="time"
-                        id="horaLlegada"
-                        name="horaLlegada"
-                        value="<%= viaje.getHoraLlegadaEstimada()%>"
-                        required>
+                        <label for="horaSalida">
+                            Hora de salida
+                        </label>
 
-                </div>
+                        <input
+                            type="time"
+                            id="horaSalida"
+                            name="horaSalida"
+                            value="<%= viaje.getHoraSalida()%>"
+                            required>
 
+                        <p id="mensajeHoraSalida"
+                           class="campo-error"></p>
 
-                <br>
+                    </div>
 
-                <button type="submit">
-                    Guardar cambios
-                </button>
 
-                <a href="viajes.jsp">
-                    Cancelar
-                </a>
+                    <!-- FECHA LLEGADA -->
 
-            </form>
+                    <div class="form-group">
 
-        </div>
+                        <label for="fechaLlegada">
+                            Fecha de llegada estimada
+                        </label>
 
+                        <input
+                            type="date"
+                            id="fechaLlegada"
+                            name="fechaLlegada"
+                            value="<%= viaje.getFechaLlegadaEstimada()%>"
+                            required>
 
-        <% if ("REGULAR".equals(viaje.getTipoViaje())) { %>
+                        <p id="mensajeFechaLlegada"
+                           class="campo-error"></p>
 
-        <script>
+                    </div>
 
-            const rutaSelect =
-                    document.getElementById("codigoRuta");
 
-            const origenInput =
-                    document.getElementById("origen");
+                    <!-- HORA LLEGADA -->
 
-            const destinoInput =
-                    document.getElementById("destino");
+                    <div class="form-group">
 
+                        <label for="horaLlegada">
+                            Hora de llegada estimada
+                        </label>
 
-            rutaSelect.addEventListener("change", function () {
+                        <input
+                            type="time"
+                            id="horaLlegada"
+                            name="horaLlegada"
+                            value="<%= viaje.getHoraLlegadaEstimada()%>"
+                            required>
 
-                const opcion =
-                        this.options[this.selectedIndex];
+                        <p id="mensajeHoraLlegada"
+                           class="campo-error"></p>
 
-                if (opcion) {
+                    </div>
 
-                    origenInput.value =
-                            opcion.dataset.origen || "";
 
-                    destinoInput.value =
-                            opcion.dataset.destino || "";
-                }
+                    <!-- ACCIONES -->
 
-            });
+                    <div class="form-actions">
 
-        </script>
+                        <button type="submit">
+                            Guardar cambios
+                        </button>
+                    </div>
+                    
+                      <div class="botones-inferiores">
+                        <a href="viajes.jsp" 
+                            class="boton boton-volver">
+                               Cancelar
+                        </a>
+                    </div>
+                    <div class="botones-inferiores">
+                        <a
+                            href="../sucursal/viajes.jsp"
+                            class="boton boton-volver">
+                            Regresar
+                        </a>
 
-        <% }%>
+                    </div>
+                </form>
+            </div
+
+        </main>
+        <script src="../resources/js/modificarViaje.js"></script>
 
     </body>
-
 </html>

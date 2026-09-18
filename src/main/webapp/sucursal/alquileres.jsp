@@ -360,17 +360,22 @@
                 <%
                     }
                 %>
+                 <br>
+             <!-- VOLVER -->
+
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+                    regresar
+                </a>
 
             </div>
-            <br>
 
-            <a href="../inicio.jsp">
-                Regresar al inicio
-            </a>
-
+            </div>
         </main>
 
     </body>
 
 </html>
-

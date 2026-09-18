@@ -59,6 +59,8 @@
 
     RutaPrivada rutaPrivada = null;
 
+    double precioEstimado = 0;
+
     if (origen == null
             || origen.trim().isEmpty()
             || destino == null
@@ -84,7 +86,9 @@
         try {
 
             int numeroPasajeros
-                    = Integer.parseInt(numeroPasajerosParametro.trim());
+                    = Integer.parseInt(
+                            numeroPasajerosParametro.trim()
+                    );
 
             if (numeroPasajeros <= 0) {
 
@@ -102,13 +106,17 @@
                         = Date.valueOf(fechaSalidaParametro);
 
                 Time horaSalida
-                        = Time.valueOf(horaSalidaParametro + ":00");
+                        = Time.valueOf(
+                                horaSalidaParametro + ":00"
+                        );
 
                 Date fechaLlegada
                         = Date.valueOf(fechaLlegadaParametro);
 
                 Time horaLlegada
-                        = Time.valueOf(horaLlegadaParametro + ":00");
+                        = Time.valueOf(
+                                horaLlegadaParametro + ":00"
+                        );
 
                 Date fechaRetorno = null;
 
@@ -116,7 +124,9 @@
                         && !fechaRetornoParametro.trim().isEmpty()) {
 
                     fechaRetorno
-                            = Date.valueOf(fechaRetornoParametro);
+                            = Date.valueOf(
+                                    fechaRetornoParametro
+                            );
                 }
 
                 if (fechaLlegada.before(fechaSalida)
@@ -136,6 +146,7 @@
 
                 } else {
 
+
                     RutaPrivadaDAO rutaDAO
                             = new RutaPrivadaDAO();
 
@@ -145,51 +156,46 @@
                                     destino
                             );
 
-                    if (rutaPrivada == null) {
 
-                        mensaje
-                                = "No existe una ruta privada registrada "
-                                + "para el origen y destino seleccionados.";
+                    precioEstimado = 0;
 
-                    } else if (!rutaPrivada.isEstado()) {
+                    if (rutaPrivada != null) {
 
-                        mensaje
-                                = "La ruta privada seleccionada "
-                                + "se encuentra inactiva.";
-
-                    } else {
-
-                        ConfiguracionDAO configuracionDAO
-                                = new ConfiguracionDAO();
-
-                        Configuracion configuracion
-                                = configuracionDAO.obtenerConfiguracionVigente();
-
-                        if (configuracion == null) {
+                        if (!rutaPrivada.isEstado()) {
 
                             mensaje
-                                    = "No existe una configuración vigente "
-                                    + "para calcular el precio del alquiler.";
-
-                        } else if (configuracion.getPrecioKmAlquilerPrivado() <= 0) {
-
-                            mensaje
-                                    = "El precio por kilómetro para alquiler privado "
-                                    + "no está configurado correctamente.";
+                                    = "La ruta privada seleccionada "
+                                    + "se encuentra inactiva.";
 
                         } else {
 
-                            double distanciaKm
-                                    = rutaPrivada.getDistanciaKm();
+                            ConfiguracionDAO configuracionDAO
+                                    = new ConfiguracionDAO();
 
-                            double precioKm
-                                    = configuracion.getPrecioKmAlquilerPrivado();
+                            Configuracion configuracion
+                                    = configuracionDAO
+                                            .obtenerConfiguracionVigente();
 
-                            double precioEstimado
-                                    = distanciaKm * precioKm;
+                          
+
+                            if (configuracion != null
+                                    && configuracion
+                                            .getPrecioKmAlquilerPrivado() > 0) {
+
+                                double distanciaKm
+                                        = rutaPrivada.getDistanciaKm();
+
+                                double precioKm
+                                        = configuracion
+                                                .getPrecioKmAlquilerPrivado();
+
+                                precioEstimado
+                                        = distanciaKm * precioKm;
+                            }
 
                             codigoViajeGenerado
-                                    = "VPR-" + System.currentTimeMillis();
+                                    = "VPR-"
+                                    + System.currentTimeMillis();
 
                             Viaje viaje = new Viaje();
 
@@ -197,17 +203,25 @@
                                     codigoViajeGenerado
                             );
 
-                            viaje.setTipoViaje("PRIVADO");
+                            viaje.setTipoViaje(
+                                    "PRIVADO"
+                            );
 
                             viaje.setPlacaBus(null);
                             viaje.setNumeroLicencia(null);
+
                             viaje.setCodigoRuta(null);
 
                             viaje.setOrigen(origen);
                             viaje.setDestino(destino);
 
-                            viaje.setFechaSalida(fechaSalida);
-                            viaje.setHoraSalida(horaSalida);
+                            viaje.setFechaSalida(
+                                    fechaSalida
+                            );
+
+                            viaje.setHoraSalida(
+                                    horaSalida
+                            );
 
                             viaje.setFechaLlegadaEstimada(
                                     fechaLlegada
@@ -217,7 +231,10 @@
                                     horaLlegada
                             );
 
-                            viaje.setEstado("PROGRAMADO");
+                            viaje.setEstado(
+                                    "PROGRAMADO"
+                            );
+
                             viaje.setDepreciacionPorKm(0);
                             viaje.setDepreciacionTotal(0);
 
@@ -234,9 +251,9 @@
                                         + "privado.";
 
                             } else {
-
                                 codigoAlquilerGenerado
-                                        = "ALQ-" + System.currentTimeMillis();
+                                        = "ALQ-"
+                                        + System.currentTimeMillis();
 
                                 Alquiler alquiler
                                         = new Alquiler();
@@ -265,7 +282,9 @@
                                         precioEstimado
                                 );
 
-                                alquiler.setPrecioConfirmado(0);
+                                alquiler.setPrecioConfirmado(
+                                        0
+                                );
 
                                 alquiler.setEstado(
                                         "SOLICITADO"
@@ -275,17 +294,34 @@
                                         = new AlquilerDAO();
 
                                 boolean alquilerInsertado
-                                        = alquilerDAO.insertar(alquiler);
+                                        = alquilerDAO.insertar(
+                                                alquiler
+                                        );
 
                                 if (alquilerInsertado) {
 
                                     correcto = true;
 
-                                    mensaje
-                                            = "La solicitud de alquiler "
-                                            + "fue registrada correctamente.";
+                                   
+                                    if (rutaPrivada == null) {
+
+                                        mensaje
+                                                = "La solicitud de alquiler fue registrada correctamente.";
+
+                                    } else if (precioEstimado <= 0) {
+
+                                        mensaje
+                                                = "La solicitud de alquiler fue registrada correctamente.";
+
+                                    } else {
+
+                                        mensaje
+                                                = "La solicitud de alquiler "
+                                                + "fue registrada correctamente.";
+                                    }
 
                                 } else {
+
                                     viajeDAO.eliminar(
                                             codigoViajeGenerado
                                     );
@@ -294,6 +330,136 @@
                                             = "No se pudo registrar la solicitud "
                                             + "de alquiler.";
                                 }
+                            }
+                        }
+                    }
+
+                    if (rutaPrivada == null
+                            && mensaje.isEmpty()) {
+
+                        precioEstimado = 0;
+
+                        codigoViajeGenerado
+                                = "VPR-"
+                                + System.currentTimeMillis();
+
+                        Viaje viaje = new Viaje();
+
+                        viaje.setCodigoViaje(
+                                codigoViajeGenerado
+                        );
+
+                        viaje.setTipoViaje(
+                                "PRIVADO"
+                        );
+
+                        viaje.setPlacaBus(null);
+                        viaje.setNumeroLicencia(null);
+                        viaje.setCodigoRuta(null);
+
+                        viaje.setOrigen(origen);
+                        viaje.setDestino(destino);
+
+                        viaje.setFechaSalida(
+                                fechaSalida
+                        );
+
+                        viaje.setHoraSalida(
+                                horaSalida
+                        );
+
+                        viaje.setFechaLlegadaEstimada(
+                                fechaLlegada
+                        );
+
+                        viaje.setHoraLlegadaEstimada(
+                                horaLlegada
+                        );
+
+                        viaje.setEstado(
+                                "PROGRAMADO"
+                        );
+
+                        viaje.setDepreciacionPorKm(0);
+                        viaje.setDepreciacionTotal(0);
+
+                        ViajeDAO viajeDAO
+                                = new ViajeDAO();
+
+                        boolean viajeInsertado
+                                = viajeDAO.insertar(viaje);
+
+                        if (!viajeInsertado) {
+
+                            mensaje
+                                    = "No se pudo registrar el viaje "
+                                    + "privado.";
+
+                        } else {
+
+                            codigoAlquilerGenerado
+                                    = "ALQ-"
+                                    + System.currentTimeMillis();
+
+                            Alquiler alquiler
+                                    = new Alquiler();
+
+                            alquiler.setCodigoAlquiler(
+                                    codigoAlquilerGenerado
+                            );
+
+                            alquiler.setCodigoViaje(
+                                    codigoViajeGenerado
+                            );
+
+                            alquiler.setUsuarioCliente(
+                                    usuario.getUsuario()
+                            );
+
+                            alquiler.setNumeroPasajeros(
+                                    numeroPasajeros
+                            );
+
+                            alquiler.setFechaRetorno(
+                                    fechaRetorno
+                            );
+
+                            alquiler.setPrecioEstimado(
+                                    0
+                            );
+
+                            alquiler.setPrecioConfirmado(
+                                    0
+                            );
+
+                            alquiler.setEstado(
+                                    "SOLICITADO"
+                            );
+
+                            AlquilerDAO alquilerDAO
+                                    = new AlquilerDAO();
+
+                            boolean alquilerInsertado
+                                    = alquilerDAO.insertar(
+                                            alquiler
+                                    );
+
+                            if (alquilerInsertado) {
+
+                                correcto = true;
+
+                                mensaje
+                                        = "La solicitud de alquiler fue registrada correctamente. ";
+
+                            } else {
+
+                                viajeDAO.eliminar(
+                                        codigoViajeGenerado
+                                );
+
+                                mensaje
+                                        = "No se pudo registrar la solicitud "
+                                        + "de alquiler.";
                             }
                         }
                     }
@@ -379,7 +545,22 @@
                     <%= rutaPrivada.getDistanciaKm()%> km
                 </p>
 
-                <% } %>
+                <% } else {%>
+
+                <p>
+                    <strong>Ruta:</strong>
+                    Pendiente de registro por el administrador.
+                </p>
+
+                <% }%>
+
+                <p>
+                    <strong>Precio estimado:</strong>
+                    <%= String.format(
+                            "%.2f",
+                            precioEstimado
+                    )%>
+                </p>
 
                 <p>
                     <strong>Estado:</strong>

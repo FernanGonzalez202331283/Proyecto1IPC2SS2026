@@ -17,7 +17,6 @@ import transporte.modelo.Configuracion;
  */
 public class ConfiguracionDAO {
 
-   
     public boolean insertar(Configuracion configuracion) {
 
         String sql = """
@@ -29,8 +28,7 @@ public class ConfiguracionDAO {
                      VALUES (?,?,?,?)
                      """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, configuracion.getCodigoConfiguracion());
             ps.setDouble(2, configuracion.getDepreciacionPorKm());
@@ -60,8 +58,7 @@ public class ConfiguracionDAO {
                      WHERE codigo_configuracion = ?
                      """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setDouble(1, configuracion.getDepreciacionPorKm());
             ps.setDouble(2, configuracion.getPrecioKmAlquilerPrivado());
@@ -93,8 +90,7 @@ public class ConfiguracionDAO {
                      WHERE codigo_configuracion = ?
                      """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, codigoConfiguracion);
 
@@ -135,21 +131,18 @@ public class ConfiguracionDAO {
     }
 
     public Configuracion obtenerConfiguracionVigente() {
-
         String sql = """
-                     SELECT codigo_configuracion,
-                            depreciacion_por_km,
-                            precio_km_alquiler_privado,
-                            fecha_configuracion
-                     FROM configuracion
-                     ORDER BY fecha_configuracion DESC,
-                              codigo_configuracion DESC
-                     LIMIT 1
-                     """;
+             SELECT codigo_configuracion,
+                    depreciacion_por_km,
+                    precio_km_alquiler_privado,
+                    fecha_configuracion
+             FROM configuracion
+             ORDER BY fecha_configuracion DESC,
+                      codigo_configuracion DESC
+             LIMIT 1
+             """;
 
-        try (Connection conexion = Conexion.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conexion = Conexion.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
 
@@ -175,6 +168,7 @@ public class ConfiguracionDAO {
             }
 
         } catch (SQLException e) {
+
             System.out.println(
                     "Error al obtener configuracion vigente: "
                     + e.getMessage()
@@ -183,4 +177,5 @@ public class ConfiguracionDAO {
 
         return null;
     }
+
 }

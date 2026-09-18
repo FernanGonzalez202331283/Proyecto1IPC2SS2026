@@ -15,7 +15,8 @@ import transporte.conexion.Conexion;
  * @author fernan
  */
 public class ReporteDepreciacionDAO {
-     public ResultSet obtenerReporte(String codigoSucursal) throws SQLException {
+      public ResultSet obtenerReporte(String codigoSucursal)
+            throws SQLException {
 
         String sql = """
             SELECT
@@ -27,9 +28,12 @@ public class ReporteDepreciacionDAO {
                 ) AS depreciacion_total
             FROM bus b
             CROSS JOIN (
-                SELECT depreciacion_por_km
+                SELECT
+                    depreciacion_por_km
                 FROM configuracion
-                ORDER BY fecha_configuracion DESC
+                ORDER BY
+                    fecha_configuracion DESC,
+                    codigo_configuracion DESC
                 LIMIT 1
             ) c
             WHERE b.codigo_sucursal = ?
@@ -38,7 +42,8 @@ public class ReporteDepreciacionDAO {
 
         Connection conexion = Conexion.getConnection();
 
-        PreparedStatement ps = conexion.prepareStatement(sql);
+        PreparedStatement ps =
+                conexion.prepareStatement(sql);
 
         ps.setString(1, codigoSucursal);
 

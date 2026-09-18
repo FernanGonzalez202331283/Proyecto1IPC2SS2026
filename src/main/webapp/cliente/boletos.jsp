@@ -135,18 +135,14 @@
 
 
             <% }%>
+              <div class="botones-inferiores">
 
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
-            <br>
+                    Volver al menú principal
 
-            <div class="form-actions">
-
-                <a href="viajes.jsp">
-                    Ver viajes
-                </a>
-
-                <a href="../inicio.jsp">
-                    Regresar al inicio
                 </a>
 
             </div>

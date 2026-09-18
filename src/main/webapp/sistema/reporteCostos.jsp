@@ -1,15 +1,18 @@
-<%-- 
-    Document   : reporteCostos
-    Created on : 14 sept 2026, 19:01:10
-    Author     : fernan
+<%--
+Document   : reporteCostos
+Created on : 14 sept 2026, 19:01:10
+Author     : fernan
 --%>
+
 <%@page import="transporte.Reporte.ReporteCostosDAO"%>
+<%@page import="transporte.dao.SucursalDAO"%>
+<%@page import="transporte.modelo.Sucursal"%>
 <%@page import="java.sql.ResultSet"%>
+<%@page import="java.util.List"%>
 <%@page import="transporte.modelo.Usuario"%>
 
 <%
     Usuario usuario = (Usuario) session.getAttribute("usuario");
-
     if (usuario == null) {
         response.sendRedirect("../login.jsp");
         return;
@@ -36,6 +39,10 @@
         codigoSucursal = "";
     }
 
+// Obtener las sucursales desde la base de datos
+    SucursalDAO sucursalDAO = new SucursalDAO();
+    List<Sucursal> sucursales = sucursalDAO.listar();
+
     ResultSet resultado = null;
     String mensaje = null;
 
@@ -54,388 +61,426 @@
         mensaje = "Error al obtener el reporte: " + e.getMessage();
 
     }
+
 %>
 
 <!DOCTYPE html>
-<html lang="es">
 
+<html lang="es">
     <head>
 
         <meta charset="UTF-8">
 
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
         <title>Reporte de costos operativos</title>
 
         <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet">
+            rel="stylesheet"
+            href="../resources/css/styles.css">
 
     </head>
 
-    <body class="bg-light">
+    <body>
 
-        <div class="container py-5">
+        <div class="pagina">
 
             <!-- ENCABEZADO -->
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="encabezado">
 
-                <div>
+                <h1>
+                    Reporte de costos operativos
+                </h1>
 
-                    <h1 class="fw-bold">
-                        Reporte de costos operativos
-                    </h1>
-
-                    <p class="text-muted mb-0">
-                        Costos generados por las operaciones del sistema
-                    </p>
-
-                </div>
-
-                <a href="../inicio.jsp"
-                   class="btn btn-secondary">
-
-                    Volver al inicio
-
-                </a>
+                <p>
+                    Costos generados por las operaciones del sistema
+                </p>
 
             </div>
 
 
             <!-- FILTROS -->
 
-            <div class="card shadow-sm mb-4">
+            <section class="formulario">
 
-                <div class="card-body">
+                <h2>
+                    Filtros del reporte
+                </h2>
 
-                    <h5 class="card-title mb-3">
-                        Filtros del reporte
-                    </h5>
+                <form
+                    method="GET"
+                    action="reporteCostos.jsp"
+                    id="formularioReporte">
 
-                    <form method="GET"
-                          action="reporteCostos.jsp">
+                    <div class="form-group">
 
-                        <div class="row g-3">
+                        <label for="fechaInicio">
+                            Fecha inicial
+                        </label>
 
-                            <!-- FECHA INICIO -->
+                        <input
+                            type="date"
+                            id="fechaInicio"
+                            name="fechaInicio"
+                            value="<%= fechaInicio%>"
+                            required>
 
-                            <div class="col-md-4">
+                        <div
+                            id="mensajeFechaInicio"
+                            class="campo-error">
+                        </div>
 
-                                <label for="fechaInicio"
-                                       class="form-label">
-
-                                    Fecha inicial
-
-                                </label>
-
-                                <input
-                                    type="date"
-                                    class="form-control"
-                                    id="fechaInicio"
-                                    name="fechaInicio"
-                                    value="<%= fechaInicio %>"
-                                    required>
-
-                            </div>
+                    </div>
 
 
-                            <!-- FECHA FIN -->
+                    <div class="form-group">
 
-                            <div class="col-md-4">
+                        <label for="fechaFin">
+                            Fecha final
+                        </label>
 
-                                <label for="fechaFin"
-                                       class="form-label">
+                        <input
+                            type="date"
+                            id="fechaFin"
+                            name="fechaFin"
+                            value="<%= fechaFin%>"
+                            required>
 
-                                    Fecha final
+                        <div
+                            id="mensajeFechaFin"
+                            class="campo-error">
+                        </div>
 
-                                </label>
-
-                                <input
-                                    type="date"
-                                    class="form-control"
-                                    id="fechaFin"
-                                    name="fechaFin"
-                                    value="<%= fechaFin %>"
-                                    required>
-
-                            </div>
+                    </div>
 
 
-                            <!-- SUCURSAL -->
+                    <div class="form-group">
 
-                            <div class="col-md-4">
+                        <label for="codigoSucursal">
+                            Sucursal
+                        </label>
 
-                                <label for="codigoSucursal"
-                                       class="form-label">
+                        <select
+                            id="codigoSucursal"
+                            name="codigoSucursal">
 
+                            <option value="">
+                                Todas las sucursales
+                            </option>
+
+                            <%
+                                for (Sucursal sucursal : sucursales) {
+
+                                    // Solo mostrar sucursales activas
+                                    if (!sucursal.isEstado()) {
+                                        continue;
+                                    }
+                            %>
+
+                            <option
+                                value="<%= sucursal.getCodigoSucursal()%>"
+                                <%= sucursal.getCodigoSucursal().equals(codigoSucursal)
+                                        ? "selected"
+                                        : ""%>>
+
+                                <%= sucursal.getNombre()%>
+
+                            </option>
+
+                            <%
+                                }
+                            %>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        id="mensajeReporte"
+                        class="campo-error">
+                    </div>
+
+                <div class="botones">
+
+                    <button
+                        type="submit"
+                        class="boton">
+                        Generar reporte
+                    </button>
+
+                    <a
+                        href="reporteCostos.jsp"
+                        class="boton">
+                        Limpiar
+                    </a>
+
+                </div>
+
+                </form>
+
+                <!-- Exportar el reporte actual a HTML -->
+                <form
+                    method="GET"
+                    action="exportarReporteCostos.jsp"
+                    class="botones">
+
+                    <input
+                        type="hidden"
+                        name="fechaInicio"
+                        value="<%= fechaInicio %>">
+
+                    <input
+                        type="hidden"
+                        name="fechaFin"
+                        value="<%= fechaFin %>">
+
+                    <input
+                        type="hidden"
+                        name="codigoSucursal"
+                        value="<%= codigoSucursal %>">
+
+                    <button
+                        type="submit"
+                        class="boton">
+                        Exportar HTML
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- MENSAJE DE ERROR DEL SERVIDOR -->
+
+            <% if (mensaje != null) {%>
+
+            <div class="mensaje error">
+
+                <%= mensaje%>
+
+            </div>
+
+            <% } %>
+
+
+            <!-- RESULTADOS -->
+
+            <% if (resultado != null) {%>
+
+            <section class="formulario">
+
+                <div class="encabezado">
+
+                    <h2>
+                        Resultados
+                    </h2>
+
+                    <p>
+                        Desde
+                        <strong><%= fechaInicio%></strong>
+                        hasta
+                        <strong><%= fechaFin%></strong>
+                    </p>
+
+                </div>
+
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Código
+                                </th>
+
+                                <th>
                                     Sucursal
+                                </th>
 
-                                </label>
+                                <th>
+                                    Combustible
+                                </th>
 
-                                <select
-                                    class="form-select"
-                                    id="codigoSucursal"
-                                    name="codigoSucursal">
+                                <th>
+                                    Mano de obra
+                                </th>
 
-                                    <option value="">
-                                        Todas las sucursales
-                                    </option>
+                                <th>
+                                    Repuestos
+                                </th>
 
-                                    <option value="S002"
-                                            <%= "S002".equals(codigoSucursal) ? "selected" : "" %>>
-                                        Sucursal Central
-                                    </option>
+                                <th>
+                                    Depreciación
+                                </th>
 
-                                    <option value="SUC001"
-                                            <%= "SUC001".equals(codigoSucursal) ? "selected" : "" %>>
-                                        Sucursal Central Guatemala
-                                    </option>
+                                <th>
+                                    Total costos
+                                </th>
 
-                                    <option value="S001"
-                                            <%= "S001".equals(codigoSucursal) ? "selected" : "" %>>
-                                        Sucursal Guatemala
-                                    </option>
+                            </tr>
 
-                                    <option value="01"
-                                            <%= "01".equals(codigoSucursal) ? "selected" : "" %>>
-                                        SUCURSAL SAN LORENZO
-                                    </option>
-
-                                </select>
-
-                            </div>
+                        </thead>
 
 
-                            <!-- BOTÓN -->
+                        <tbody>
 
-                            <div class="col-12">
+                            <%
+                                double totalCombustible = 0;
+                                double totalManoObra = 0;
+                                double totalRepuestos = 0;
+                                double totalDepreciacion = 0;
+                                double totalCostos = 0;
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary">
+                                boolean hayResultados = false;
 
-                                    Generar reporte
+                                while (resultado.next()) {
 
-                                </button>
+                                    hayResultados = true;
 
-                            </div>
+                                    double combustible
+                                            = resultado.getDouble("combustible");
 
-                        </div>
+                                    double manoObra
+                                            = resultado.getDouble("mano_obra");
 
-                    </form>
+                                    double repuestos
+                                            = resultado.getDouble("repuestos");
+
+                                    double depreciacion
+                                            = resultado.getDouble("depreciacion");
+
+                                    double costos
+                                            = resultado.getDouble("total_costos");
+
+                                    totalCombustible += combustible;
+                                    totalManoObra += manoObra;
+                                    totalRepuestos += repuestos;
+                                    totalDepreciacion += depreciacion;
+                                    totalCostos += costos;
+                            %>
+
+                            <tr>
+
+                                <td>
+                                    <%= resultado.getString("codigo_sucursal")%>
+                                </td>
+
+                                <td>
+                                    <%= resultado.getString("sucursal")%>
+                                </td>
+
+                                <td>
+                                    Q <%= String.format("%.2f", combustible)%>
+                                </td>
+
+                                <td>
+                                    Q <%= String.format("%.2f", manoObra)%>
+                                </td>
+
+                                <td>
+                                    Q <%= String.format("%.2f", repuestos)%>
+                                </td>
+
+                                <td>
+                                    Q <%= String.format("%.2f", depreciacion)%>
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        Q <%= String.format("%.2f", costos)%>
+                                    </strong>
+                                </td>
+
+                            </tr>
+
+                            <%
+                                }
+
+                                if (!hayResultados) {
+                            %>
+
+                            <tr>
+
+                                <td colspan="7">
+
+                                    No se encontraron costos
+                                    para el intervalo seleccionado.
+
+                                </td>
+
+                            </tr>
+
+                            <%
+                                }
+                            %>
+
+                        </tbody>
+
+
+                        <% if (hayResultados) {%>
+
+                        <tfoot>
+
+                            <tr>
+
+                                <th colspan="2">
+                                    TOTAL GENERAL
+                                </th>
+
+                                <th>
+                                    Q <%= String.format("%.2f", totalCombustible)%>
+                                </th>
+
+                                <th>
+                                    Q <%= String.format("%.2f", totalManoObra)%>
+                                </th>
+
+                                <th>
+                                    Q <%= String.format("%.2f", totalRepuestos)%>
+                                </th>
+
+                                <th>
+                                    Q <%= String.format("%.2f", totalDepreciacion)%>
+                                </th>
+
+                                <th>
+                                    Q <%= String.format("%.2f", totalCostos)%>
+                                </th>
+
+                            </tr>
+
+                        </tfoot>
+
+                        <% }%>
+
+                    </table>
 
                 </div>
+            </section>
+            <% }%>
+            <!-- VOLVER -->
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+                    Volver al menú principal
+                </a>
 
             </div>
-
-
-            <!-- MENSAJE DE ERROR -->
-
-            <% if (mensaje != null) { %>
-
-            <div class="alert alert-danger">
-
-                <%= mensaje %>
-
-            </div>
-
-            <% } %>
-
-
-            <!-- TABLA -->
-
-            <% if (resultado != null) { %>
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-
-                        <div>
-
-                            <h5 class="card-title mb-1">
-                                Resultados
-                            </h5>
-
-                            <p class="text-muted mb-0">
-
-                                Desde
-                                <strong><%= fechaInicio %></strong>
-
-                                hasta
-
-                                <strong><%= fechaFin %></strong>
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="table-responsive">
-
-                        <table class="table table-bordered table-hover align-middle">
-
-                            <thead class="table-dark">
-
-                                <tr>
-
-                                    <th>
-                                        Código
-                                    </th>
-
-                                    <th>
-                                        Sucursal
-                                    </th>
-
-                                    <th class="text-end">
-                                        Combustible
-                                    </th>
-
-                                    <th class="text-end">
-                                        Mano de obra
-                                    </th>
-
-                                    <th class="text-end">
-                                        Repuestos
-                                    </th>
-
-                                    <th class="text-end">
-                                        Depreciación
-                                    </th>
-
-                                    <th class="text-end">
-                                        Total costos
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody>
-
-                                <%
-                                    double totalCombustible = 0;
-                                    double totalManoObra = 0;
-                                    double totalRepuestos = 0;
-                                    double totalDepreciacion = 0;
-                                    double totalCostos = 0;
-
-                                    while (resultado.next()) {
-
-                                        double combustible =
-                                                resultado.getDouble("combustible");
-
-                                        double manoObra =
-                                                resultado.getDouble("mano_obra");
-
-                                        double repuestos =
-                                                resultado.getDouble("repuestos");
-
-                                        double depreciacion =
-                                                resultado.getDouble("depreciacion");
-
-                                        double costos =
-                                                resultado.getDouble("total_costos");
-
-                                        totalCombustible += combustible;
-                                        totalManoObra += manoObra;
-                                        totalRepuestos += repuestos;
-                                        totalDepreciacion += depreciacion;
-                                        totalCostos += costos;
-                                %>
-
-                                <tr>
-
-                                    <td>
-                                        <%= resultado.getString("codigo_sucursal") %>
-                                    </td>
-
-                                    <td>
-                                        <%= resultado.getString("sucursal") %>
-                                    </td>
-
-                                    <td class="text-end">
-                                        Q <%= String.format("%.2f", combustible) %>
-                                    </td>
-
-                                    <td class="text-end">
-                                        Q <%= String.format("%.2f", manoObra) %>
-                                    </td>
-
-                                    <td class="text-end">
-                                        Q <%= String.format("%.2f", repuestos) %>
-                                    </td>
-
-                                    <td class="text-end">
-                                        Q <%= String.format("%.2f", depreciacion) %>
-                                    </td>
-
-                                    <td class="text-end fw-bold">
-                                        Q <%= String.format("%.2f", costos) %>
-                                    </td>
-
-                                </tr>
-
-                                <% } %>
-
-                            </tbody>
-
-                            <tfoot class="table-light">
-
-                                <tr>
-
-                                    <th colspan="2">
-                                        TOTAL GENERAL
-                                    </th>
-
-                                    <th class="text-end">
-                                        Q <%= String.format("%.2f", totalCombustible) %>
-                                    </th>
-
-                                    <th class="text-end">
-                                        Q <%= String.format("%.2f", totalManoObra) %>
-                                    </th>
-
-                                    <th class="text-end">
-                                        Q <%= String.format("%.2f", totalRepuestos) %>
-                                    </th>
-
-                                    <th class="text-end">
-                                        Q <%= String.format("%.2f", totalDepreciacion) %>
-                                    </th>
-
-                                    <th class="text-end fw-bold">
-                                        Q <%= String.format("%.2f", totalCostos) %>
-                                    </th>
-
-                                </tr>
-
-                            </tfoot>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <% } %>
 
         </div>
-
-
         <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+            src="../resources/js/reporteCostos.js">
         </script>
 
     </body>
-
 </html>
-
-

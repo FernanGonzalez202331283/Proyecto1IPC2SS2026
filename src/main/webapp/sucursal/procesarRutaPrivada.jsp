@@ -1,6 +1,6 @@
 <%-- 
     Document   : procesarRutaPrivada
-    Created on : 12 sept 2026, 18:37:13
+    Created on : 12 sept 2026, 18:35:07
     Author     : fernan
 --%>
 
@@ -10,7 +10,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    Usuario usuario
+            = (Usuario) session.getAttribute("usuario");
+
     if (usuario == null) {
         response.sendRedirect("../login.jsp");
         return;
@@ -21,69 +23,120 @@
         return;
     }
 
-    String origen = request.getParameter("origen");
-    String destino = request.getParameter("destino");
-    String distanciaParametro = request.getParameter("distanciaKm");
+    String origen
+            = request.getParameter("origen");
+
+    String destino
+            = request.getParameter("destino");
+
+    String distanciaKmTexto
+            = request.getParameter("distanciaKm");
+
+    String codigoAlquiler
+            = request.getParameter("codigoAlquiler");
 
     boolean correcto = false;
+
     String mensaje = "";
+
+    String codigoRutaGenerado = "";
+
+    double distanciaKm = 0;
 
     if (origen == null
             || origen.trim().isEmpty()
             || destino == null
             || destino.trim().isEmpty()
-            || distanciaParametro == null
-            || distanciaParametro.trim().isEmpty()) {
+            || distanciaKmTexto == null
+            || distanciaKmTexto.trim().isEmpty()) {
 
-        mensaje = "Todos los campos son obligatorios.";
+        mensaje = "Todos los campos de la ruta son obligatorios.";
+
+    } else if (origen.trim().equalsIgnoreCase(destino.trim())) {
+
+        mensaje = "El origen y el destino no pueden ser iguales.";
 
     } else {
 
-        origen = origen.trim();
-        destino = destino.trim();
-
-        double distanciaKm;
-
         try {
 
-            distanciaKm = Double.parseDouble(distanciaParametro.trim());
-            if (distanciaKm <= 0) {
-                mensaje = "La distancia debe ser mayor que cero.";
-            } else if (origen.equalsIgnoreCase(destino)) {
+            distanciaKm
+                    = Double.parseDouble(
+                            distanciaKmTexto.trim()
+                    );
 
-                mensaje = "El origen y destino no pueden ser iguales.";
+            if (distanciaKm <= 0) {
+
+                mensaje
+                        = "La distancia debe ser mayor que cero.";
 
             } else {
+                RutaPrivadaDAO rutaDAO
+                        = new RutaPrivadaDAO();
 
-                RutaPrivadaDAO rutaDAO= new RutaPrivadaDAO();
-
-                // Verificar si la ruta ya existe
                 RutaPrivada rutaExistente
                         = rutaDAO.buscarPorOrigenDestino(
-                                origen,
-                                destino
+                                origen.trim(),
+                                destino.trim()
                         );
+
 
                 if (rutaExistente != null) {
 
-                    mensaje = "La ruta ya existe en el sistema.";
+                    mensaje
+                            = "Ya existe una ruta privada registrada "
+                            + "para el origen y destino seleccionados.";
 
                 } else {
 
-                    String codigoRuta = "RP-" + System.currentTimeMillis();
+                    codigoRutaGenerado
+                            = "RP-" + System.currentTimeMillis();
 
-                    RutaPrivada ruta = new RutaPrivada();
-                    ruta.setCodigoRutaPrivada(codigoRuta );
-                    ruta.setOrigen(origen);
-                    ruta.setDestino( destino);
-                    ruta.setDistanciaKm(distanciaKm);
-                    ruta.setEstado(true);
-                    correcto = rutaDAO.insertar(ruta);
+                    RutaPrivada rutaPrivada
+                            = new RutaPrivada();
 
-                    if (correcto) {
+                    rutaPrivada.setCodigoRutaPrivada(
+                            codigoRutaGenerado
+                    );
+
+                    rutaPrivada.setOrigen(
+                            origen.trim()
+                    );
+
+                    rutaPrivada.setDestino(
+                            destino.trim()
+                    );
+
+                    rutaPrivada.setDistanciaKm(
+                            distanciaKm
+                    );
+
+                    rutaPrivada.setEstado(true);
+
+                    boolean insertado
+                            = rutaDAO.insertar(
+                                    rutaPrivada
+                            );
+
+
+                    if (insertado) {
+
+                        correcto = true;
 
                         mensaje
-                                = "La ruta privada fue registrada correctamente.";
+                                = "La ruta privada fue registrada "
+                                + "correctamente.";
+
+                        if (codigoAlquiler != null
+                                && !codigoAlquiler.trim().isEmpty()) {
+
+                            response.sendRedirect(
+                                    "confirmarAlquiler.jsp?codigoAlquiler="
+                                    + codigoAlquiler.trim()
+                            );
+
+                            return;
+                        }
 
                     } else {
 
@@ -96,7 +149,13 @@
         } catch (NumberFormatException e) {
 
             mensaje
-                    = "La distancia ingresada no es válida.";
+                    = "La distancia debe ser un número válido.";
+
+        } catch (Exception e) {
+
+            mensaje
+                    = "Ocurrió un error al registrar la ruta: "
+                    + e.getMessage();
         }
     }
 %>
@@ -111,7 +170,11 @@
         <meta name="viewport"
               content="width=device-width, initial-scale=1.0">
 
-        <title>Resultado</title>
+        <title>
+            <%= correcto
+                    ? "Ruta registrada"
+                    : "Error al registrar ruta"%>
+        </title>
 
         <link rel="stylesheet"
               href="../resources/css/styles.css">
@@ -124,19 +187,29 @@
 
             <header class="encabezado">
 
-                <h1>Registro de ruta privada</h1>
+                <h1>
+                    <%= correcto
+                            ? "Ruta registrada correctamente"
+                            : "No se pudo registrar la ruta"%>
+                </h1>
 
             </header>
 
 
             <div class="card-menu">
 
-                <% if (correcto) {%>
-
-                <h2>Ruta registrada correctamente</h2>
-
                 <p>
                     <%= mensaje%>
+                </p>
+
+
+                <%
+                    if (correcto) {
+                %>
+
+                <p>
+                    <strong>Código de ruta:</strong>
+                    <%= codigoRutaGenerado%>
                 </p>
 
                 <p>
@@ -151,22 +224,23 @@
 
                 <p>
                     <strong>Distancia:</strong>
-                    <%= distanciaParametro%> km
+                    <%= String.format(
+                            "%.2f",
+                            distanciaKm
+                    )%>
+                    km
                 </p>
 
-
-                <% } else {%>
-
-                <h2>No se pudo registrar la ruta</h2>
-
-                <p>
-                    <%= mensaje%>
-                </p>
-
-                <% }%>
+                <%
+                    }
+                %>
 
 
-                <div class="card-acciones">
+                <div class="form-actions">
+
+                    <%
+                        if (correcto) {
+                    %>
 
                     <a href="registrarRutaPrivada.jsp">
                         Registrar otra ruta
@@ -175,6 +249,67 @@
                     <a href="../inicio.jsp">
                         Regresar al inicio
                     </a>
+
+                    <%
+                    } else {
+                        if (codigoAlquiler != null
+                                && !codigoAlquiler.trim().isEmpty()) {
+                    %>
+
+                    <form action="registrarRutaPrivada.jsp"
+                          method="post">
+
+                        <input type="hidden"
+                               name="origen"
+                               value="<%= origen != null
+                                       ? origen
+                                       : ""%>">
+
+                        <input type="hidden"
+                               name="destino"
+                               value="<%= destino != null
+                                       ? destino
+                                       : ""%>">
+
+                        <input type="hidden"
+                               name="codigoAlquiler"
+                               value="<%= codigoAlquiler%>">
+
+                        <button type="submit">
+                            Volver a registrar ruta
+                        </button>
+
+                    </form>
+
+                    <%
+                        } else {
+                    %>
+                    <div class="botones-inferiores">
+
+                        <a href="registrarRutaPrivada.jsp"
+                            class="boton boton-volver">
+                            volver a registar ruta
+                        </a>
+
+                    </div>
+
+                    <%
+                        }
+                    %>
+                        <!-- VOLVER -->
+                       <div class="botones-inferiores">
+
+                           <a
+                               href="../inicio.jsp"
+                               class="boton boton-volver">
+                               regresar
+                           </a>
+
+                       </div>
+
+                    <%
+                        }
+                    %>
 
                 </div>
 

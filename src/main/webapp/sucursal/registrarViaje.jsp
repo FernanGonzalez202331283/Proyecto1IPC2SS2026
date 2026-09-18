@@ -1,4 +1,3 @@
-```jsp
 <%-- 
     Document   : registrarViaje
     Created on : 7 sept 2026, 2:05:47
@@ -583,19 +582,10 @@
             </div>
 
             <% } %>
-
-
             <div class="formulario">
-
                 <h2>Datos del viaje</h2>
-
-
-                <form method="POST"
-                      id="formViaje">
-
-
+                    <form method="POST" id="formViaje">
                     <!-- Código -->
-
                     <div class="form-group">
 
                         <label for="codigoViaje">
@@ -608,23 +598,18 @@
                             name="codigoViaje"
                             maxlength="20"
                             required>
-
+                            <p id="mensajeCodigoViaje" class="campo-error"></p>
                     </div>
-
-
                     <!-- Tipo -->
-
                     <div class="form-group">
-
                         <label for="tipoViaje">
                             Tipo de viaje
                         </label>
-
                         <select
                             id="tipoViaje"
                             name="tipoViaje"
                             required>
-
+                            <p id="mensajeTipoViaje" class="campo-error"></p>
                             <option value="">
                                 Seleccione
                             </option>
@@ -654,7 +639,7 @@
                             id="placaBus"
                             name="placaBus"
                             required>
-
+                            <p id="mensajeBus" class="campo-error"></p>
                             <option value="">
                                 Seleccione un bus
                             </option>
@@ -703,7 +688,7 @@
                             id="numeroLicencia"
                             name="numeroLicencia"
                             required>
-
+                            <p id="mensajeChofer" class="campo-error"></p>
                             <option value="">
                                 Seleccione un chofer
                             </option>
@@ -762,7 +747,7 @@
                                 <%= ruta.getCodigoRuta() %>
                                 -
                                 <%= ruta.getCodigoSucursalOrigen() %>
-                                →
+                                ->
                                 <%= ruta.getCodigoSucursalDestino() %>
                                 -
                                 <%= ruta.getDistanciaKm() %>
@@ -783,6 +768,7 @@
                         </small>
 
                         <% } %>
+                        <p id="mensajeRuta" class="campo-error"></p>
 
                     </div>
 
@@ -802,6 +788,7 @@
                                 id="origen"
                                 name="origen"
                                 maxlength="250">
+                            <p id="mensajeOrigen" class="campo-error"></p>
 
                         </div>
 
@@ -817,6 +804,7 @@
                                 id="destino"
                                 name="destino"
                                 maxlength="250">
+                            <p id="mensajeDestino" class="campo-error"></p>
 
                         </div>
 
@@ -836,6 +824,7 @@
                             id="fechaSalida"
                             name="fechaSalida"
                             required>
+                        <p id="mensajeFechaSalida" class="campo-error"></p>
 
                     </div>
 
@@ -853,7 +842,7 @@
                             id="horaSalida"
                             name="horaSalida"
                             required>
-
+                            <p id="mensajeHoraSalida" class="campo-error"></p>
                     </div>
 
 
@@ -870,6 +859,7 @@
                             id="fechaLlegadaEstimada"
                             name="fechaLlegadaEstimada"
                             required>
+                        <p id="mensajeFechaLlegada" class="campo-error"></p>
 
                     </div>
 
@@ -887,7 +877,7 @@
                             id="horaLlegadaEstimada"
                             name="horaLlegadaEstimada"
                             required>
-
+                            <p id="mensajeHoraLlegada" class="campo-error"></p>
                     </div>
 
 
@@ -918,91 +908,17 @@
 
                 </form>
 
+            </div>             
+            <div class="botones-inferiores">
+                <a
+                    href="../sucursal/viajes.jsp"
+                    class="boton boton-volver">
+                    Regresar
+                </a>
+
             </div>
-
-
-            <br>
-
-
-            <a href="viajes.jsp">
-                Regresar a viajes
-            </a>
-
         </main>
-
-
-        <script>
-
-            const tipoViaje =
-                    document.getElementById("tipoViaje");
-
-            const grupoRuta =
-                    document.getElementById("grupoRuta");
-
-            const grupoPrivado =
-                    document.getElementById("grupoPrivado");
-
-            const codigoRuta =
-                    document.getElementById("codigoRuta");
-
-            const origen =
-                    document.getElementById("origen");
-
-            const destino =
-                    document.getElementById("destino");
-
-
-            function actualizarTipoViaje() {
-
-                if (tipoViaje.value === "REGULAR") {
-
-                    grupoRuta.style.display = "block";
-
-                    grupoPrivado.style.display = "none";
-
-                    codigoRuta.required = true;
-
-                    origen.required = false;
-
-                    destino.required = false;
-
-                } else if (tipoViaje.value === "PRIVADO") {
-
-                    grupoRuta.style.display = "none";
-
-                    grupoPrivado.style.display = "block";
-
-                    codigoRuta.required = false;
-
-                    origen.required = true;
-
-                    destino.required = true;
-
-                } else {
-
-                    grupoRuta.style.display = "block";
-
-                    grupoPrivado.style.display = "none";
-
-                    codigoRuta.required = false;
-
-                    origen.required = false;
-
-                    destino.required = false;
-                }
-            }
-
-
-            tipoViaje.addEventListener(
-                    "change",
-                    actualizarTipoViaje
-                    );
-
-
-            actualizarTipoViaje();
-
-        </script>
-
+       <script src="../resources/js/registrarViaje.js"></script>
     </body>
 
 </html>

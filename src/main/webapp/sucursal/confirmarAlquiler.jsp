@@ -3,8 +3,10 @@
     Created on : 13 sept 2026, 1:31:52
     Author     : fernan
 --%>
-
-
+<%@page import="transporte.dao.ConfiguracionDAO"%>
+<%@page import="transporte.modelo.Configuracion"%>
+<%@page import="transporte.dao.RutaPrivadaDAO"%>
+<%@page import="transporte.modelo.RutaPrivada"%>
 <%@page import="java.util.List"%>
 <%@page import="transporte.modelo.Alquiler"%>
 <%@page import="transporte.dao.AlquilerDAO"%>
@@ -14,60 +16,74 @@
 <%@page import="transporte.modelo.Chofer"%>
 <%@page import="transporte.modelo.Usuario"%>
 
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <%
-    Usuario usuarioSesion
-            = (Usuario) session.getAttribute("usuario");
+Usuario usuarioSesion
+= (Usuario) session.getAttribute("usuario");
 
-    if (usuarioSesion == null) {
-        response.sendRedirect("../login.jsp");
-        return;
-    }
+if (usuarioSesion == null) {
+    response.sendRedirect("../login.jsp");
+    return;
+}
 
-    if (!"ADMIN_SUCURSAL".equals(usuarioSesion.getRol())) {
-        response.sendRedirect("../inicio.jsp");
-        return;
-    }
+if (!"ADMIN_SUCURSAL".equals(usuarioSesion.getRol())) {
+    response.sendRedirect("../inicio.jsp");
+    return;
+}
 
-    String codigoAlquiler
-            = request.getParameter("codigoAlquiler");
+String codigoAlquiler
+        = request.getParameter("codigoAlquiler");
 
-    if (codigoAlquiler == null
-            || codigoAlquiler.trim().isEmpty()) {
+if (codigoAlquiler == null
+        || codigoAlquiler.trim().isEmpty()) {
 
-        response.sendRedirect("alquileres.jsp");
-        return;
-    }
+    response.sendRedirect("alquileres.jsp");
+    return;
+}
 
-    AlquilerDAO alquilerDAO
-            = new AlquilerDAO();
+AlquilerDAO alquilerDAO
+        = new AlquilerDAO();
 
-    ViajeDAO viajeDAO
-            = new ViajeDAO();
+ViajeDAO viajeDAO
+        = new ViajeDAO();
 
-    Alquiler alquiler
-            = alquilerDAO.obtener(codigoAlquiler);
+Alquiler alquiler
+        = alquilerDAO.obtener(codigoAlquiler);
 
-    if (alquiler == null) {
+if (alquiler == null) {
+
 %>
 
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Alquiler no encontrado</title>
 
-        <link rel="stylesheet"
-              href="../resources/css/styles.css">
-    </head>
+<html lang="es">
 
-    <body>
+```
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Alquiler no encontrado</title>
+
+    <link rel="stylesheet"
+          href="../resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <main class="pagina">
 
         <div class="contenedor">
 
             <h1>Alquiler no encontrado</h1>
 
             <p>
-                No se encontró la solicitud:
+                No se encontrÃ³ la solicitud:
                 <strong><%= codigoAlquiler%></strong>
             </p>
 
@@ -77,27 +93,43 @@
 
         </div>
 
-    </body>
+    </main>
+
+</body>
+```
+
 </html>
 
 <%
-        return;
-    }
+return;
+}
 
-    if (!"SOLICITADO".equals(alquiler.getEstado())) {
+if (!"SOLICITADO".equals(alquiler.getEstado())) {
+
 %>
 
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Solicitud no disponible</title>
 
-        <link rel="stylesheet"
-              href="../resources/css/styles.css">
-    </head>
+<html lang="es">
 
-    <body>
+```
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Solicitud no disponible</title>
+
+    <link rel="stylesheet"
+          href="../resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <main class="pagina">
 
         <div class="contenedor">
 
@@ -119,39 +151,55 @@
 
         </div>
 
-    </body>
+    </main>
+
+</body>
+```
+
 </html>
 
 <%
-        return;
-    }
+return;
+}
 
-    Viaje viaje
-            = viajeDAO.obtenerPrivado(
-                    alquiler.getCodigoViaje()
-            );
+Viaje viaje
+        = viajeDAO.obtenerPrivado(
+                alquiler.getCodigoViaje()
+        );
 
-    if (viaje == null) {
+if (viaje == null) {
+
 %>
 
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Viaje no encontrado</title>
 
-        <link rel="stylesheet"
-              href="../resources/css/styles.css">
-    </head>
+<html lang="es">
 
-    <body>
+```
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Viaje no encontrado</title>
+
+    <link rel="stylesheet"
+          href="../resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <main class="pagina">
 
         <div class="contenedor">
 
             <h1>Viaje no encontrado</h1>
 
             <p>
-                No se encontró el viaje asociado
+                No se encontrÃ³ el viaje asociado
                 a esta solicitud.
             </p>
 
@@ -161,55 +209,208 @@
 
         </div>
 
-    </body>
+    </main>
+
+</body>
+```
+
 </html>
 
 <%
-        return;
-    }
+return;
+}
 
-    List<Bus> buses
-            = viajeDAO.listarBusesDisponiblesPorSucursal(
-                    usuarioSesion.getCodigoSucursal()
-            );
+RutaPrivadaDAO rutaPrivadaDAO
+        = new RutaPrivadaDAO();
 
-    List<Chofer> choferes
-            = viajeDAO.listarChoferesActivosPorSucursal(
-                    usuarioSesion.getCodigoSucursal()
-            );
+RutaPrivada rutaPrivada
+        = rutaPrivadaDAO.buscarPorOrigenDestino(
+                viaje.getOrigen(),
+                viaje.getDestino()
+        );
+
+if (rutaPrivada == null) {
+
 %>
 
 <!DOCTYPE html>
-<html>
 
-    <head>
+<html lang="es">
 
-        <meta charset="UTF-8">
+```
+<head>
 
-        <title>Confirmar alquiler</title>
+    <meta charset="UTF-8">
 
-        <link rel="stylesheet"
-              href="../resources/css/styles.css">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    </head>
+    <title>Ruta no registrada</title>
 
-    <body>
+    <link rel="stylesheet"
+          href="../resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <main class="pagina">
+
+        <div class="contenedor">
+
+            <h1>Ruta privada no registrada</h1>
+
+            <div class="card">
+
+                <h2>Solicitud de alquiler</h2>
+
+                <p>
+                    <strong>CÃ³digo de alquiler:</strong>
+                    <%= alquiler.getCodigoAlquiler()%>
+                </p>
+
+                <p>
+                    <strong>Cliente:</strong>
+                    <%= alquiler.getUsuarioCliente()%>
+                </p>
+
+                <p>
+                    <strong>Origen:</strong>
+                    <%= viaje.getOrigen()%>
+                </p>
+
+                <p>
+                    <strong>Destino:</strong>
+                    <%= viaje.getDestino()%>
+                </p>
+
+                <p>
+                    No existe una ruta privada registrada
+                    para este origen y destino.
+                </p>
+
+                <p>
+                    Debe registrar la ruta antes de poder
+                    confirmar el alquiler.
+                </p>
+
+                <form action="registrarRutaPrivada.jsp"
+                      method="post">
+
+                    <input
+                        type="hidden"
+                        name="origen"
+                        value="<%= viaje.getOrigen()%>"
+                        >
+
+                    <input
+                        type="hidden"
+                        name="destino"
+                        value="<%= viaje.getDestino()%>"
+                        >
+
+                    <input
+                        type="hidden"
+                        name="codigoAlquiler"
+                        value="<%= alquiler.getCodigoAlquiler()%>"
+                        >
+
+                    <button type="submit">
+                        Registrar ruta
+                    </button>
+
+                </form>
+
+                <br>
+
+                <a href="alquileres.jsp">
+                    Volver a solicitudes
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+```
+
+</html>
+
+<%
+return;
+}
+ConfiguracionDAO configuracionDAO
+        = new ConfiguracionDAO();
+
+Configuracion configuracion
+        = configuracionDAO.obtenerConfiguracionVigente();
+
+double precioEstimadoActual = 0;
+boolean precioDisponible = false;
+
+if (configuracion != null
+        && configuracion.getPrecioKmAlquilerPrivado() > 0) {
+
+    precioEstimadoActual
+            = rutaPrivada.getDistanciaKm()
+            * configuracion.getPrecioKmAlquilerPrivado();
+
+    precioDisponible = true;
+}
+
+List<Bus> buses
+        = viajeDAO.listarBusesDisponiblesPorSucursal(
+                usuarioSesion.getCodigoSucursal()
+        );
+
+List<Chofer> choferes
+        = viajeDAO.listarChoferesActivosPorSucursal(
+                usuarioSesion.getCodigoSucursal()
+        );
+
+%>
+
+<!DOCTYPE html>
+
+<html lang="es">
+
+```
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Confirmar alquiler</title>
+
+    <link rel="stylesheet"
+          href="../resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <main class="pagina">
 
         <div class="contenedor">
 
             <h1>Confirmar alquiler privado</h1>
+
 
             <div class="card">
 
                 <h2>Datos de la solicitud</h2>
 
                 <p>
-                    <strong>Código de alquiler:</strong>
+                    <strong>CÃ³digo de alquiler:</strong>
                     <%= alquiler.getCodigoAlquiler()%>
                 </p>
 
                 <p>
-                    <strong>Código de viaje:</strong>
+                    <strong>CÃ³digo de viaje:</strong>
                     <%= alquiler.getCodigoViaje()%>
                 </p>
 
@@ -229,7 +430,18 @@
                 </p>
 
                 <p>
-                    <strong>Número de pasajeros:</strong>
+                    <strong>Distancia:</strong>
+
+                    <%= String.format(
+                            "%.2f",
+                            rutaPrivada.getDistanciaKm()
+                    )%>
+
+                    km
+                </p>
+
+                <p>
+                    <strong>NÃºmero de pasajeros:</strong>
                     <%= alquiler.getNumeroPasajeros()%>
                 </p>
 
@@ -246,6 +458,7 @@
                 <p>
                     <strong>Llegada estimada:</strong>
                     <%= viaje.getFechaLlegadaEstimada()%>
+                    -
                     <%= viaje.getHoraLlegadaEstimada()%>
                 </p>
 
@@ -258,13 +471,41 @@
 
                 </p>
 
+
+                <%
+                    if (precioDisponible) {
+                %>
+
                 <p>
                     <strong>Precio estimado:</strong>
+
                     Q<%= String.format(
                             "%.2f",
-                            alquiler.getPrecioEstimado()
+                            precioEstimadoActual
                     )%>
                 </p>
+
+                <%
+                    } else {
+                %>
+
+                <div class="mensaje error">
+
+                    <strong>
+                        Precio no disponible
+                    </strong>
+
+                    <p>
+                        No existe una configuraciÃ³n vÃ¡lida
+                        para calcular el precio del alquiler privado.
+                    </p>
+
+                </div>
+
+                <%
+                    }
+                %>
+
 
                 <p>
                     <strong>Estado:</strong>
@@ -273,27 +514,36 @@
 
             </div>
 
+
+            <%
+                if (precioDisponible) {
+            %>
+
+
             <div class="card">
 
                 <h2>Asignar bus y chofer</h2>
 
                 <form
+                    id="formularioConfirmarAlquiler"
                     action="procesarConfirmarAlquiler.jsp"
                     method="post">
 
-                    <!-- Código alquiler -->
+
                     <input
                         type="hidden"
                         name="codigoAlquiler"
                         value="<%= alquiler.getCodigoAlquiler()%>"
                         >
 
-                    <!-- Código viaje -->
+
                     <input
                         type="hidden"
                         name="codigoViaje"
                         value="<%= alquiler.getCodigoViaje()%>"
                         >
+
+
                     <div class="form-group">
 
                         <label for="precioConfirmado">
@@ -306,9 +556,16 @@
                             name="precioConfirmado"
                             step="0.01"
                             min="0.01"
+                            value="<%= String.format(
+                                    "%.2f",
+                                    precioEstimadoActual
+                            )%>"
                             required
                             placeholder="Ingrese el precio final"
                             >
+
+                        <p id="mensajePrecio"
+                           class="campo-error"></p>
 
                     </div>
 
@@ -350,15 +607,13 @@
                             </option>
 
                             <%
-                                }
+                                    }
 
-                            } else {
+                                } else {
                             %>
 
                             <option value="" disabled>
-
                                 No hay buses disponibles
-
                             </option>
 
                             <%
@@ -367,7 +622,11 @@
 
                         </select>
 
+                        <p id="mensajeBus"
+                           class="campo-error"></p>
+
                     </div>
+
 
                     <div class="form-group">
 
@@ -404,15 +663,13 @@
                             </option>
 
                             <%
-                                }
+                                    }
 
-                            } else {
+                                } else {
                             %>
 
                             <option value="" disabled>
-
                                 No hay choferes disponibles
-
                             </option>
 
                             <%
@@ -421,7 +678,12 @@
 
                         </select>
 
+                        <p id="mensajeChofer"
+                           class="campo-error"></p>
+
                     </div>
+
+
                     <div class="acciones">
 
                         <button type="submit">
@@ -438,8 +700,29 @@
 
             </div>
 
+
+            <%
+                } else {
+            %>
+
+
+            <div class="card">
+
+                <a href="alquileres.jsp">
+                    Volver a solicitudes
+                </a>
+
+            </div>
+
+
+            <%
+                }
+            %>
+
+
         </div>
 
-    </body>
-
+    </main>
+    <script src="../resources/js/confirmarAlquiler.js"></script>
+</body>
 </html>

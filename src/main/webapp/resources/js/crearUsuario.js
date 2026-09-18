@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const usuario =
             document.getElementById("usuario");
 
-    const contrasena =
-            document.getElementById("contrasena");
+    const contraseña =
+            document.getElementById("contraseña");
 
     const sucursal =
             document.getElementById("codigoSucursal");
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const direccion =
             document.getElementById("direccion");
 
-
     const mensajeUsuario =
             document.getElementById("mensajeUsuario");
 
@@ -47,18 +46,37 @@ document.addEventListener("DOMContentLoaded", function () {
     const mensajeNombre =
             document.getElementById("mensajeNombre");
 
+    const mensajeNit =
+            document.getElementById("mensajeNit");
+
+    const mensajeDpi =
+            document.getElementById("mensajeDpi");
+
+    const mensajeTelefono =
+            document.getElementById("mensajeTelefono");
+
+
+    if (!formulario) {
+        return;
+    }
+
 
     formulario.addEventListener("submit", function (event) {
 
         let formularioValido = true;
 
+
         mensajeUsuario.textContent = "";
         mensajeContrasena.textContent = "";
         mensajeSucursal.textContent = "";
         mensajeNombre.textContent = "";
+        mensajeNit.textContent = "";
+        mensajeDpi.textContent = "";
+        mensajeTelefono.textContent = "";
+
 
         usuario.classList.remove("campo-invalido");
-        contrasena.classList.remove("campo-invalido");
+        contraseña.classList.remove("campo-invalido");
         sucursal.classList.remove("campo-invalido");
         nombreCompleto.classList.remove("campo-invalido");
         nit.classList.remove("campo-invalido");
@@ -67,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
         direccion.classList.remove("campo-invalido");
 
 
+        // USUARIO
         if (usuario.value.trim() === "") {
 
             mensajeUsuario.textContent =
@@ -87,7 +106,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        if (contrasena.value.trim() === "") {
+        // CONTRASEÑA
+        if (contraseña.value.trim() === "") {
 
             mensajeContrasena.textContent =
                     "Ingrese una contraseña.";
@@ -96,17 +116,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
             formularioValido = false;
 
-        } else if (contrasena.value.length < 4) {
+        } else if (contraseña.value.length < 4) {
 
             mensajeContrasena.textContent =
                     "La contraseña debe tener al menos 4 caracteres.";
 
-            contrasena.classList.add("campo-invalido");
+            contraseña.classList.add("campo-invalido");
 
             formularioValido = false;
         }
 
 
+        // SUCURSAL
         if (sucursal.value === "") {
 
             mensajeSucursal.textContent =
@@ -118,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-
+        // NOMBRE
         if (nombreCompleto.value.trim() === "") {
 
             mensajeNombre.textContent =
@@ -131,49 +152,85 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (nombreCompleto.value.trim().length < 5) {
 
             mensajeNombre.textContent =
-                    "Ingrese el nombre completo.";
+                    "El nombre debe tener al menos 5 caracteres.";
 
             nombreCompleto.classList.add("campo-invalido");
 
             formularioValido = false;
-        }
 
+        } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(
+                nombreCompleto.value.trim())) {
 
-        if (nit.value.trim() === "") {
-
-            nit.classList.add("campo-invalido");
-
+            mensajeNombre.textContent =
+                    "El nombre solo debe contener letras y espacios.";
+            nombreCompleto.classList.add("campo-invalido");
             formularioValido = false;
         }
 
 
-        if (dpi.value.trim() === "") {
+        // NIT
+        if (nit.value.trim() === "") {
+            mensajeNit.textContent =
+                    "Ingrese el NIT.";
+            nit.classList.add("campo-invalido");
+            formularioValido = false;
+        } else if (!/^[0-9]+$/.test(nit.value.trim())) {
+            mensajeNit.textContent =
+                    "El NIT solamente debe contener números.";
+            nit.classList.add("campo-invalido");
+            formularioValido = false;
+        }
 
+        // DPI
+        if (dpi.value.trim() === "") {
+            mensajeDpi.textContent =
+                    "Ingrese el DPI.";
+            dpi.classList.add("campo-invalido");
+            formularioValido = false;
+        } else if (!/^[0-9]+$/.test(dpi.value.trim())) {
+            mensajeDpi.textContent =
+                    "El DPI solamente debe contener números.";
+            dpi.classList.add("campo-invalido");
+            formularioValido = false;
+        } else if (dpi.value.trim().length !== 13) {
+            mensajeDpi.textContent =
+                    "El DPI debe contener 13 dígitos.";
             dpi.classList.add("campo-invalido");
 
             formularioValido = false;
         }
 
-
+        // TELEFONO
         if (telefono.value.trim() === "") {
+
+            mensajeTelefono.textContent =
+                    "Ingrese el número de teléfono.";
+            telefono.classList.add("campo-invalido");
+            formularioValido = false;
+        } else if (!/^[0-9]+$/.test(telefono.value.trim())) {
+            mensajeTelefono.textContent =
+                    "El teléfono solamente debe contener números.";
+            telefono.classList.add("campo-invalido");
+            formularioValido = false;
+        } else if (telefono.value.trim().length !== 8) {
+
+            mensajeTelefono.textContent =
+                    "El teléfono debe contener 8 dígitos.";
 
             telefono.classList.add("campo-invalido");
 
             formularioValido = false;
         }
 
+        // DIRECCIÓN
         if (direccion.value.trim() === "") {
-
             direccion.classList.add("campo-invalido");
-
             formularioValido = false;
         }
 
         if (!formularioValido) {
-
             event.preventDefault();
         }
 
     });
-
 });

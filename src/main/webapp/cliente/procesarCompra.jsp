@@ -3,6 +3,7 @@
     Created on : 11 sept 2026, 11:15:34
     Author     : fernan
 --%>
+
 <%@page import="java.sql.Date"%>
 <%@page import="transporte.dao.CompraBoletoDAO"%>
 <%@page import="transporte.modelo.Usuario"%>
@@ -25,13 +26,13 @@
     String codigoViaje
             = request.getParameter("codigoViaje");
 
-    String numeroAsientoParametro
-            = request.getParameter("numeroAsiento");
+    String[] asientos
+            = request.getParameterValues("numeroAsiento");
 
     if (codigoViaje == null
             || codigoViaje.trim().isEmpty()
-            || numeroAsientoParametro == null
-            || numeroAsientoParametro.trim().isEmpty()) {
+            || asientos == null
+            || asientos.length == 0) {
 
         response.sendRedirect("viajes.jsp");
         return;
@@ -39,23 +40,28 @@
 
     codigoViaje = codigoViaje.trim();
 
-    int numeroAsiento;
+    int[] numerosAsientos
+            = new int[asientos.length];
 
     try {
 
-        numeroAsiento
-                = Integer.parseInt(
-                        numeroAsientoParametro.trim()
-                );
+        for (int i = 0; i < asientos.length; i++) {
+
+            numerosAsientos[i]
+                    = Integer.parseInt(
+                            asientos[i].trim()
+                    );
+        }
 
     } catch (NumberFormatException e) {
 
-        response.sendRedirect("viajes.jsp");
+        response.sendRedirect(
+                "comprarBoleto.jsp?codigoViaje="
+                + codigoViaje
+        );
+
         return;
     }
-
-    String codigoBoleto
-            = "BOL-" + System.currentTimeMillis();
 
     String codigoMovimiento
             = "MOV-" + System.currentTimeMillis();
@@ -67,16 +73,14 @@
             = new CompraBoletoDAO();
 
     boolean compraRealizada
-            = compraDAO.comprarBoleto(
-                    codigoBoleto,
+            = compraDAO.comprarBoletos(
                     codigoViaje,
                     usuario.getUsuario(),
-                    numeroAsiento,
+                    numerosAsientos,
                     codigoMovimiento,
                     fechaPago
             );
 %>
-
 
 <!DOCTYPE html>
 
@@ -96,7 +100,6 @@
 
     </head>
 
-
     <body>
 
         <main class="pagina">
@@ -107,31 +110,46 @@
 
             </header>
 
-
             <div class="card-menu">
 
-                <% if (compraRealizada) {%>
+                <% if (compraRealizada) { %>
 
                 <h2>Compra realizada correctamente</h2>
 
                 <p>
-                    Tu boleto fue registrado
+                    Los boletos fueron registrados
                     correctamente.
                 </p>
 
                 <p>
-                    <strong>Código del boleto:</strong>
-                    <%= codigoBoleto%>
-                </p>
-
-                <p>
                     <strong>Viaje:</strong>
-                    <%= codigoViaje%>
+                    <%= codigoViaje %>
                 </p>
 
                 <p>
-                    <strong>Asiento:</strong>
-                    <%= numeroAsiento%>
+                    <strong>Cantidad de boletos:</strong>
+                    <%= numerosAsientos.length %>
+                </p>
+
+                <p>
+                    <strong>Asientos:</strong>
+                </p>
+
+                <ul>
+
+                    <% for (int numeroAsiento : numerosAsientos) { %>
+
+                    <li>
+                        Asiento <%= numeroAsiento %>
+                    </li>
+
+                    <% } %>
+
+                </ul>
+
+                <p>
+                    <strong>Código de movimiento:</strong>
+                    <%= codigoMovimiento %>
                 </p>
 
                 <div class="card-acciones">
@@ -155,10 +173,9 @@
                 </p>
 
                 <p>
-                    Esto puede ocurrir si el asiento
-                    ya fue ocupado, el saldo es
-                    insuficiente o el viaje ya no
-                    está disponible.
+                    Esto puede ocurrir si uno de los asientos
+                    ya fue ocupado, el saldo es insuficiente
+                    o el viaje ya no está disponible.
                 </p>
 
                 <div class="card-acciones">
@@ -169,7 +186,7 @@
 
                 </div>
 
-                <% }%>
+                <% } %>
 
             </div>
 
@@ -178,4 +195,3 @@
     </body>
 
 </html>
-

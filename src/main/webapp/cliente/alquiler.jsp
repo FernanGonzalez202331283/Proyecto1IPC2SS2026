@@ -68,7 +68,7 @@
                             id="origen"
                             name="origen"
                             maxlength="250"
-                            required
+                            required>
                     </div>
 
                     <!-- DESTINO -->
@@ -96,6 +96,7 @@
                             id="numeroPasajeros"
                             name="numeroPasajeros"
                             min="1"
+                            step="1"
                             required>
                     </div>
 
@@ -174,26 +175,30 @@
                         <button type="submit">
                             Solicitar alquiler
                         </button>
-
-                        <a href="../inicio.jsp">
+                    </div>
+                    
+                      <div class="botones-inferiores">
+                        <a
+                            href="../inicio.jsp"
+                            class="boton boton-volver">
                             Cancelar
                         </a>
-
                     </div>
 
                 </form>
 
             </div>
+              <div class="botones-inferiores">
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
-
-            <br>
-
-            <a href="../inicio.jsp">
-                Regresar al inicio
-            </a>
+                    Volver al menú principal
+                </a>
+            </div>
 
         </main>
-
+            <script src="../resources/js/alquiler.js"></script>
     </body>
 
 </html>

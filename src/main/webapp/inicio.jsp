@@ -1,3 +1,8 @@
+<%-- 
+    Document   : inicio
+    Created on : 4 sept 2026, 1:36:36
+    Author     : fernan
+--%>
 <%@page import="transporte.modelo.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -136,8 +141,14 @@
                         de la empresa.
                     </p>
                     <div class="card-acciones">
-                        <a href="sistema/reportes.jsp">
-                            Ver reportes
+                        <a href="sistema/reporteGanancias.jsp">
+                            reporte de ganancias
+                        </a>
+                        <a href="sistema/reporteRutas.jsp">
+                            Reporte de Rutas
+                        </a>
+                        <a href="sistema/reporteCostos.jsp">
+                            reporte de costos
                         </a>
                     </div>
                 </div>
@@ -302,8 +313,20 @@
 
                     <div class="card-acciones">
 
-                        <a href="sucursal/reportes.jsp">
-                            Ver reportes
+                        <a href="sucursal/reporteBuses.jsp">
+                            Reportes de Buses
+                        </a>
+                        <a href="sucursal/reporteChoferes.jsp">
+                            Reportes de Choferes
+                        </a>
+                        <a href="sucursal/reporteBoletos.jsp">
+                            Reportes de Boletos
+                        </a>
+                        <a href="sucursal/reporteAlquileres.jsp">
+                            Reportes de Alquileres
+                        </a>
+                        <a href="sucursal/reporteDepreciacion.jsp">
+                            Reportes de depreciacion
                         </a>
 
                     </div>
@@ -422,30 +445,6 @@
                         </div>
 
                 </div>
-
-                <!-- MI CUENTA -->
-
-                <div class="card-menu">
-
-                    <div class="card-icon">
-                    </div>
-
-                    <h3>Mi cuenta</h3>
-
-                    <p>
-                        Administra tu perfil y cartera digital.
-                    </p>
-
-                    <div class="card-acciones">
-
-                        <a href="cliente/perfil.jsp">
-                            Mi perfil
-                        </a>
-
-                    </div>
-
-                </div>
-
             </div>
 
             <%

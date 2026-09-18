@@ -25,9 +25,9 @@
     }
 
     // Obtener viajes regulares disponibles
-    ViajeDAO viajeDAO= new ViajeDAO();
+    ViajeDAO viajeDAO = new ViajeDAO();
 
-    List<Viaje> viajes= viajeDAO.listarViajesRegularesDisponibles();
+    List<Viaje> viajes = viajeDAO.listarViajesRegularesDisponibles();
 %>
 
 <!DOCTYPE html>
@@ -128,13 +128,17 @@
 
 
             <% }%>
+            <div class="botones-inferiores">
 
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
-            <br>
+                    Volver al menú principal
 
-            <a href="../inicio.jsp">
-                Regresar al inicio
-            </a>
+                </a>
+
+            </div>
 
         </main>
 

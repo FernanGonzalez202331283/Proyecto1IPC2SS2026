@@ -1,41 +1,52 @@
 <%-- 
     Document   : reporteBoletos
-    Created on : 15 sept 2026, 1:06:50
+    Created on : 2026
     Author     : fernan
 --%>
-<%@page import="transporte.Reporte.ReporteBoletosDAO"%>
-<%@page import="java.sql.Connection"%>
-<%@page import="java.sql.PreparedStatement"%>
-<%@page import="java.sql.ResultSet"%>
-<%@page import="transporte.conexion.Conexion"%>
+
+<%@page import="java.util.List"%>
 <%@page import="transporte.modelo.Usuario"%>
+<%@page import="transporte.modelo.Ruta"%>
+<%@page import="transporte.modelo.Bus"%>
+<%@page import="transporte.Reporte.ReporteBoletosDAO"%>
+<%@page import="transporte.modelo.ReporteBoleto"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    Usuario usuarioSesion
+            = (Usuario) session.getAttribute("usuario");
 
-    if (usuario == null) {
+    if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
         return;
     }
 
-    if (!"ADMIN_SUCURSAL".equals(usuario.getRol())) {
+    if (!"ADMIN_SUCURSAL".equals(usuarioSesion.getRol())) {
         response.sendRedirect("../inicio.jsp");
         return;
     }
 
-    String codigoSucursal = usuario.getCodigoSucursal();
+    String codigoSucursal
+            = usuarioSesion.getCodigoSucursal();
 
-    String fechaInicio = request.getParameter("fechaInicio");
-    String fechaFin = request.getParameter("fechaFin");
-    String codigoRuta = request.getParameter("codigoRuta");
-    String placaBus = request.getParameter("placaBus");
+    String fechaInicio
+            = request.getParameter("fechaInicio");
 
-    if (fechaInicio == null || fechaInicio.trim().isEmpty()) {
-        fechaInicio = null;
+    String fechaFin
+            = request.getParameter("fechaFin");
+
+    String codigoRuta
+            = request.getParameter("codigoRuta");
+
+    String placaBus
+            = request.getParameter("placaBus");
+
+    if (fechaInicio == null) {
+        fechaInicio = "";
     }
 
-    if (fechaFin == null || fechaFin.trim().isEmpty()) {
-        fechaFin = null;
+    if (fechaFin == null) {
+        fechaFin = "";
     }
 
     if (codigoRuta == null) {
@@ -46,548 +57,343 @@
         placaBus = "";
     }
 
-    ReporteBoletosDAO dao = new ReporteBoletosDAO();
+    ReporteBoletosDAO dao
+            = new ReporteBoletosDAO();
 
-    ResultSet resultado = null;
+    List<ReporteBoleto> reporte
+            = dao.obtenerReporte(
+                    codigoSucursal,
+                    fechaInicio,
+                    fechaFin,
+                    codigoRuta,
+                    placaBus
+            );
 
-    Connection conexionCatalogos = null;
-    PreparedStatement psRutas = null;
-    PreparedStatement psBuses = null;
+    List<Ruta> rutas = dao.listarRutasPorSucursal(codigoSucursal);
 
-    ResultSet rutas = null;
-    ResultSet buses = null;
-
-    String mensajeError = null;
-
-    try {
-
-        resultado = dao.obtenerReporte(
-            codigoSucursal,
-            fechaInicio,
-            fechaFin,
-            codigoRuta,
-            placaBus
-        );
-
-        conexionCatalogos = Conexion.getConnection();
-
-        String sqlRutas = """
-            SELECT
-                r.codigo_ruta,
-                CONCAT(
-                    s_origen.nombre,
-                    ' ? ',
-                    s_destino.nombre
-                ) AS ruta
-            FROM ruta r
-            INNER JOIN sucursal s_origen
-                ON s_origen.codigo_sucursal =
-                   r.codigo_sucursal_origen
-            INNER JOIN sucursal s_destino
-                ON s_destino.codigo_sucursal =
-                   r.codigo_sucursal_destino
-            WHERE r.codigo_sucursal_origen = ?
-               OR r.codigo_sucursal_destino = ?
-            ORDER BY r.codigo_ruta ASC
-            """;
-
-        psRutas = conexionCatalogos.prepareStatement(sqlRutas);
-
-        psRutas.setString(1, codigoSucursal);
-        psRutas.setString(2, codigoSucursal);
-
-        rutas = psRutas.executeQuery();
-        String sqlBuses = """
-            SELECT
-                placa,
-                marca,
-                modelo
-            FROM bus
-            WHERE codigo_sucursal = ?
-            ORDER BY placa ASC
-            """;
-
-        psBuses = conexionCatalogos.prepareStatement(sqlBuses);
-
-        psBuses.setString(1, codigoSucursal);
-
-        buses = psBuses.executeQuery();
-
+    List<Bus> buses = dao.listarBusesPorSucursal(codigoSucursal);
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
-    <title>Ingresos por venta de boletos</title>
+        <title>Reporte de Boletos</title>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+        <link
+            rel="stylesheet"
+            href="<%= request.getContextPath()%>/resources/css/styles.css">
 
-</head>
+    </head>
 
-<body class="bg-light">
+    <body>
 
-<nav class="navbar navbar-dark bg-dark">
+        <main class="pagina">
 
-    <div class="container">
+            <header class="encabezado">
 
-        <a class="navbar-brand" href="../inicio.jsp">
-            Transporte Extraurbano
-        </a>
+                <h1>Reporte de Boletos</h1>
 
-        <span class="navbar-text text-white">
-            Reporte de boletos
-        </span>
+                <p>
+                    Consulta los boletos vendidos
+                    y los ingresos generados por los viajes.
+                </p>
 
-    </div>
+                <p>
+                    Sucursal:
+                    <strong><%= codigoSucursal%></strong>
+                </p>
 
-</nav>
-
-
-<main class="container py-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-            <h1 class="h3 mb-1">
-                Ingresos por venta de boletos
-            </h1>
-
-            <p class="text-muted mb-0">
-                Consulta los ingresos generados por los viajes de la sucursal.
-            </p>
-        </div>
-
-        <a href="../inicio.jsp"
-           class="btn btn-outline-secondary">
-            Volver
-        </a>
-
-    </div>
+            </header>
 
 
-    <!-- FILTROS -->
+            <!-- FILTROS -->
 
-    <div class="card shadow-sm mb-4">
+            <section class="formulario">
 
-        <div class="card-header bg-primary text-white">
+                <h2>Filtros de búsqueda</h2>
 
-            <h2 class="h5 mb-0">
-                Filtros de consulta
-            </h2>
+                <form method="GET">
 
-        </div>
+                    <div class="form-group">
 
-        <div class="card-body">
-
-            <form method="get"
-                  action="reporteBoletos.jsp">
-
-                <div class="row g-3">
-
-                    <!-- FECHA INICIO -->
-
-                    <div class="col-md-6">
-
-                        <label for="fechaInicio"
-                               class="form-label">
-
+                        <label for="fechaInicio">
                             Fecha inicial
-
                         </label>
 
                         <input
                             type="date"
-                            class="form-control"
                             id="fechaInicio"
                             name="fechaInicio"
-                            value="<%= fechaInicio != null ? fechaInicio : "" %>">
+                            class="campo"
+                            value="<%= fechaInicio%>">
 
                     </div>
 
 
-                    <!-- FECHA FIN -->
+                    <div class="form-group">
 
-                    <div class="col-md-6">
-
-                        <label for="fechaFin"
-                               class="form-label">
-
+                        <label for="fechaFin">
                             Fecha final
-
                         </label>
 
                         <input
                             type="date"
-                            class="form-control"
                             id="fechaFin"
                             name="fechaFin"
-                            value="<%= fechaFin != null ? fechaFin : "" %>">
+                            class="campo"
+                            value="<%= fechaFin%>">
 
                     </div>
 
 
-                    <!-- RUTA -->
+                    <div class="form-group">
 
-                    <div class="col-md-6">
-
-                        <label for="codigoRuta"
-                               class="form-label">
-
+                        <label for="codigoRuta">
                             Ruta
-
                         </label>
 
                         <select
-                            class="form-select"
                             id="codigoRuta"
-                            name="codigoRuta">
+                            name="codigoRuta"
+                            class="campo">
 
                             <option value="">
                                 Todas las rutas
                             </option>
 
-                            <%
-                                while (rutas.next()) {
-
-                                    String codigoRutaActual =
-                                        rutas.getString("codigo_ruta");
-
-                                    String nombreRuta =
-                                        rutas.getString("ruta");
-
-                                    boolean seleccionada =
-                                        codigoRutaActual.equals(codigoRuta);
-                            %>
+                            <% for (Ruta ruta : rutas) {%>
 
                             <option
-                                value="<%= codigoRutaActual %>"
-                                <%= seleccionada ? "selected" : "" %>>
+                                value="<%= ruta.getCodigoRuta()%>"
+                                <%= ruta.getCodigoRuta().equals(codigoRuta)
+                                        ? "selected"
+                                        : ""%>>
 
-                                <%= codigoRutaActual %>
-                                -
-                                <%= nombreRuta %>
+                                <%= ruta.getCodigoRuta()%>
 
                             </option>
 
-                            <%
-                                }
-                            %>
+                            <% } %>
 
                         </select>
 
                     </div>
 
 
-                    <!-- BUS -->
+                    <div class="form-group">
 
-                    <div class="col-md-6">
-
-                        <label for="placaBus"
-                               class="form-label">
-
+                        <label for="placaBus">
                             Bus
-
                         </label>
 
                         <select
-                            class="form-select"
                             id="placaBus"
-                            name="placaBus">
+                            name="placaBus"
+                            class="campo">
 
                             <option value="">
                                 Todos los buses
                             </option>
 
-                            <%
-                                while (buses.next()) {
-
-                                    String placaActual =
-                                        buses.getString("placa");
-
-                                    String marca =
-                                        buses.getString("marca");
-
-                                    String modelo =
-                                        buses.getString("modelo");
-
-                                    boolean seleccionado =
-                                        placaActual.equals(placaBus);
-                            %>
+                            <% for (Bus bus : buses) {%>
 
                             <option
-                                value="<%= placaActual %>"
-                                <%= seleccionado ? "selected" : "" %>>
+                                value="<%= bus.getPlaca()%>"
+                                <%= bus.getPlaca().equals(placaBus)
+                                        ? "selected"
+                                        : ""%>>
 
-                                <%= placaActual %>
+                                <%= bus.getPlaca()%>
                                 -
-                                <%= marca %>
-                                <%= modelo %>
+                                <%= bus.getMarca()%>
+                                <%= bus.getModelo()%>
 
                             </option>
 
-                            <%
-                                }
-                            %>
+                            <% } %>
 
                         </select>
 
                     </div>
 
 
-                    <!-- BOTONES -->
+                    <div class="botones-formulario">
 
-                    <div class="col-12">
+                        <button
+                            type="submit"
+                            class="boton">
 
-                        <div class="d-flex gap-2">
+                            Generar reporte
 
-                            <button
-                                type="submit"
-                                class="btn btn-primary">
+                        </button>
 
-                                Consultar
+                        <a
+                            href="reporteBoletos.jsp"
+                            class="boton">
 
-                            </button>
+                            Limpiar filtros
 
-                            <a
-                                href="reporteBoletos.jsp"
-                                class="btn btn-outline-secondary">
-
-                                Limpiar filtros
-
-                            </a>
-
-                        </div>
+                        </a>
 
                     </div>
 
+                </form>
+
+            </section>
+
+
+            <!-- RESULTADOS -->
+
+            <section class="formulario">
+
+                <h2>Resultados</h2>
+
+                <% if (reporte.isEmpty()) { %>
+
+                <div class="mensaje">
+
+                    No se encontraron boletos vendidos
+                    con los filtros seleccionados.
+
                 </div>
+
+                <% } else { %>
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Código viaje</th>
+
+                                <th>Ruta</th>
+
+                                <th>Bus</th>
+
+                                <th>Fecha de salida</th>
+
+                                <th>Boletos vendidos</th>
+
+                                <th>Ingreso total</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <% for (ReporteBoleto item : reporte) {%>
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        <%= item.getCodigoViaje()%>
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    <%= item.getRuta()%>
+                                </td>
+
+                                <td>
+                                    <%= item.getBus()%>
+                                </td>
+
+                                <td>
+                                    <%= item.getFechaSalida()%>
+                                </td>
+
+                                <td>
+                                    <%= item.getBoletosVendidos()%>
+                                </td>
+
+                                <td>
+                                    Q
+                                    <%= String.format(
+                                            "%.2f",
+                                            item.getIngresoTotal()
+                                    )%>
+                                </td>
+
+                            </tr>
+
+                            <% } %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <% }%>
+
+            </section>
+
+
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+
+                    Volver al menú principal
+
+                </a>
+
+            </div>
+            <!-- EXPORTAR REPORTE A HTML -->
+            <form
+                method="GET"
+                action="exportarReporteBoletos.jsp"
+                class="botones">
+
+                <input
+                    type="hidden"
+                    name="fechaInicio"
+                    value="<%= fechaInicio%>">
+
+                <input
+                    type="hidden"
+                    name="fechaFin"
+                    value="<%= fechaFin%>">
+
+                <input
+                    type="hidden"
+                    name="codigoRuta"
+                    value="<%= codigoRuta%>">
+
+                <input
+                    type="hidden"
+                    name="placaBus"
+                    value="<%= placaBus%>">
+
+                <button
+                    type="submit"
+                    class="boton">
+
+                    Exportar HTML
+
+                </button>
 
             </form>
 
-        </div>
+        </main>
 
-    </div>
+        <script
+            src="../resources/js/reporteBoletos.js">
+        </script>
 
-
-    <!-- RESULTADOS -->
-
-    <div class="card shadow-sm">
-
-        <div class="card-header">
-
-            <h2 class="h5 mb-0">
-                Resultados
-            </h2>
-
-        </div>
-
-        <div class="card-body p-0">
-
-            <div class="table-responsive">
-
-                <table class="table table-striped table-hover mb-0">
-
-                    <thead class="table-dark">
-
-                        <tr>
-
-                            <th>
-                                C�digo de viaje
-                            </th>
-
-                            <th>
-                                Ruta
-                            </th>
-
-                            <th>
-                                Bus
-                            </th>
-
-                            <th>
-                                Fecha
-                            </th>
-
-                            <th>
-                                Boletos vendidos
-                            </th>
-
-                            <th>
-                                Ingreso total
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <%
-                            boolean hayResultados = false;
-
-                            while (resultado.next()) {
-
-                                hayResultados = true;
-                        %>
-
-                        <tr>
-
-                            <td>
-                                <%= resultado.getString("codigo_viaje") %>
-                            </td>
-
-                            <td>
-                                <%= resultado.getString("ruta") %>
-                            </td>
-
-                            <td>
-                                <%= resultado.getString("bus") %>
-                            </td>
-
-                            <td>
-                                <%= resultado.getDate("fecha_salida") %>
-                            </td>
-
-                            <td>
-                                <%= resultado.getInt("boletos_vendidos") %>
-                            </td>
-
-                            <td>
-
-                                Q
-                                <%= String.format(
-                                    "%.2f",
-                                    resultado.getDouble("ingreso_total")
-                                ) %>
-
-                            </td>
-
-                        </tr>
-
-                        <%
-                            }
-
-                            if (!hayResultados) {
-                        %>
-
-                        <tr>
-
-                            <td colspan="6"
-                                class="text-center text-muted py-4">
-
-                                No se encontraron registros
-                                para los filtros seleccionados.
-
-                            </td>
-
-                        </tr>
-
-                        <%
-                            }
-                        %>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</main>
-
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
-
-</body>
-
+    </body>
 </html>
-
-
-<%
-
-    } catch (Exception e) {
-
-        mensajeError = e.getMessage();
-
-%>
-
-<div class="container mt-5">
-
-    <div class="alert alert-danger">
-
-        <strong>Error al generar el reporte:</strong>
-
-        <%= mensajeError %>
-
-    </div>
-
-    <a href="../inicio.jsp"
-       class="btn btn-secondary">
-
-        Volver al inicio
-
-    </a>
-
-</div>
-
-<%
-
-    } finally {
-
-        try {
-            if (resultado != null) {
-                resultado.close();
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (rutas != null) {
-                rutas.close();
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (buses != null) {
-                buses.close();
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (psRutas != null) {
-                psRutas.close();
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (psBuses != null) {
-                psBuses.close();
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (conexionCatalogos != null) {
-                conexionCatalogos.close();
-            }
-        } catch (Exception e) {
-        }
-    }
-
-%>

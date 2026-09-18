@@ -10,8 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const campo =
             document.getElementById("depreciacionPorKm");
 
+    const mensaje =
+            document.getElementById("mensajeDepreciacion");
 
-    if (!formulario || !campo) {
+
+    if (!formulario || !campo || !mensaje) {
         return;
     }
 
@@ -22,13 +25,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 parseFloat(campo.value);
 
 
+        mensaje.textContent = "";
+        mensaje.className = "";
+
+
         if (isNaN(valor)) {
 
             evento.preventDefault();
 
-            alert(
-                    "Ingrese una depreciación válida."
-                    );
+            mensaje.textContent =
+                    "Ingrese una depreciación válida.";
+
+            mensaje.className = "error";
 
             campo.focus();
 
@@ -40,26 +48,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             evento.preventDefault();
 
-            alert(
-                    "La depreciación no puede ser negativa."
-                    );
+            mensaje.textContent =
+                    "La depreciación no puede ser negativa.";
+
+            mensaje.className = "error";
 
             campo.focus();
 
             return;
-        }
-
-
-        const confirmar =
-                confirm(
-                        "¿Está seguro de guardar esta configuración de depreciación?"
-                        );
-
-
-        if (!confirmar) {
-
-            evento.preventDefault();
-
         }
 
     });

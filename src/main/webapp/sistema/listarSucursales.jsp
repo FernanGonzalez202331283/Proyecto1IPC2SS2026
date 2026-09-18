@@ -95,35 +95,9 @@
             <div class="mensaje <%= tipoMensaje%>">
 
                 <%= mensaje%>
-
             </div>
-
             <% } %>
-
-
-            <!-- BUSCADOR -->
-
-            <section class="formulario">
-
-                <label for="buscarSucursal">
-
-                    Buscar sucursal:
-
-                </label>
-
-
-                <input
-                    type="text"
-                    id="buscarSucursal"
-                    placeholder="Código, nombre, municipio..."
-                    onkeyup="filtrarSucursales()"
-                    >
-
-            </section>
-
-
             <!-- TABLA DE SUCURSALES -->
-
             <section class="tabla-contenedor">
 
                 <table id="tablaSucursales">
@@ -333,11 +307,17 @@
             <br>
 
 
-            <a href="../inicio.jsp">
+           <div class="botones-inferiores">
 
-                Volver al menú principal
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
-            </a>
+                    Volver al menú principal
+
+                </a>
+
+            </div>
         </main>
 
     </body>

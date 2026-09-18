@@ -101,12 +101,14 @@
 
             <% }%>
 
+              <div class="botones-inferiores">
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+                    Regresar al inicio
+                </a>
 
-            <br>
-
-            <a href="../inicio.jsp">
-                Regresar al inicio
-            </a>
+            </div>
 
         </main>
 

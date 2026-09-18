@@ -362,18 +362,25 @@
             <% }%>
 
 
-            <br>
+            <div class="botones-inferiores">
+                <a 
+                    href="listarUsuarios.jsp" 
+                    class="boton boton-volver">
+                    Regresar a usuarios
+                </a>
+            </div>
 
+            <div class="botones-inferiores">
 
-            <a href="listarUsuarios.jsp">
-                Regresar a usuarios
-            </a>
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
-            <br><br>
+                    Volver al menú principal
 
-            <a href="../inicio.jsp">
-                Regresar al inicio
-            </a>
+                </a>
+
+            </div>
 
         </main>
 

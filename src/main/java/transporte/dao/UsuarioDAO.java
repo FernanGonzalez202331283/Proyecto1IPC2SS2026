@@ -20,7 +20,7 @@ import transporte.modelo.Usuario;
 public class UsuarioDAO {
 public boolean insertar(Usuario usuario) {
         String sql = """
-                     INSERT INTO usuario(usuario, contrasena, rol, estado, codigo_sucursal)
+                     INSERT INTO usuario(usuario, contraseña, rol, estado, codigo_sucursal)
                      VALUES (?,?,?,?,?)
                      """;
 
@@ -44,7 +44,7 @@ public boolean insertar(Usuario usuario) {
 
     public Usuario buscarPorUsuario(String usuario) {
         String sql = """
-                     SELECT usuario, contrasena, rol, estado, codigo_sucursal
+                     SELECT usuario, contraseña, rol, estado, codigo_sucursal
                      FROM usuario
                      WHERE usuario = ?
                      """;
@@ -58,7 +58,7 @@ public boolean insertar(Usuario usuario) {
                 if (rs.next()) {
                     Usuario encontrado = new Usuario();
                     encontrado.setUsuario(rs.getString("usuario"));
-                    encontrado.setContraseña(rs.getString("contrasena"));
+                    encontrado.setContraseña(rs.getString("contraseña"));
                     encontrado.setRol(rs.getString("rol"));
                     encontrado.setEstado(rs.getBoolean("estado"));
                     encontrado.setCodigoSucursal(rs.getString("codigo_sucursal"));
@@ -110,7 +110,7 @@ public boolean insertar(Usuario usuario) {
 
         String sql = """
                      UPDATE usuario
-                     SET contrasena = ?,
+                     SET contraseña = ?,
                          estado = ?,
                          codigo_sucursal = ?
                      WHERE usuario = ?
@@ -182,7 +182,7 @@ public boolean insertar(Usuario usuario) {
 
     public Usuario[] listar() {
         String sql = """
-                     SELECT usuario, contrasena, rol, estado, codigo_sucursal
+                     SELECT usuario, contraseña, rol, estado, codigo_sucursal
                      FROM usuario
                      ORDER BY usuario
                      """;
@@ -196,7 +196,7 @@ public boolean insertar(Usuario usuario) {
             while (rs.next()) {
                 Usuario usuario = new Usuario();
                 usuario.setUsuario(rs.getString("usuario"));
-                usuario.setContraseña(rs.getString("contrasena"));
+                usuario.setContraseña(rs.getString("contraseña"));
                 usuario.setRol(rs.getString("rol"));
                 usuario.setEstado(rs.getBoolean("estado"));
                 usuario.setCodigoSucursal(rs.getString("codigo_sucursal"));

@@ -16,20 +16,22 @@ import transporte.conexion.Conexion;
  * @author fernan
  */
 public class CompraBoletoDAO {
-    public boolean comprarBoleto(
-            String codigoBoleto,
+    public boolean comprarBoletos(
             String codigoViaje,
             String usuarioCliente,
-            int numeroAsiento,
+            int[] numerosAsientos,
             String codigoMovimiento,
             Date fechaPago) {
 
         Connection conexion = null;
 
         try {
+
             conexion = Conexion.getConnection();
-            // transaccion
+
             conexion.setAutoCommit(false);
+
+
             String sqlViaje = """
                 SELECT v.codigo_viaje,
                        v.estado,
@@ -38,57 +40,82 @@ public class CompraBoletoDAO {
                 INNER JOIN ruta r
                     ON v.codigo_ruta = r.codigo_ruta
                 WHERE v.codigo_viaje = ?
+                FOR UPDATE
                 """;
 
             double precioBoleto;
 
-            try (PreparedStatement ps =
-                    conexion.prepareStatement(sqlViaje)) {
+            try (PreparedStatement ps
+                    = conexion.prepareStatement(sqlViaje)) {
 
                 ps.setString(1, codigoViaje);
 
                 try (ResultSet rs = ps.executeQuery()) {
 
                     if (!rs.next()) {
+
                         conexion.rollback();
                         return false;
                     }
 
-                    String estado =
-                            rs.getString("estado");
+                    String estado
+                            = rs.getString("estado");
 
                     if (!"PROGRAMADO".equals(estado)) {
+
                         conexion.rollback();
                         return false;
                     }
 
-                    precioBoleto =
-                            rs.getDouble("precio_boleto");
+                    precioBoleto
+                            = rs.getDouble("precio_boleto");
                 }
             }
-            //verificamos que el asiento no este ocupado
+
+            
+
             String sqlAsiento = """
                 SELECT codigo_boleto
                 FROM boleto
                 WHERE codigo_viaje = ?
                   AND numero_asiento = ?
                   AND estado = 'PAGADO'
+                FOR UPDATE
                 """;
 
-            try (PreparedStatement ps =
-                    conexion.prepareStatement(sqlAsiento)) {
+            try (PreparedStatement ps
+                    = conexion.prepareStatement(sqlAsiento)) {
 
-                ps.setString(1, codigoViaje);
-                ps.setInt(2, numeroAsiento);
+                for (int numeroAsiento : numerosAsientos) {
 
-                try (ResultSet rs = ps.executeQuery()) {
+                    if (numeroAsiento <= 0) {
 
-                    if (rs.next()) {
                         conexion.rollback();
                         return false;
                     }
+
+                    ps.setString(1, codigoViaje);
+                    ps.setInt(2, numeroAsiento);
+
+                    try (ResultSet rs = ps.executeQuery()) {
+
+                        if (rs.next()) {
+
+                            conexion.rollback();
+                            return false;
+                        }
+                    }
                 }
             }
+
+        
+            int cantidadBoletos
+                    = numerosAsientos.length;
+
+            double precioTotal
+                    = precioBoleto * cantidadBoletos;
+
+           
 
             String sqlCartera = """
                 SELECT saldo
@@ -99,24 +126,25 @@ public class CompraBoletoDAO {
 
             double saldoActual;
 
-            try (PreparedStatement ps =
-                    conexion.prepareStatement(sqlCartera)) {
+            try (PreparedStatement ps
+                    = conexion.prepareStatement(sqlCartera)) {
 
                 ps.setString(1, usuarioCliente);
 
                 try (ResultSet rs = ps.executeQuery()) {
 
                     if (!rs.next()) {
+
                         conexion.rollback();
                         return false;
                     }
 
-                    saldoActual =
-                            rs.getDouble("saldo");
+                    saldoActual
+                            = rs.getDouble("saldo");
                 }
             }
 
-            if (saldoActual < precioBoleto) {
+            if (saldoActual < precioTotal) {
 
                 conexion.rollback();
                 return false;
@@ -136,16 +164,19 @@ public class CompraBoletoDAO {
                 VALUES (?, ?, 'PAGO', ?, ?, ?)
                 """;
 
-            try (PreparedStatement ps =
-                    conexion.prepareStatement(sqlMovimiento)) {
+            try (PreparedStatement ps
+                    = conexion.prepareStatement(sqlMovimiento)) {
 
                 ps.setString(1, codigoMovimiento);
                 ps.setString(2, usuarioCliente);
-                ps.setDouble(3, precioBoleto);
+                ps.setDouble(3, precioTotal);
                 ps.setDate(4, fechaPago);
+
                 ps.setString(
                         5,
-                        "Compra de boleto para el viaje "
+                        "Compra de "
+                        + cantidadBoletos
+                        + " boleto(s) para el viaje "
                         + codigoViaje
                 );
 
@@ -158,16 +189,18 @@ public class CompraBoletoDAO {
                 WHERE usuario = ?
                 """;
 
-            try (PreparedStatement ps =
-                    conexion.prepareStatement(sqlActualizarCartera)) {
+            try (PreparedStatement ps
+                    = conexion.prepareStatement(
+                            sqlActualizarCartera)) {
 
-                ps.setDouble(1, precioBoleto);
+                ps.setDouble(1, precioTotal);
                 ps.setString(2, usuarioCliente);
 
-                int filas =
-                        ps.executeUpdate();
+                int filas
+                        = ps.executeUpdate();
 
                 if (filas == 0) {
+
                     conexion.rollback();
                     return false;
                 }
@@ -188,20 +221,30 @@ public class CompraBoletoDAO {
                 VALUES (?, ?, ?, ?, ?, ?, 'PAGADO', ?)
                 """;
 
-            try (PreparedStatement ps =
-                    conexion.prepareStatement(sqlBoleto)) {
+            try (PreparedStatement ps
+                    = conexion.prepareStatement(sqlBoleto)) {
 
-                ps.setString(1, codigoBoleto);
-                ps.setString(2, codigoViaje);
-                ps.setString(3, usuarioCliente);
-                ps.setInt(4, numeroAsiento);
-                ps.setDouble(5, precioBoleto);
-                ps.setDate(6, fechaPago);
-                ps.setString(7, codigoMovimiento);
+                for (int numeroAsiento : numerosAsientos) {
 
-                ps.executeUpdate();
+                    String codigoBoleto
+                            = "BOL-"
+                            + System.currentTimeMillis()
+                            + "-"
+                            + numeroAsiento;
+
+                    ps.setString(1, codigoBoleto);
+                    ps.setString(2, codigoViaje);
+                    ps.setString(3, usuarioCliente);
+                    ps.setInt(4, numeroAsiento);
+                    ps.setDouble(5, precioBoleto);
+                    ps.setDate(6, fechaPago);
+                    ps.setString(7, codigoMovimiento);
+
+                    ps.addBatch();
+                }
+
+                ps.executeBatch();
             }
-
             conexion.commit();
 
             return true;
@@ -209,13 +252,14 @@ public class CompraBoletoDAO {
         } catch (SQLException e) {
 
             System.out.println(
-                    "Error al realizar compra de boleto: "
+                    "Error al realizar compra de boletos: "
                     + e.getMessage()
             );
 
             if (conexion != null) {
 
                 try {
+
                     conexion.rollback();
 
                 } catch (SQLException ex) {
@@ -234,6 +278,7 @@ public class CompraBoletoDAO {
             if (conexion != null) {
 
                 try {
+
                     conexion.setAutoCommit(true);
                     conexion.close();
 

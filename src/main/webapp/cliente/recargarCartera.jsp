@@ -226,6 +226,7 @@
                     </div>
 
                 </form>
+                <div id="mensajeJS" class="mensaje"></div>
 
             </div>
 

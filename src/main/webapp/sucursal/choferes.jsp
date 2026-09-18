@@ -3,6 +3,7 @@
     Created on : 8 sept 2026, 22:27:58
     Author     : fernan
 --%>
+
 <%@page import="java.util.List"%>
 <%@page import="transporte.modelo.Usuario"%>
 <%@page import="transporte.modelo.Chofer"%>
@@ -11,22 +12,19 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-   
     Usuario usuarioSesion
             = (Usuario) session.getAttribute("usuario");
 
-    String rolSesion
-            = (String) session.getAttribute("rol");
-
-    if (usuarioSesion == null
-            || rolSesion == null
-            || !"ADMIN_SUCURSAL".equals(rolSesion)) {
-
+    if (usuarioSesion == null) {
         response.sendRedirect("../login.jsp");
         return;
     }
 
-   
+    if (!"ADMIN_SUCURSAL".equals(usuarioSesion.getRol())) {
+        response.sendRedirect("../inicio.jsp");
+        return;
+    }
+
     String codigoSucursal
             = usuarioSesion.getCodigoSucursal();
 
@@ -38,176 +36,50 @@
 
 <!DOCTYPE html>
 <html lang="es">
-
     <head>
-
         <meta charset="UTF-8">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0">
-
-        <title>Gestionar Choferes</title>
-
-        <link rel="stylesheet"
-              href="../resources/css/styles.css">
-
-        <style>
-
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f4f6f8;
-                margin: 0;
-                padding: 30px;
-            }
-
-            .contenedor {
-                max-width: 1200px;
-                margin: auto;
-                background-color: white;
-                padding: 30px;
-                border-radius: 10px;
-                box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-            }
-
-            .encabezado {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 25px;
-            }
-
-            h1 {
-                margin: 0;
-            }
-
-            .subtitulo {
-                color: #666;
-                margin-top: 8px;
-            }
-
-            .boton {
-                display: inline-block;
-                padding: 10px 16px;
-                border-radius: 5px;
-                text-decoration: none;
-                color: white;
-                background-color: #007bff;
-            }
-
-            .boton:hover {
-                background-color: #0056b3;
-            }
-
-            .boton-volver {
-                background-color: #6c757d;
-            }
-
-            .boton-volver:hover {
-                background-color: #545b62;
-            }
-
-            .tabla-contenedor {
-                overflow-x: auto;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-
-            th,
-            td {
-                padding: 12px;
-                border-bottom: 1px solid #ddd;
-                text-align: left;
-                white-space: nowrap;
-            }
-
-            th {
-                background-color: #f1f3f5;
-            }
-
-            tr:hover {
-                background-color: #f8f9fa;
-            }
-
-            .estado-activo {
-                color: green;
-                font-weight: bold;
-            }
-
-            .estado-inactivo {
-                color: red;
-                font-weight: bold;
-            }
-
-            .acciones {
-                display: flex;
-                gap: 8px;
-            }
-
-            .boton-modificar {
-                background-color: #ffc107;
-                color: #212529;
-            }
-
-            .boton-modificar:hover {
-                background-color: #e0a800;
-            }
-
-            .boton-desactivar {
-                background-color: #dc3545;
-            }
-
-            .boton-desactivar:hover {
-                background-color: #c82333;
-            }
-
-            .boton-activar {
-                background-color: #28a745;
-            }
-
-            .boton-activar:hover {
-                background-color: #218838;
-            }
-
-            .mensaje-vacio {
-                text-align: center;
-                padding: 30px;
-                color: #666;
-                font-size: 16px;
-            }
-
-            .botones-inferiores {
-                margin-top: 25px;
-            }
-
-        </style>
-
+        <title>Gestión de Choferes</title>
+        <link
+            rel="stylesheet"
+            href="<%= request.getContextPath()%>/resources/css/styles.css">
     </head>
-
     <body>
+        <main class="pagina">
+            <!-- ENCABEZADO -->
+            <header class="encabezado">
+                <h1>
+                    Gestión de Choferes
+                </h1>
+                <p>
+                    Administra los choferes pertenecientes
+                    a tu sucursal.
+                </p>
+                <p>
+                    Sucursal:
+                    <strong>
+                        <%= codigoSucursal%>
+                    </strong>
+                </p>
 
-        <div class="contenedor">
+            </header>
+            <!-- OPCIONES -->
+            <section class="formulario">
+                <h2>
+                    Choferes de la sucursal
+                </h2>
+                <p>
+                    Desde aquí puedes registrar nuevos choferes,
+                    modificar su información y cambiar su estado.
+                </p>
+                <div class="botones-formulario">
 
-            <div class="encabezado">
-
-                <div>
-
-                    <h1>Gestionar Choferes</h1>
-
-                    <p class="subtitulo">
-                        Choferes registrados en la sucursal
-                        <strong><%= codigoSucursal%></strong>
-                    </p>
-
-                </div>
-
-                <div>
-
-                    <a href="registrarChofer.jsp"
-                       class="boton">
+                    <a
+                        href="registrarChofer.jsp"
+                        class="boton">
 
                         Registrar nuevo chofer
 
@@ -215,167 +87,193 @@
 
                 </div>
 
-            </div>
+            </section>
+
+            <!-- LISTADO DE CHOFERES -->
+            <section class="formulario">
+
+                <h2>
+                    Choferes registrados
+                </h2>
+
+                <% if (choferes.isEmpty()) { %>
+
+                <div class="mensaje">
+
+                    No hay choferes registrados
+                    para esta sucursal.
+
+                </div>
+
+                <% } else { %>
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Licencia
+                                </th>
+
+                                <th>
+                                    Nombre
+                                </th>
+
+                                <th>
+                                    Tipo de licencia
+                                </th>
+
+                                <th>
+                                    Vencimiento
+                                </th>
+
+                                <th>
+                                    Teléfono
+                                </th>
+
+                                <th>
+                                    Salario por viaje
+                                </th>
+
+                                <th>
+                                    Estado
+                                </th>
+
+                                <th>
+                                    Acciones
+                                </th>
+
+                            </tr>
+
+                        </thead>
 
 
-            <% if (choferes.isEmpty()) { %>
+                        <tbody>
 
-            <div class="mensaje-vacio">
+                            <% for (Chofer chofer : choferes) {%>
 
-                No hay choferes registrados para esta sucursal.
+                            <tr>
 
-            </div>
+                                <td>
+                                    <strong>
+                                        <%= chofer.getNumeroLicencia()%>
+                                    </strong>
+                                </td>
 
-            <% } else { %>
+                                <td>
+                                    <%= chofer.getNombreCompleto()%>
+                                </td>
 
+                                <td>
+                                    <%= chofer.getTipoLicencia()%>
+                                </td>
 
-            <div class="tabla-contenedor">
+                                <td>
+                                    <%= chofer.getFechaVencimientoLicencia()%>
+                                </td>
 
-                <table>
+                                <td>
+                                    <%= chofer.getTelefono()%>
+                                </td>
 
-                    <thead>
+                                <td>
+                                    Q
+                                    <%= String.format(
+                                            "%.2f",
+                                            chofer.getSalarioBaseViaje()
+                                    )%>
+                                </td>
 
-                        <tr>
+                                <td>
 
-                            <th>Licencia</th>
-                            <th>Nombre</th>
-                            <th>Tipo de licencia</th>
-                            <th>Vencimiento</th>
-                            <th>Teléfono</th>
-                            <th>Salario por viaje</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
+                                    <% if (chofer.isEstado()) { %>
 
-                        </tr>
+                                    <span class="estado-activo">
+                                        Activo
+                                    </span>
 
-                    </thead>
+                                    <% } else { %>
 
-                    <tbody>
+                                    <span class="estado-inactivo">
+                                        Inactivo
+                                    </span>
 
-                        <% for (Chofer chofer : choferes) {%>
+                                    <% }%>
 
-                        <tr>
+                                </td>
 
-                            <td>
-                                <%= chofer.getNumeroLicencia()%>
-                            </td>
+                                <td>
 
-                            <td>
-                                <%= chofer.getNombreCompleto()%>
-                            </td>
+                                    <div class="acciones-tabla">
 
-                            <td>
-                                <%= chofer.getTipoLicencia()%>
-                            </td>
+                                        <!-- MODIFICAR -->
 
-                            <td>
-                                <%= chofer.getFechaVencimientoLicencia()%>
-                            </td>
+                                        <a
+                                            href="modificarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
+                                            class="boton">
 
-                            <td>
-                                <%= chofer.getTelefono()%>
-                            </td>
+                                            Modificar
 
-                            <td>
-                                Q <%= String.format("%.2f",
-                                    chofer.getSalarioBaseViaje())%>
-                            </td>
-
-                            <td>
-
-                                <% if (chofer.isEstado()) { %>
-
-                                <span class="estado-activo">
-                                    Activo
-                                </span>
-
-                                <% } else { %>
-
-                                <span class="estado-inactivo">
-                                    Inactivo
-                                </span>
-
-                                <% }%>
-
-                            </td>
-
-                            <td>
-
-                                <div class="acciones">
-
-                                    <a href="modificarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
-                                       class="boton boton-modificar">
-
-                                        Modificar
-
-                                    </a>
+                                        </a>
 
 
-                                    <% if (chofer.isEstado()) {%>
+                                        <!-- CAMBIAR ESTADO -->
 
-                                    <a href="desactivarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
-                                       class="boton boton-desactivar"
-                                       onclick="return confirmarDesactivacion();">
+                                        <% if (chofer.isEstado()) {%>
 
-                                        Desactivar
+                                        <a
+                                            href="desactivarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
+                                            class="boton">
 
-                                    </a>
+                                            Desactivar
 
-                                    <% } else {%>
+                                        </a>
 
-                                    <a href="activarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
-                                       class="boton boton-activar">
+                                        <% } else {%>
 
-                                        Activar
+                                        <a
+                                            href="activarChofer.jsp?numeroLicencia=<%= chofer.getNumeroLicencia()%>"
+                                            class="boton">
 
-                                    </a>
+                                            Activar
 
-                                    <% } %>
+                                        </a>
 
-                                </div>
+                                        <% } %>
 
-                            </td>
+                                    </div>
 
-                        </tr>
+                                </td>
 
-                        <% } %>
+                            </tr>
 
-                    </tbody>
+                            <% } %>
 
-                </table>
+                        </tbody>
 
-            </div>
+                    </table>
+
+                </div>
+
+                <% }%>
+
+            </section>
 
 
-            <% }%>
-
+            <!-- VOLVER -->
 
             <div class="botones-inferiores">
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
-                <a href="../inicio.jsp"
-                   class="boton boton-volver">
-
-                    Volver al inicio
-
+                    Volver al menú principal
                 </a>
-
             </div>
-
-        </div>
-
-
-        <script>
-
-            function confirmarDesactivacion() {
-
-                return confirm(
-                        "¿Está seguro de que desea desactivar este chofer?"
-                        );
-
-            }
-
-        </script>
-
+        </main>
     </body>
-
 </html>

@@ -75,11 +75,9 @@
         }
     }
 
-    Usuario[] usuarios
-            = usuarioDAO.listar();
+    Usuario[] usuarios = usuarioDAO.listar();
 
-    SucursalDAO sucursalDAO
-            = new SucursalDAO();
+    SucursalDAO sucursalDAO = new SucursalDAO();
 %>
 
 <!DOCTYPE html>
@@ -330,12 +328,17 @@
 
                 </div>
             </div>
-            <br>
-            <a href="../inicio.jsp">
+            
+            <div class="botones-inferiores">
 
-                Regresar al inicio
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
 
-            </a>
+                    regresar al inicio
+                </a>
+
+            </div>
         </main>
         <script src="../resources/js/listarUsuarios.js"></script>
 

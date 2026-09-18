@@ -292,7 +292,7 @@
 
                 <h2>Datos del bus</h2>
 
-                <form method="POST">
+                <form id="formularioModificarBus" method="POST">
 
 
                     <div class="form-group">
@@ -364,6 +364,7 @@
                             maxlength="100"
                             value="<%= bus.getModelo()%>"
                             required>
+                        <p id="mensajeMarca" class="campo-error"></p>
 
                     </div>
 
@@ -382,6 +383,7 @@
                             max="2100"
                             value="<%= bus.getAñoFabricacion()%>"
                             required>
+                        <p id="mensajeMarca" class="campo-error"></p>
 
                     </div>
 
@@ -399,6 +401,7 @@
                             min="1"
                             value="<%= bus.getCapacidad()%>"
                             required>
+                        <p id="mensajeMarca" class="campo-error"></p>
 
                     </div>
 
@@ -436,6 +439,7 @@
                             step="0.01"
                             value="<%= bus.getKilometrajeActual()%>"
                             required>
+                        <p id="mensajeMarca" class="campo-error"></p>
 
                     </div>
 
@@ -447,16 +451,15 @@
                 </form>
 
             </div>
+            <div class="botones-inferiores">
 
-
-            <br>
-
-
-            <a href="buses.jsp">
-                Regresar a buses
-            </a>
-
+                 <a href="buses.jsp"                    
+                    class="boton boton-volver">
+                    Regresar a buses
+                </a>
+            </div>
         </main>
+             <script src="../resources/js/modificarBus.js"></script>
 
     </body>
 

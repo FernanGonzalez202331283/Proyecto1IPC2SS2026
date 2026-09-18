@@ -1,6 +1,10 @@
+<%-- 
+    Document   : login
+    Created on : 4 sept 2026, 1:36:36
+    Author     : fernan
+--%>
 <%@page import="transporte.modelo.Usuario"%>
 <%@page import="transporte.dao.UsuarioDAO"%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
@@ -17,7 +21,8 @@
             mensaje = "Debe ingresar un usuario.";
             tipoMensaje = "error";
 
-        } else if (contrasenaIngresada == null || contrasenaIngresada.isEmpty()) {
+        } else if (contrasenaIngresada == null
+                || contrasenaIngresada.trim().isEmpty()) {
 
             mensaje = "Debe ingresar una contraseña.";
             tipoMensaje = "error";
@@ -26,16 +31,16 @@
 
             UsuarioDAO dao = new UsuarioDAO();
 
-            Usuario usuarioEncontrado =
-                    dao.buscarPorUsuario(usuarioIngresado.trim());
+            Usuario usuarioEncontrado = dao.buscarPorUsuario(usuarioIngresado.trim());
 
             if (usuarioEncontrado == null) {
 
                 mensaje = "El usuario no existe.";
                 tipoMensaje = "error";
 
-            } else if (!usuarioEncontrado.getContraseña()
-                    .equals(contrasenaIngresada)) {
+            } else if (usuarioEncontrado.getContraseña() == null
+                    || !usuarioEncontrado.getContraseña()
+                            .equals(contrasenaIngresada)) {
 
                 mensaje = "La contraseña es incorrecta.";
                 tipoMensaje = "error";
@@ -59,34 +64,20 @@
 
 <!DOCTYPE html>
 <html lang="es">
-
     <head>
-
         <meta charset="UTF-8">
-
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0">
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Inicio de Sesión</title>
-
-        <link rel="stylesheet"
-              href="resources/css/styles.css">
-
+        <link rel="stylesheet" href="resources/css/styles.css">
     </head>
 
-    <body class= "login-page">
-
+    <body class="login-page">
         <main class="login-container">
-
             <h1>Iniciar Sesión</h1>
-
             <p class="login-subtitle">
                 Sistema de Transporte Extraurbano
             </p>
-
-            <form method="post"
-                  id="loginForm">
-
+            <form method="post" id="loginForm">
                 <div class="form-group">
 
                     <label for="usuario">
@@ -127,25 +118,25 @@
                 <button type="submit">
                     Iniciar Sesión
                 </button>
-                <p class ="registro-link">
-                    ¿no tienes una cuenta?
-                    <a href='cliente/registrarse.jsp'>Crear un cuenta</a>
+
+                <p class="registro-link">
+                    ¿No tienes una cuenta?
+                    <a href="cliente/registrarse.jsp">
+                        Crear una cuenta
+                    </a>
                 </p>
 
             </form>
 
-            <% if (!mensaje.isEmpty()) { %>
+            <% if (!mensaje.isEmpty()) {%>
 
-            <div class="mensaje <%= tipoMensaje %>">
-                <%= mensaje %>
+            <div class="mensaje <%= tipoMensaje%>">
+                <%= mensaje%>
             </div>
 
-            <% } %>
-
+            <% }%>
         </main>
-
         <script src="resources/js/login.js"></script>
-
     </body>
 
 </html>

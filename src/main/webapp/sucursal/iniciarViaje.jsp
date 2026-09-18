@@ -9,125 +9,126 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    Usuario usuarioSesion
-            = (Usuario) session.getAttribute("usuario");
+Usuario usuarioSesion= (Usuario) session.getAttribute("usuario");
+String rolSesion
+        = (String) session.getAttribute("rol");
 
-    String rolSesion
-            = (String) session.getAttribute("rol");
+if (usuarioSesion == null
+        || rolSesion == null
+        || !"ADMIN_SUCURSAL".equals(rolSesion)) {
 
-    if (usuarioSesion == null
-            || rolSesion == null
-            || !"ADMIN_SUCURSAL".equals(rolSesion)) {
+    response.sendRedirect("../login.jsp");
+    return;
+}
 
-        response.sendRedirect("../login.jsp");
-        return;
-    }
+String codigoSucursal
+        = usuarioSesion.getCodigoSucursal();
 
-    String codigoSucursal
-            = usuarioSesion.getCodigoSucursal();
+String usuarioRegistro
+        = usuarioSesion.getUsuario();
 
-    String usuarioRegistro
-            = usuarioSesion.getUsuario();
+String codigoViaje
+        = request.getParameter("codigoViaje");
 
-    String codigoViaje
-            = request.getParameter("codigoViaje");
+if (codigoViaje == null
+        || codigoViaje.trim().isEmpty()) {
 
-    if (codigoViaje == null
-            || codigoViaje.trim().isEmpty()) {
+    response.sendRedirect("viajes.jsp");
+    return;
+}
 
-        response.sendRedirect("viajes.jsp");
-        return;
-    }
+codigoViaje
+        = codigoViaje.trim();
 
-    codigoViaje
-            = codigoViaje.trim();
+String mensaje = "";
+boolean exito = false;
 
-    String mensaje = "";
-    boolean exito = false;
+if ("POST".equalsIgnoreCase(request.getMethod())) {
 
-    if ("POST".equalsIgnoreCase(request.getMethod())) {
+    String horaRealSalida
+            = request.getParameter("horaRealSalida");
 
-        String horaRealSalida
-                = request.getParameter("horaRealSalida");
+    if (horaRealSalida == null
+            || horaRealSalida.trim().isEmpty()) {
 
-        if (horaRealSalida == null
-                || horaRealSalida.trim().isEmpty()) {
+        mensaje
+                = "Debe ingresar la hora real de salida.";
 
-            mensaje
-                    = "Debe ingresar la hora real de salida.";
+    } else {
 
-        } else {
+        try {
 
-            try {
+            horaRealSalida
+                    = horaRealSalida.trim();
 
-                horaRealSalida
-                        = horaRealSalida.trim();
+            if (horaRealSalida.length() == 5) {
 
-                if (horaRealSalida.length() == 5) {
+                horaRealSalida += ":00";
+            }
 
-                    horaRealSalida += ":00";
-                }
+            ViajeDAO viajeDAO
+                    = new ViajeDAO();
 
-                ViajeDAO viajeDAO
-                        = new ViajeDAO();
-
-                exito
-                        = viajeDAO.iniciarViaje(
-                                codigoViaje,
-                                codigoSucursal,
-                                horaRealSalida,
-                                usuarioRegistro
-                        );
-
-                if (exito) {
-
-                    response.sendRedirect(
-                            "viajes.jsp"
+            exito
+                    = viajeDAO.iniciarViaje(
+                            codigoViaje,
+                            codigoSucursal,
+                            horaRealSalida,
+                            usuarioRegistro
                     );
 
-                    return;
+            if (exito) {
 
-                } else {
+                response.sendRedirect(
+                        "viajes.jsp"
+                );
 
-                    mensaje
-                            = "No se pudo iniciar el viaje. "
-                            + "Verifique que el viaje esté "
-                            + "programado, pertenezca a su "
-                            + "sucursal y que el bus esté "
-                            + "disponible.";
-                }
+                return;
 
-            } catch (IllegalArgumentException e) {
+            } else {
 
                 mensaje
-                        = "La hora de salida no tiene "
-                        + "un formato válido.";
+                        = "No se pudo iniciar el viaje. "
+                        + "Verifique que el viaje esté "
+                        + "programado, pertenezca a su "
+                        + "sucursal y que el bus esté "
+                        + "disponible.";
             }
+
+        } catch (IllegalArgumentException e) {
+
+            mensaje
+                    = "La hora de salida no tiene "
+                    + "un formato válido.";
         }
     }
+}
 %>
 
 <!DOCTYPE html>
 
 <html lang="es">
 
-    <head>
+```
+<head>
 
-        <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-        <title>Registrar salida</title>
+    <title>Registrar salida</title>
 
-        <link rel="stylesheet"
-              href="../resources/css/styles.css">
+    <link rel="stylesheet"
+          href="../resources/css/styles.css">
 
-    </head>
+</head>
 
-    <body>
+<body>
 
-        <div class="container">
+    <main class="pagina">
+
+        <div class="contenedor">
 
             <h1>Registrar salida del viaje</h1>
 
@@ -153,37 +154,56 @@
 
             <% if (!mensaje.isEmpty()) {%>
 
-            <div class="mensaje">
+            <div class="mensaje error">
+
                 <%= mensaje%>
+
             </div>
 
             <% }%>
 
-            <form method="post"
-                  action="iniciarViaje.jsp?codigoViaje=<%= codigoViaje%>">
+
+            <form
+                id="formularioIniciarViaje"
+                method="post"
+                action="iniciarViaje.jsp?codigoViaje=<%= codigoViaje%>"
+                >
 
                 <div class="form-group">
 
                     <label for="horaRealSalida">
+
                         Hora real de salida:
+
                     </label>
 
                     <input
                         type="time"
                         id="horaRealSalida"
                         name="horaRealSalida"
-                        required>
+                        required
+                        >
+
+                    <p
+                        id="mensajeHoraSalida"
+                        class="campo-error">
+                    </p>
 
                 </div>
+
 
                 <div class="form-actions">
 
                     <button type="submit">
+
                         Registrar salida
+
                     </button>
 
                     <a href="viajes.jsp">
+
                         Cancelar
+
                     </a>
 
                 </div>
@@ -192,6 +212,12 @@
 
         </div>
 
-    </body>
+    </main>
 
+
+    <script
+        src="../resources/js/iniciarViaje.js">
+    </script>
+
+</body>
 </html>

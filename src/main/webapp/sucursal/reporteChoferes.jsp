@@ -25,68 +25,98 @@
     ReporteChoferesDAO dao = new ReporteChoferesDAO();
     ResultSet resultado = null;
 
+    String mensaje = null;
+
     try {
+
         resultado = dao.obtenerReporte(codigoSucursal);
+
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <head>
 
-    <title>Reporte de Choferes</title>
+        <meta charset="UTF-8">
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-</head>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
-<body class="bg-light">
+        <title>Reporte de Choferes</title>
 
-    <div class="container py-5">
+        <link
+            rel="stylesheet"
+            href="<%= request.getContextPath()%>/resources/css/styles.css">
 
-        <div class="d-flex justify-content-between
-                    align-items-center mb-4">
+    </head>
 
-            <div>
-                <h1 class="fw-bold">
+    <body>
+
+        <main class="pagina">
+
+            <!-- ENCABEZADO -->
+
+            <header class="encabezado">
+
+                <h1>
                     Listado de Choferes
                 </h1>
 
-                <p class="text-muted mb-0">
+                <p>
                     Choferes de la sucursal:
-                    <strong><%= codigoSucursal %></strong>
+                    <strong><%= codigoSucursal%></strong>
                 </p>
-            </div>
 
-            <a href="../inicio.jsp"
-               class="btn btn-secondary">
-                Regresar
-            </a>
+            </header>
 
-        </div>
 
-        <div class="card shadow-sm">
+            <!-- REPORTE -->
 
-            <div class="card-body">
+            <section class="formulario">
 
-                <div class="table-responsive">
+                <h2>
+                    Choferes registrados
+                </h2>
 
-                    <table class="table table-hover
-                                  table-bordered align-middle">
+                <p>
+                    Información general de los choferes
+                    pertenecientes a esta sucursal.
+                </p>
 
-                        <thead class="table-dark">
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
 
                             <tr>
-                                <th>Número de licencia</th>
-                                <th>Nombre completo</th>
-                                <th>Tipo de licencia</th>
-                                <th>Fecha de vencimiento</th>
-                                <th>Estado</th>
-                                <th>Total de viajes</th>
+
+                                <th>
+                                    Número de licencia
+                                </th>
+
+                                <th>
+                                    Nombre completo
+                                </th>
+
+                                <th>
+                                    Tipo de licencia
+                                </th>
+
+                                <th>
+                                    Fecha de vencimiento
+                                </th>
+
+                                <th>
+                                    Estado
+                                </th>
+
+                                <th>
+                                    Total de viajes
+                                </th>
+
                             </tr>
 
                         </thead>
@@ -100,53 +130,55 @@
 
                                     hayRegistros = true;
 
-                                    int estado =
-                                        resultado.getInt("estado");
+                                    int estado
+                                            = resultado.getInt("estado");
                             %>
 
                             <tr>
 
                                 <td>
-                                    <%= resultado.getString(
-                                            "numero_licencia") %>
+                                    <strong>
+                                        <%= resultado.getString(
+                                                "numero_licencia")%>
+                                    </strong>
                                 </td>
 
                                 <td>
                                     <%= resultado.getString(
-                                            "nombre_completo") %>
+                                            "nombre_completo")%>
                                 </td>
 
                                 <td>
                                     <%= resultado.getString(
-                                            "tipo_licencia") %>
+                                            "tipo_licencia")%>
                                 </td>
 
                                 <td>
                                     <%= resultado.getDate(
-                                            "fecha_vencimiento_licencia") %>
+                                            "fecha_vencimiento_licencia")%>
                                 </td>
 
                                 <td>
 
                                     <% if (estado == 1) { %>
 
-                                        <span class="badge bg-success">
-                                            Activo
-                                        </span>
+                                    <span class="estado-activo">
+                                        Activo
+                                    </span>
 
                                     <% } else { %>
 
-                                        <span class="badge bg-danger">
-                                            Inactivo
-                                        </span>
+                                    <span class="estado-inactivo">
+                                        Inactivo
+                                    </span>
 
-                                    <% } %>
+                                    <% }%>
 
                                 </td>
 
                                 <td>
                                     <%= resultado.getInt(
-                                            "total_viajes") %>
+                                            "total_viajes")%>
                                 </td>
 
                             </tr>
@@ -159,11 +191,14 @@
 
                             <tr>
 
-                                <td colspan="6"
-                                    class="text-center text-muted py-4">
+                                <td colspan="6">
 
-                                    No hay choferes registrados
-                                    en esta sucursal.
+                                    <div class="mensaje">
+
+                                        No hay choferes registrados
+                                        en esta sucursal.
+
+                                    </div>
 
                                 </td>
 
@@ -178,25 +213,114 @@
                     </table>
 
                 </div>
+                </div>
+
+                <!-- EXPORTAR REPORTE A HTML -->
+
+                <form
+                    method="GET"
+                    action="exportarReporteChoferes.jsp"
+                    class="botones">
+
+                    <button
+                        type="submit"
+                        class="boton">
+
+                        Exportar HTML
+
+                    </button>
+
+                </form>
+            </section>
+
+
+            <!-- BOTÓN VOLVER -->
+
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+
+                    Volver al menú principal
+
+                </a>
 
             </div>
 
-        </div>
+        </main>
 
-    </div>
-
-</body>
+    </body>
 
 </html>
 
 <%
-    } catch (Exception e) {
-        out.println(
-            "<div class='alert alert-danger m-4'>"
-            + "Error al generar el reporte: "
-            + e.getMessage()
-            + "</div>"
-        );
-    }
+} catch (Exception e) {
+
+    mensaje = "Error al generar el reporte: "
+            + e.getMessage();
+
 %>
 
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+        <title>Error - Reporte de Choferes</title>
+
+        <link
+            rel="stylesheet"
+            href="<%= request.getContextPath()%>/resources/css/styles.css">
+
+    </head>
+
+    <body>
+
+        <main class="pagina">
+
+            <header class="encabezado">
+
+                <h1>
+                    Reporte de Choferes
+                </h1>
+
+            </header>
+
+            <section class="formulario">
+
+                <div class="mensaje mensaje-error">
+
+                    <%= mensaje%>
+
+                </div>
+
+            </section>
+
+            <div class="botones-inferiores">
+
+                <a
+                    href="../inicio.jsp"
+                    class="boton boton-volver">
+
+                    Volver al menú principal
+
+                </a>
+
+            </div>
+
+        </main>
+
+    </body>
+
+</html>
+
+<%
+    }
+%>

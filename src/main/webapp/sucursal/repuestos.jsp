@@ -16,24 +16,24 @@ Author     : fernan
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-Usuario usuario
-= (Usuario) session.getAttribute("usuario");
+    Usuario usuario
+            = (Usuario) session.getAttribute("usuario");
 
-if (usuario == null) {
-    response.sendRedirect("../login.jsp");
-    return;
-}
+    if (usuario == null) {
+        response.sendRedirect("../login.jsp");
+        return;
+    }
 
-if (!"ADMIN_SUCURSAL".equals(usuario.getRol())) {
-    response.sendRedirect("../inicio.jsp");
-    return;
-}
+    if (!"ADMIN_SUCURSAL".equals(usuario.getRol())) {
+        response.sendRedirect("../inicio.jsp");
+        return;
+    }
 
-RepuestoDAO repuestoDAO
-        = new RepuestoDAO();
+    RepuestoDAO repuestoDAO
+            = new RepuestoDAO();
 
-List<Repuesto> repuestos
-        = repuestoDAO.listarActivos();
+    List<Repuesto> repuestos
+            = repuestoDAO.listarActivos();
 
 %>
 
@@ -41,137 +41,142 @@ List<Repuesto> repuestos
 
 <html lang="es">
 
-```
-<head>
+    ```
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
 
-    <title>Repuestos</title>
+        <title>Repuestos</title>
 
-    <link rel="stylesheet"
-          href="../resources/css/styles.css">
+        <link rel="stylesheet"
+              href="../resources/css/styles.css">
 
-</head>
-
-
-<body>
-
-    <main class="pagina">
-
-        <header class="encabezado">
-
-            <h1>Gestión de repuestos</h1>
-
-            <p>
-                Administra los repuestos disponibles
-                para los mantenimientos de los buses.
-            </p>
-
-        </header>
+    </head>
 
 
-        <!-- FORMULARIO -->
+    <body>
 
-        <div class="card-menu">
+        <main class="pagina">
 
-            <h2>Registrar repuesto</h2>
+            <header class="encabezado">
 
-            <form action="procesarRepuesto.jsp"
-                  method="post">
+                <h1>Gestión de repuestos</h1>
 
-                <div class="form-group">
+                <p>
+                    Administra los repuestos disponibles
+                    para los mantenimientos de los buses.
+                </p>
 
-                    <label for="codigoRepuesto">
-                        Código del repuesto
-                    </label>
-
-                    <input type="text"
-                           id="codigoRepuesto"
-                           name="codigoRepuesto"
-                           maxlength="20"
-                           required>
-
-                </div>
+            </header>
 
 
-                <div class="form-group">
+            <!-- FORMULARIO -->
 
-                    <label for="nombre">
-                        Nombre
-                    </label>
+            <div class="card-menu">
 
-                    <input type="text"
-                           id="nombre"
-                           name="nombre"
-                           maxlength="150"
-                           required>
+                <h2>Registrar repuesto</h2>
 
-                </div>
+                <form action="procesarRepuesto.jsp" method="post" id="formularioRepuesto">
+                    <div class="form-group">
 
+                        <label for="codigoRepuesto">
+                            Código del repuesto
+                        </label>
 
-                <div class="form-group">
+                        <input type="text"
+                               id="codigoRepuesto"
+                               name="codigoRepuesto"
+                               maxlength="20"
+                               required>
 
-                    <label for="descripcion">
-                        Descripción
-                    </label>
+                        <p id="mensajeCodigo" class="campo-error"></p>
 
-                    <textarea id="descripcion"
-                              name="descripcion"
-                              maxlength="250"
-                              rows="3"></textarea>
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="precio">
-                        Precio
-                    </label>
+                        <label for="nombre">
+                            Nombre
+                        </label>
 
-                    <input type="number"
-                           id="precio"
-                           name="precio"
-                           min="0"
-                           step="0.01"
-                           required>
+                        <input type="text"
+                               id="nombre"
+                               name="nombre"
+                               maxlength="150"
+                               required>
 
-                </div>
+                        <p id="mensajeNombre" class="campo-error"></p>
 
-
-                <div class="form-actions">
-
-                    <button type="submit">
-                        Registrar repuesto
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
+                    </div>
 
 
-        <br>
+                    <div class="form-group">
+
+                        <label for="descripcion">
+                            Descripción
+                        </label>
+
+                        <textarea id="descripcion"
+                                  name="descripcion"
+                                  maxlength="250"
+                                  rows="3"></textarea>
+
+                        <p id="mensajeDescripcion" class="campo-error"></p>
+
+                    </div>
 
 
-        <!-- LISTADO -->
+                    <div class="form-group">
 
-        <div class="card-menu">
+                        <label for="precio">
+                            Precio
+                        </label>
 
-            <h2>Repuestos disponibles</h2>
+                        <input type="number"
+                               id="precio"
+                               name="precio"
+                               min="0"
+                               step="0.01"
+                               required>
+
+                        <p id="mensajePrecio" class="campo-error"></p>
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button type="submit">
+                            Registrar repuesto
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
 
 
-            <% if (repuestos.isEmpty()) { %>
+            <br>
+
+
+            <!-- LISTADO -->
+
+            <div class="card-menu">
+
+                <h2>Repuestos disponibles</h2>
+
+
+                <% if (repuestos.isEmpty()) { %>
 
                 <p>
                     No hay repuestos registrados.
                 </p>
 
-            <% } else { %>
+                <% } else { %>
 
                 <div class="tabla-container">
 
@@ -198,36 +203,36 @@ List<Repuesto> repuestos
 
                         <tbody>
 
-                            <% for (Repuesto repuesto : repuestos) { %>
+                            <% for (Repuesto repuesto : repuestos) {%>
 
-                                <tr>
+                            <tr>
 
-                                    <td>
-                                        <%= repuesto.getCodigoRepuesto() %>
-                                    </td>
+                                <td>
+                                    <%= repuesto.getCodigoRepuesto()%>
+                                </td>
 
-                                    <td>
-                                        <%= repuesto.getNombre() %>
-                                    </td>
+                                <td>
+                                    <%= repuesto.getNombre()%>
+                                </td>
 
-                                    <td>
-                                        <%= repuesto.getDescripcion() != null
-                                                ? repuesto.getDescripcion()
-                                                : "" %>
-                                    </td>
+                                <td>
+                                    <%= repuesto.getDescripcion() != null
+                                            ? repuesto.getDescripcion()
+                                            : ""%>
+                                </td>
 
-                                    <td>
-                                        Q<%= String.format(
-                                                "%.2f",
-                                                repuesto.getPrecio()
-                                        ) %>
-                                    </td>
+                                <td>
+                                    Q<%= String.format(
+                                            "%.2f",
+                                            repuesto.getPrecio()
+                                    )%>
+                                </td>
 
-                                    <td>
-                                        Activo
-                                    </td>
+                                <td>
+                                    Activo
+                                </td>
 
-                                </tr>
+                            </tr>
 
                             <% } %>
 
@@ -237,24 +242,25 @@ List<Repuesto> repuestos
 
                 </div>
 
-            <% } %>
+                <% }%>
 
-        </div>
-
-
-        <br>
+            </div>
 
 
-        <div class="card-acciones">
+            <br>
 
-            <a href="../inicio.jsp">
-                Regresar al inicio
-            </a>
 
-        </div>
+            <div class="botones-inferiores">
 
-    </main>
+                <a href="../inicio.jsp"
+                   class = "boton boton-volver">
+                    Regresar al inicio
+                </a>
 
-</body>
+            </div>
+
+        </main>
+        <script src="../resources/js/repuestos.js"></script>
+    </body>
 </html>
 

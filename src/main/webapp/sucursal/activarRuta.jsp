@@ -4,11 +4,6 @@
     Author     : fernan
 --%>
 
-<%-- 
-    Document   : activarRuta
-    Created on : 8 sept 2026
---%>
-
 <%@page import="transporte.modelo.Usuario"%>
 <%@page import="transporte.dao.RutaDAO"%>
 
